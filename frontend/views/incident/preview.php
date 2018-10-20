@@ -1,0 +1,35 @@
+<?php 
+use frontend\models\Incident;
+use frontend\models\RefCompany;
+use frontend\models\RefCity;
+use frontend\models\RefRegion;
+use frontend\models\RefService;
+use frontend\models\RefPlace;
+use yii\helpers\Html;
+$this->title = 'Открытие инцидента';
+    $session = Yii::$app->session;
+    echo 'Затронутые компании: '.RefCompany::findOne($session['ref_company_id'])['name'];
+    echo '<br> Затронутые населенные пункты: ';
+    foreach($session['ref_city_id'] as $city_id){
+        foreach (RefCity::citiesList(['id' => $city_id]) as $one){
+        echo $one.' ';}
+    }
+    echo '<br> Затронутые регионы: ';   
+    foreach($session['ref_region_id'] as $region_id){
+        echo RefRegion::findOne($region_id)['name'].' ';
+    }
+    echo '<br> Затронутые площадки: ';   
+    foreach($session['ref_place_id'] as $place_id){
+        echo RefPlace::findOne($place_id)['name'].' ';}
+    echo '<br> Затронутые сервисы: ';   
+    foreach($session['ref_service_id'] as $service_id){
+        echo RefService::findOne($service_id)['name'].' ';}
+        ?>
+    <br>
+    <?= Html::a('Открыть инцидент', ['create', 'open' => true], ['class' => 'btn btn-success']);
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
