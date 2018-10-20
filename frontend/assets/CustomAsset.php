@@ -12,10 +12,10 @@ class CustomAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-      'css/tableScroll.css'
     ];
     public $js = [
         'js/check.js',
+        'js/aggregation.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

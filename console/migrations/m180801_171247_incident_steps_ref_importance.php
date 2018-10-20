@@ -9,6 +9,10 @@ class m180801_171247_incident_steps_ref_importance extends Migration
 {
     public function safeUp()
     {
+        $tableOptions = 
+            'CHARACTER SET utf8 '
+            . 'COLLATE utf8_unicode_ci '
+            . 'ENGINE=InnoDB';
         /**
          * create table incident_steps_ref_importance
          */
@@ -24,7 +28,7 @@ class m180801_171247_incident_steps_ref_importance extends Migration
          */
         $this->createIndex(
                 'id_UNIQUE',
-                'incident_steps_ref_importance',
+                'incident_steps_ref_importance', 
                 'id',
                 true
         );
@@ -34,7 +38,7 @@ class m180801_171247_incident_steps_ref_importance extends Migration
                 'incident_steps_id'
         );
         $this->createIndex(
-                'fk_incident_steps_ref_importance_ref_importance_id',
+                'fk_incident_steps_ref_importance_ref_importance_id', 
                 'incident_steps_ref_importance',
                 'ref_importance_id'
         );
@@ -44,19 +48,19 @@ class m180801_171247_incident_steps_ref_importance extends Migration
         $this->addForeignKey(
                 'fk_incident_steps_ref_importance_ref_importance_id',
                 'incident_steps_ref_importance',
-                'ref_importance_id',
+                'ref_importance_id', 
                 'ref_importance',
                 'id'
         );
         $this->addForeignKey(
-                'fk_incident_steps_ref_importance_incident_steps_id',
+                'fk_incident_steps_ref_importance_incident_steps_id', 
                 'incident_steps_ref_importance',
                 'incident_steps_id',
                 'incident_steps',
                 'id'
         );
     }
-
+    
     public function safeDown()
     {
         $this->dropTable('incident_steps_ref_importance');

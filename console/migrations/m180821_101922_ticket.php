@@ -7,11 +7,16 @@ use yii\db\Migration;
  */
 class m180821_101922_ticket extends Migration
 {
+    
     /**
      * {@inheritdoc}
      */
     public function safeUp()
     {
+        $tableOptions = 
+            'CHARACTER SET utf8 '
+            . 'COLLATE utf8_unicode_ci '
+            . 'ENGINE=InnoDB';
       /**
        * create table t_ticket
        */
