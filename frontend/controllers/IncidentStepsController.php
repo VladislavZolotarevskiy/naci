@@ -106,10 +106,9 @@ class IncidentStepsController extends SiteController
         //if closeded status change status to closed and calculate duration    
             elseif ($model->ref_type_steps_id == 3) {
                 $incident->status = 3;
-                $start_date = $model->needlessTime($incident_id, 1)['clock'];
-                $end_date = $model->clock;
-                $result = strtotime($end_date) - strtotime($start_date);
-                $incident->duration = $this->convertTimestamp($result);
+                //$incident->stopped = $this->serviceStopped($incident->id);
+                $incident->duration = $this->convertTimestamp(
+                        (strtotime($model->needlessTime($incident_id, 1)['clock']) - strtotime($model->clock)));
                 $incident->save();
             }
         //use no-send marker    
@@ -132,6 +131,19 @@ class IncidentStepsController extends SiteController
             'old_step' => $old_step,
             'inc_number' => Incident::findOne($incident_id)['inc_number']                
         ]);
+    }
+    /**
+     * calculate time to stopped service
+     */
+    private function serviceStopped($incident_id) {
+        $arr = IncidentSteps::find()
+        ->select('id, service_stop_marker, clock')
+        ->where(['incident_id' => $incident_id])
+        ->orderBy('clock ASC')
+        ->all();
+        foreach ($arr as $item){
+            
+        }
     }
     /*
      * calculate timestamp to HH:MM:SS

@@ -39,7 +39,7 @@ class IncidentSteps extends \yii\db\ActiveRecord
             [['incident_id', 'ref_type_steps_id', 'clock', 'res_person',
                 'super_person', 'message', 'no_send'], 'required',
                 'message' => 'Поле обязательно к заполнению.'],
-            [['incident_id', 'ref_type_steps_id', 'no_send'], 'integer'],
+            [['incident_id', 'ref_type_steps_id', 'no_send', 'service_stop_marker'], 'integer'],
             [['res_person', 'super_person'], 'string',
                 'max' => 250],
             [['message'], 'string',
