@@ -46,6 +46,11 @@ class IncidentSteps extends \yii\db\ActiveRecord
                 'max' => 1500],
             ['clock', 'date',
                 'format' => 'php:Y-m-d H:i:s'],
+            ['ref_type_steps_id', 'unique', 'targetAttribute' => [
+                    'ref_type_steps_id',
+                    'incident_id',],
+                'filter' => ['in', 'ref_type_steps_id', [1,3]]
+                ],
             [['incident_id'],
                 'exist',
                 'skipOnError' => true,

@@ -11,6 +11,8 @@ $contacts_mail = IncidentSteps::contacts($info['incident_id'],
 $contacts_phone = IncidentSteps::contacts($info['incident_id'],
         $ref_importance_id,1);
 ?>
+
+<?= $son_of_a_dog ?>
 <div class="incident-send">
 
     <div class="incident-text">

@@ -103,12 +103,11 @@ class IncidentStepsController extends SiteController
                 $incident->status = 2;
                 $incident->save();
             }
-        //if closeded status change status to closed and calculate duration    
+        //if closeded status change status to closed and calculate duration/stoppage    
             elseif ($model->ref_type_steps_id == 3) {
                 $incident->status = 3;
-                //$incident->stopped = $this->serviceStopped($incident->id);
-                $incident->duration = $this->convertTimestamp(
-                        (strtotime($model->needlessTime($incident_id, 1)['clock']) - strtotime($model->clock)));
+                $incident->duration = $this->convertTimestamp(strtotime($model->clock) - strtotime($model->needlessTime($model->incident_id, 1)['clock']));
+                $incident->stoppage = $this->convertTimestamp($this->serviceStopped($model->incident_id));
                 $incident->save();
             }
         //use no-send marker    
@@ -121,7 +120,7 @@ class IncidentStepsController extends SiteController
                 'send',
                 'incident_steps_id' => $model->id,
                 'ref_importance_id' => $importance->ref_importance_id,
-                'inc_number' => Incident::findOne($incident_id)['inc_number']
+                'inc_number' => Incident::findOne($incident_id)['inc_number'],
                 ]);
         }    
         return $this->render('create', [
@@ -137,13 +136,47 @@ class IncidentStepsController extends SiteController
      */
     private function serviceStopped($incident_id) {
         $arr = IncidentSteps::find()
-        ->select('id, service_stop_marker, clock')
+        ->select('id, service_stop_marker, clock, ref_type_steps_id')
         ->where(['incident_id' => $incident_id])
         ->orderBy('clock ASC')
         ->all();
-        foreach ($arr as $item){
-            
-        }
+        foreach($arr as $item) {
+            switch ($item->ref_type_steps_id){
+                //открытие
+                case 1:
+                    //если сервис встал начинаем отсчет
+                    if ($item->service_stop_marker == 1) {
+                        $begin_time =  strtotime($item->clock);
+                        break;
+                    }
+                    break;
+                //дополнение    
+                case 2:
+                    //если сервис встал
+                    if ($item->service_stop_marker == 1) {
+                        //если переменная с началом не пуста, считаем простой иначе начинаем отсчет
+                        if ($begin_time == null){
+                            $begin_time =  strtotime($item->clock);
+                            break;
+                        }
+                        $result += strtotime($item->clock) - $begin_time;
+                        break;
+                    }
+                    //если сервис в работе и переменная с началом не пуста, значит считаем простой и обнуляем переменную с началом простоя
+                    if (!$begin_time == null) {
+                        $result += strtotime($item->clock) - $begin_time;
+                        $begin_time = null;
+                    }
+                    break;
+                case 3:
+                    if (!$begin_time == null){
+                        $result += strtotime($item->clock) - $begin_time;
+                        break;
+                    }
+                    break;
+            }
+    }
+        return $result;
     }
     /*
      * calculate timestamp to HH:MM:SS
@@ -210,10 +243,8 @@ class IncidentStepsController extends SiteController
                     'id' => $model->incident_id]);
             }
             if ($model->ref_type_steps_id == 3) {
-                $start_date = $model->needlessTime($model->incident_id, 1)['clock'];
-                $end_date = $model->clock;
-                $result = strtotime($end_date) - strtotime($start_date);
-                $incident->duration = $this->convertTimestamp($result);
+                $incident->duration = $this->convertTimestamp(strtotime($model->clock) - strtotime($model->needlessTime($model->incident_id, 1)['clock']));
+                $incident->stoppage = $this->convertTimestamp($this->serviceStopped($model->incident_id));
                 $incident->save();
             }    
             return $this->redirect(['send',
@@ -225,7 +256,8 @@ class IncidentStepsController extends SiteController
         return $this->render('update', [
             'model' => $model,
             'importance' => $importance,
-            'inc_number' => $incident['inc_number']
+            'inc_number' => $incident['inc_number'],
+            'son_of_a_dog' => $this->convertTimestamp($this->serviceStopped($model->incident_id))
         ]);
     }
 
@@ -277,7 +309,7 @@ class IncidentStepsController extends SiteController
             'incident_steps_id' => $incident_steps_id,
             'model' => $model,
             'snapshot' => $snapshot,
-            'inc_number' => $inc_number   
+            'inc_number' => $inc_number    
         ]);
         }    
     }

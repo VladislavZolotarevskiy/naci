@@ -18,6 +18,7 @@ elseif ($model->ref_type_steps_id == 3){
     <?= $this->render('_form', [
         'model' => $model,
         'importance' => $importance,
+        'son_of_a_dog' => $son_of_a_dog
     ]) ?>
 
 </div>
