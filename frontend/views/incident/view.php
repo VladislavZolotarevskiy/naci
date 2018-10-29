@@ -210,7 +210,6 @@ $prev_date = null;
           </h3>
           <div class="timeline-body">
             <?= $step['message']?><br>
-            <?= $prev_date ?><br>
           </div>
           <div class="timeline-footer">
             <?php if ($step['no_send'] == 1):?>

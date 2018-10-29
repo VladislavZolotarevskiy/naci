@@ -81,6 +81,7 @@ class IncidentStepsController extends SiteController
         $model->clock = date('Y-m-d H:i:s');
         $model->incident_id = $incident_id;
         $model->ref_type_steps_id = $ref_type_steps_id;
+        $old_step = null;
         //add old incident info to model                
         if ($ref_type_steps_id ==2 || $ref_type_steps_id ==3){
             $old_step = IncidentSteps::oldIncidentStep($incident_id);
@@ -140,6 +141,8 @@ class IncidentStepsController extends SiteController
         ->where(['incident_id' => $incident_id])
         ->orderBy('clock ASC')
         ->all();
+        $begin_time = null;
+        $result  = null;
         foreach($arr as $item) {
             switch ($item->ref_type_steps_id){
                 //открытие
@@ -149,25 +152,33 @@ class IncidentStepsController extends SiteController
                         $begin_time =  strtotime($item->clock);
                         break;
                     }
-                    break;
+                    else { break; }
                 //дополнение    
                 case 2:
                     //если сервис встал
                     if ($item->service_stop_marker == 1) {
                         //если переменная с началом не пуста, считаем простой иначе начинаем отсчет
                         if ($begin_time == null){
-                            $begin_time =  strtotime($item->clock);
+                            $begin_time = strtotime($item->clock);
                             break;
                         }
-                        $result += strtotime($item->clock) - $begin_time;
-                        break;
+                        else {
+                            $result += strtotime($item->clock) - $begin_time;
+                            $begin_time = strtotime($item->clock);//тот самый момент, когда 2 дополнения подряд не могут посчитать корректно время простоя
+                            break;
+                        }    
                     }
                     //если сервис в работе и переменная с началом не пуста, значит считаем простой и обнуляем переменную с началом простоя
-                    if (!$begin_time == null) {
+                    else {
+                        if (!$begin_time == null) {
                         $result += strtotime($item->clock) - $begin_time;
                         $begin_time = null;
-                    }
-                    break;
+                        break;
+                        }
+                        else {
+                        break;
+                        }
+                    }    
                 case 3:
                     if (!$begin_time == null){
                         $result += strtotime($item->clock) - $begin_time;
@@ -192,6 +203,7 @@ class IncidentStepsController extends SiteController
             2 => $min,
             3 => $sec];
         $i = 1;
+        $result = '';
         //add zero in begin
         foreach ($arr as $item) {
             if ($item < 10){
@@ -256,8 +268,7 @@ class IncidentStepsController extends SiteController
         return $this->render('update', [
             'model' => $model,
             'importance' => $importance,
-            'inc_number' => $incident['inc_number'],
-            'son_of_a_dog' => $this->convertTimestamp($this->serviceStopped($model->incident_id))
+            'inc_number' => $incident['inc_number']
         ]);
     }
 
