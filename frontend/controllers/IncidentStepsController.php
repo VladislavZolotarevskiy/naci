@@ -145,19 +145,19 @@ class IncidentStepsController extends SiteController
         $result  = null;
         foreach($arr as $item) {
             switch ($item->ref_type_steps_id){
-                //открытие
+                //steps_1
                 case 1:
-                    //если сервис встал начинаем отсчет
+                    //if service stopped then starting count
                     if ($item->service_stop_marker == 1) {
                         $begin_time =  strtotime($item->clock);
                         break;
                     }
                     else { break; }
-                //дополнение    
+                //steps_2    
                 case 2:
-                    //если сервис встал
+                    //if service stopped
                     if ($item->service_stop_marker == 1) {
-                        //если переменная с началом не пуста, считаем простой иначе начинаем отсчет
+                        //if var not null count result, else starting count
                         if ($begin_time == null){
                             $begin_time = strtotime($item->clock);
                             break;
@@ -168,7 +168,7 @@ class IncidentStepsController extends SiteController
                             break;
                         }    
                     }
-                    //если сервис в работе и переменная с началом не пуста, значит считаем простой и обнуляем переменную с началом простоя
+                    //if service work and var not null, then count result and reset count
                     else {
                         if (!$begin_time == null) {
                         $result += strtotime($item->clock) - $begin_time;
@@ -179,6 +179,7 @@ class IncidentStepsController extends SiteController
                         break;
                         }
                     }    
+                // steps 3    
                 case 3:
                     if (!$begin_time == null){
                         $result += strtotime($item->clock) - $begin_time;
