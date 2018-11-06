@@ -18,6 +18,10 @@ return [
         'user' => [
             'class' => 'frontend\modules\user\Module',
         ],
+        'debug' => [
+            'class' => 'yii\debug\Module',
+            'allowedIPs' => ['172.23.139.*']
+        ],
     ],
     'components' => [
         'request' => [
@@ -59,7 +63,7 @@ return [
         'assetManager' => [
             'linkAssets' => true,
             'appendTimestamp' => true,
-        ],
+        ],   
     ],
     'params' => $params,
 ];

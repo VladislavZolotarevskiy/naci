@@ -83,12 +83,13 @@ class IncidentController extends SiteController
         $model_incident_ref_place = new IncidentRefPlace();
         $model_incident_ref_service = new IncidentRefService();
         if (Yii::$app->request->post()) {
+            $session->destroy();
             $session['ref_company_id'] = Yii::$app->request->post()['Incident']['ref_company_id'];
             $session['ref_city_id'] = Yii::$app->request->post()['IncidentRefCity']['ref_city_id'];
             $session['ref_region_id'] = Yii::$app->request->post()['IncidentRefRegion']['ref_region_id'];
             $session['ref_place_id'] = Yii::$app->request->post()['IncidentRefPlace']['ref_place_id'];
             $session['ref_service_id'] = Yii::$app->request->post()['IncidentRefService']['ref_service_id'];
-            return $this->render('/incident/preview');
+            return $this->redirect('../incident/preview');
         }
         elseif ($open == true) {
             $model_incident->ref_company_id = $session['ref_company_id'];
@@ -116,7 +117,7 @@ class IncidentController extends SiteController
                 $model_incident_ref_place->incident_id = $model_incident->id;
                 $model_incident_ref_place->ref_place_id = $place_id;
                 $model_incident_ref_place->save();
-            }    
+            }
             foreach($session['ref_service_id'] as $service_id){
                 $model_incident_ref_service = new IncidentRefService();
                 $model_incident_ref_service->incident_id = $model_incident->id;
@@ -139,7 +140,98 @@ class IncidentController extends SiteController
         ]);
     }
     
-    
+    public function actionPreview() {
+        $session = Yii::$app->session;
+        
+        $model_incident = new Incident(); 
+        //$model_incident_ref_city = new IncidentRefCity();
+        $model_incident_ref_region = new IncidentRefRegion();
+        $model_incident_ref_place = new IncidentRefPlace();
+        $model_incident_ref_service = new IncidentRefService();
+        $model_incident->ref_company_id = $session['ref_company_id'];
+        
+        if (Yii::$app->request->post()){
+            $model_incident->save();
+            foreach($session['ref_region_id'] as $region_id){
+            $model_incident_ref_region = new IncidentRefRegion();
+            $model_incident_ref_region->incident_id = $model_incident->id;
+            $model_incident_ref_region->ref_region_id = $region_id;
+            $model_incident_ref_region->save();
+            }    
+            foreach($session['ref_city_id'] as $city_id){
+                $model_incident_ref_city = new IncidentRefCity();
+                $model_incident_ref_city->incident_id = $model_incident->id;
+                $model_incident_ref_city->ref_city_id = $city_id;
+                $model_incident_ref_city->save();
+            }    
+            foreach($session['ref_place_id'] as $place_id){
+                $model_incident_ref_place = new IncidentRefPlace();
+                $model_incident_ref_place->incident_id = $model_incident->id;
+                $model_incident_ref_place->ref_place_id = $place_id;
+                $model_incident_ref_place->save();
+            }    
+            foreach($session['ref_service_id'] as $service_id){
+                $model_incident_ref_service = new IncidentRefService();
+                $model_incident_ref_service->incident_id = $model_incident->id;
+                $model_incident_ref_service->ref_service_id = $service_id;
+                $model_incident_ref_service->save();
+            }
+            $session->destroy();
+            return $this->redirect(['/incident-steps/create',
+            'incident_id' => $model_incident->id,
+            'ref_type_steps_id' => 1,
+        ]);
+        }
+        else {
+        $period = date('Y');
+        $model_incident->inc_number = $this->incNumber($period, $model_incident->ref_company_id);
+        $model_incident->period = $period;
+        foreach($session['ref_region_id'] as $region_id){
+            $model_incident_ref_region = new IncidentRefRegion();
+            $model_incident_ref_region->incident_id = $model_incident->id;
+            $model_incident_ref_region->ref_region_id = $region_id;
+        }    
+        $model_incident_ref_city = new IncidentRefCity();
+        $model_incident_ref_city->ref_city_id = '';
+        foreach($session['ref_city_id'] as $city_id){
+//            $model = new IncidentRefCity();
+//            $model->incident_id = $model_incident->id;
+//            $model->ref_city_id = $city_id;
+            if ($model_incident_ref_city->ref_city_id == '') {
+                $model_incident_ref_city->ref_city_id .= $city_id;
+            }
+            else {
+                $model_incident_ref_city->ref_city_id .= ','.$city_id;
+            }
+        }    
+        foreach($session['ref_place_id'] as $place_id){
+            $model_incident_ref_place = new IncidentRefPlace();
+            $model_incident_ref_place->incident_id = $model_incident->id;
+            $model_incident_ref_place->ref_place_id = $place_id;
+        }    
+        foreach($session['ref_service_id'] as $service_id){
+            $model_incident_ref_service = new IncidentRefService();
+            $model_incident_ref_service->incident_id = $model_incident->id;
+            $model_incident_ref_service->ref_service_id = $service_id;
+        }
+        //$session->destroy();
+        return $this->render('preview',[
+            'model_incident_ref_region' => $model_incident_ref_region,
+            'model_incident_ref_city' => $model_incident_ref_city,
+            'model_incident_ref_place' => $model_incident_ref_place,
+            'model_incident_ref_service' => $model_incident_ref_service,
+            'model_incident_ref_company_id' => $model_incident->ref_company_id
+            ]);
+        }
+    }
+    private function incNumber ($period, $ref_company_id) {
+            $result = Incident::find()
+                    ->where(['period' => $period])
+                    ->andWhere(['ref_company_id'=>$ref_company_id])
+                    ->max('inc_number')+1;
+    return $result;
+    }
+
     /**
      * Updates an existing Incident model.
      * If update is successful, the browser will be redirected to the 'view' page.
