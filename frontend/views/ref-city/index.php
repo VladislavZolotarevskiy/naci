@@ -27,7 +27,9 @@ $this->title = 'Населённые пункты';
             'name',
             ['attribute' => 'refCityType.name',
             'label' => 'Тип'],
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => 'yii\grid\ActionColumn',
+		'template' => '{update} {delete}',
+	    ],
         ],
     ]); ?>
     <?php Pjax::end(); ?>
