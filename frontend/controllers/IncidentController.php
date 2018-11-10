@@ -186,24 +186,18 @@ class IncidentController extends SiteController
         $period = date('Y');
         $model_incident->inc_number = $this->incNumber($period, $model_incident->ref_company_id);
         $model_incident->period = $period;
+        
         foreach($session['ref_region_id'] as $region_id){
             $model_incident_ref_region = new IncidentRefRegion();
             $model_incident_ref_region->incident_id = $model_incident->id;
             $model_incident_ref_region->ref_region_id = $region_id;
-        }    
+        }
         $model_incident_ref_city = new IncidentRefCity();
-        $model_incident_ref_city->ref_city_id = '';
-        foreach($session['ref_city_id'] as $city_id){
-//            $model = new IncidentRefCity();
-//            $model->incident_id = $model_incident->id;
-//            $model->ref_city_id = $city_id;
-            if ($model_incident_ref_city->ref_city_id == '') {
-                $model_incident_ref_city->ref_city_id .= $city_id;
-            }
-            else {
-                $model_incident_ref_city->ref_city_id .= ','.$city_id;
-            }
-        }    
+        $model_incident_ref_city->ref_city_id_multiply = \frontend\models\IncidentRefCity::find()->where(['in','ref_city_id',$session['ref_city_id']])->asArray()->all();
+//        foreach($session['ref_city_id'] as $city_id){
+//            $model_incident_ref_city->incident_id = $model_incident->id;
+//            $model_incident_ref_city->ref_city_id_multiply[] = $city_id;
+//        }    
         foreach($session['ref_place_id'] as $place_id){
             $model_incident_ref_place = new IncidentRefPlace();
             $model_incident_ref_place->incident_id = $model_incident->id;

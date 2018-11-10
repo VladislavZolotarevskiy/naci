@@ -43,21 +43,19 @@ $this->title = 'Открытие инцидента';
         'disabled' => true
         
     ]) ?>
- <?= $form->field($model_incident_ref_city, 'ref_city_id')->widget(Select2::classname(),[
-        'data' => RefCity::citiesList(),
-        'language' => 'ru',
-        'options' => ['multiple' => true, 'placeholder' => 'Выберите город'],
-         'disabled' => true,
-        'pluginOptions' => [
-            'tags' => true,
-            'tokenSeparators' => [',', ' '],
-        ],
-    ]) ?>		
+   
+
+
+ 
+ 
+<?php
+$arr = \frontend\models\IncidentRefCity::find()->with('refCity')->select('*')->where(['in','ref_city_id',$session['ref_city_id']])->all();
+?>
  
         
  
 <?php ActiveForm::end(); ?>
 RefCity::citiesList()
  <pre>
- <?php print_r($model_incident_ref_city['ref_city_id']) ?>
+ <?php print_r($arr) ?>
  </pre>
