@@ -198,6 +198,14 @@ $this->registerCss(".grid-view { overflow-x: auto;}");
                     }
                 }
             ],
+            [        
+                'attribute' => 'duration',
+                'label' => 'Продолжительность (чч:мм:сс)'
+            ],    
+            [        
+                'attribute' => 'stoppage',
+                'label' => 'Время простоя (чч:мм:сс)'
+            ],    
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{view} {update}',

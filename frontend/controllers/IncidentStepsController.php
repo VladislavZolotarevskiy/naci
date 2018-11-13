@@ -11,6 +11,7 @@ use frontend\models\User;
 use frontend\models\IncidentStepsSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use DateTime;
 
 /**
  * IncidentStepsController implements the CRUD actions for IncidentSteps model.
@@ -54,7 +55,7 @@ class IncidentStepsController extends SiteController
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
-    {
+    {   
         $model = $this->findModel($id);
         $importance = IncidentStepsRefImportance::findOne([
             'incident_steps_id' => $model->id
@@ -81,51 +82,148 @@ class IncidentStepsController extends SiteController
         $model->incident_id = $incident_id;
         $model->ref_type_steps_id = $ref_type_steps_id;
         $old_step = null;
+        //add old incident info to model                
         if ($ref_type_steps_id ==2 || $ref_type_steps_id ==3){
             $old_step = IncidentSteps::oldIncidentStep($incident_id);
             $model->res_person = $old_step['res_person'];
             $model->message = $old_step['message'];
             $importance->ref_importance_id = $old_step['ref_importance_id'];
         }
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $importance->incident_steps_id = $model->id;
             $importance->load(Yii::$app->request->post());
             $importance->save();
             $incident = Incident::findOne($incident_id);
+        //if importance is critical change incident->type 1=2
             if ($importance->ref_importance_id == 4) {
                 $incident->type = 2;
                 $incident->save();
             }
+        //if opened step change status to open    
             if ($model->ref_type_steps_id == 1) {
                 $incident->status = 2;
                 $incident->save();
             }
+        //if closeded status change status to closed and calculate duration/stoppage    
             elseif ($model->ref_type_steps_id == 3) {
                 $incident->status = 3;
+                $incident->duration = $this->convertTimestamp(strtotime($model->clock) - strtotime($model->needlessTime($model->incident_id, 1)['clock']));
+                $incident->stoppage = $this->convertTimestamp($this->serviceStopped($model->incident_id));
                 $incident->save();
             }
+        //use no-send marker    
             if ($model->no_send == 1) {
                 return $this->redirect([
                 '/incident/view',
                     'id' => $incident_id]);
             }
-            $incident = Incident::findOne($incident_id);
             return $this->redirect([
                 'send',
                 'incident_steps_id' => $model->id,
                 'ref_importance_id' => $importance->ref_importance_id,
-                'inc_number' => $incident['inc_number'],
-                'ref_company_id' => $incident['ref_company_id']
+                'inc_number' => Incident::findOne($incident_id)['inc_number'],
                 ]);
-        }
+        }    
         return $this->render('create', [
             'model' => $model,
             'importance' => $importance,
             'ref_type_steps_id' => $ref_type_steps_id,
             'old_step' => $old_step,
-            'inc_number' => Incident::findOne($incident_id)['inc_number']
+            'inc_number' => Incident::findOne($incident_id)['inc_number']                
         ]);
+    }
+    /**
+     * calculate time to stopped service
+     */
+    private function serviceStopped($incident_id) {
+        $arr = IncidentSteps::find()
+        ->select('id, service_stop_marker, clock, ref_type_steps_id')
+        ->where(['incident_id' => $incident_id])
+        ->orderBy('clock ASC')
+        ->all();
+        $begin_time = null;
+        $result  = null;
+        foreach($arr as $item) {
+            switch ($item->ref_type_steps_id){
+                //steps_1
+                case 1:
+                    //if service stopped then starting count
+                    if ($item->service_stop_marker == 1) {
+                        $begin_time =  strtotime($item->clock);
+                        break;
+                    }
+                    else { break; }
+                //steps_2    
+                case 2:
+                    //if service stopped
+                    if ($item->service_stop_marker == 1) {
+                        //if var not null count result, else starting count
+                        if ($begin_time == null){
+                            $begin_time = strtotime($item->clock);
+                            break;
+                        }
+                        else {
+                            $result += strtotime($item->clock) - $begin_time;
+                            $begin_time = strtotime($item->clock);//тот самый момент, когда 2 дополнения подряд не могут посчитать корректно время простоя
+                            break;
+                        }    
+                    }
+                    //if service work and var not null, then count result and reset count
+                    else {
+                        if (!$begin_time == null) {
+                        $result += strtotime($item->clock) - $begin_time;
+                        $begin_time = null;
+                        break;
+                        }
+                        else {
+                        break;
+                        }
+                    }    
+                // steps 3    
+                case 3:
+                    if (!$begin_time == null){
+                        $result += strtotime($item->clock) - $begin_time;
+                        break;
+                    }
+                    break;
+            }
+    }
+        return $result;
+    }
+    /*
+     * calculate timestamp to HH:MM:SS
+     * var - timestamp
+     * return hh:mm:ss
+     */
+    private function convertTimestamp($timestamp){
+        $hour = intdiv($timestamp, 3600);
+        $min = intdiv(($timestamp%3600), 60);
+        $sec = $timestamp%60;
+        $arr = [
+            1 => $hour,
+            2 => $min,
+            3 => $sec];
+        $i = 1;
+        $result = '';
+        //add zero in begin
+        foreach ($arr as $item) {
+            if ($item < 10){
+                if ($item == 0){
+                    $item = '00';
+                }
+                else {
+                    $item = '0'.$item;
+                }    
+            }
+            if ($i == 1) {
+                $result .= $item;
+            }
+            else {
+                $result .= ':'.$item;
+            }
+            $i += $i;
+        }
+        return $result;
     }
     /**
      * Updates an existing IncidentSteps model.
@@ -142,12 +240,12 @@ class IncidentStepsController extends SiteController
             ]);
         $incident = Incident::findOne($model->incident_id);
         if ($model->load(Yii::$app->request->post()) && $model->save() &&
-                $importance->load(Yii::$app->request->post())
+                $importance->load(Yii::$app->request->post()) 
                 && $importance->save()) {
             if ($importance->ref_importance_id == 4) {
                 $incident->type = 2;
                 $incident->save();
-            }
+            }     
             else {
                 $incident->type = 1;
                 $incident->save();
@@ -157,12 +255,15 @@ class IncidentStepsController extends SiteController
                 '/incident/view',
                     'id' => $model->incident_id]);
             }
+            if ($model->ref_type_steps_id == 3) {
+                $incident->duration = $this->convertTimestamp(strtotime($model->clock) - strtotime($model->needlessTime($model->incident_id, 1)['clock']));
+                $incident->stoppage = $this->convertTimestamp($this->serviceStopped($model->incident_id));
+                $incident->save();
+            }    
             return $this->redirect(['send',
                 'incident_steps_id' => $model->id,
                 'ref_importance_id' => $importance->ref_importance_id,
-                'inc_number' => $incident['inc_number'],
-                'ref_company_id' => $incident['ref_company_id']
-              ]);
+                'inc_number' => $incident['inc_number']]);
         }
 
         return $this->render('update', [
@@ -185,8 +286,8 @@ class IncidentStepsController extends SiteController
 
         return $this->redirect(['index']);
     }
-
-    public function actionSend($ref_importance_id, $incident_steps_id, $inc_number, $ref_company_id)
+    
+    public function actionSend($ref_importance_id, $incident_steps_id, $inc_number)
     {
         $model = $this->findModel($incident_steps_id);
         $snapshot = new Snapshot;
@@ -198,7 +299,7 @@ class IncidentStepsController extends SiteController
             if ($ref_importance_id == 4){
                 $array = [
                     'phone' => $phone_array,
-                    'mail' => $mail_array
+                    'mail' => $mail_array  
                 ];
                 $model->snapshot = json_encode($array, JSON_FORCE_OBJECT);
                 $model->save();
@@ -211,7 +312,7 @@ class IncidentStepsController extends SiteController
                 $model->save();
             }
             return $this->redirect(['/incident/view',
-            'id' => $model->incident_id,
+            'id' => $model->incident_id,    
             ]);
         }
         else {
@@ -220,17 +321,16 @@ class IncidentStepsController extends SiteController
             'incident_steps_id' => $incident_steps_id,
             'model' => $model,
             'snapshot' => $snapshot,
-            'inc_number' => $inc_number,
-            'ref_company_id' => $ref_company_id
+            'inc_number' => $inc_number    
         ]);
-        }
+        }    
     }
     public function actionSnapshot($incident_steps_id,$ref_importance_id) {
         $model = $this->findModel($incident_steps_id);
         $this->layout = '/no_menu';
         return $this->render('snapshot',[
             'model' => $model,
-            'ref_importance_id' => $ref_importance_id
+            'ref_importance_id' => $ref_importance_id   
         ]);
     }
     /**

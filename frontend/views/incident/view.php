@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\bootstrap\Modal;
 use frontend\models\TTicket;
+use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Incident */
 $status = $model->status;
@@ -137,66 +138,39 @@ $prev_date = null;
         </div>
         </div>
       </div>
-    </div>
-    <?php yii\widgets\Pjax::begin([
-        'timeout' => 99999,
-        'id' => 'tickets'])?>
+    </div> 
     <div class="col-md-6 col-sm-12 col-xs-12">
       <div class="box box-primary">
         <div class="box-header with-border">
             <h3 class="box-title">Заявки</h3>
         </div>
         <div class="box-body no-padding">
-            <table class="table table-condensed">
-            <thead>
-                <tr>
-                    <th scope="col", class="col-md-0"></th>
-                    <th scope="col", class="col-md-6">Тип</th>
-                    <th scope="col", class="col-md-6">Номер</th>
-                </tr>
-            </thead>
-            <tbody>
-              <?php foreach (TTicket::ticketList([
-                'incident_id' => $model->id]) as $item):?>
-                <tr>
-                    <td scope="row">
-                        <?=
-                            Html::a('', [
-                            './t-ticket/delete',
-                            'id' => $item['id'],
-                            'incident_id' => $model->id], [
-                            'class' => "fa fa-minus text-red",
-                            'title' => "Удалить заявку",
-                            'data-confirm' => "Удалить заявку?",
-                            'data-method' => "post"])
-                        ?>
-                    </td>
-                    <td scope="row">
-                        <?= $item['refTypeTt']['name']?>
-                    </td>
-                    <td scope="row">
-                        <?= $item['t_number']?>
-                    </td>
-                </tr>
-
-              <?php endforeach ?>
-                <tr>
-                    <td scope="row">
-                        <?= Html::a('', [
-                            './t-ticket/create',
-                            'incident_id' => $model->id], [
-                            'data-toggle' => 'modal',
-                            'data-target' => '#mymodel-win',
-                            'class' => 'fa fa-plus text-blue',
-                            'title' => "Добавить заявку",
-                            'onclick' => "$('#mymodel-win .modal-dialog .modal-content .modal-body').load($(this).attr('href'));",
-                            ]) ?></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </tbody>
-          </table>
+            <?php yii\widgets\Pjax::begin([
+        'timeout' => 99999,
+        'id' => 'tickets'])?>
+        <?= GridView::widget([
+            'layout'=>"{items}",
+            'dataProvider' => $tticketDataProvider,
+            //'filterModel' => $tticketSearchModel,
+            'columns' => [
+            'refTypeTt.name',
+            't_number',    
+            ['class' => 'yii\grid\ActionColumn'],
+            ],
+        ]); ?>
         </div>
+          <div class="box-footer">
+            <?= Html::a('<span class="fa fa-plus"></span> ' . 
+                'Добавить', ['/t-ticket/create','incident_id' => $model->id], [
+                'id' => 'tticket-add',
+                'data-toggle' => 'modal',
+                'data-target' => '#mymodel-win',
+                'class' => 'btn btn-primary',
+                'onclick' => 
+                    "$('#mymodel-win .modal-dialog .modal-content .modal-body').load($(this).attr('href'))",
+                ]
+            ) ?>
+        </div> 
         </div>
       </div>
     <?php yii\widgets\Pjax::end()?>
@@ -236,7 +210,6 @@ $prev_date = null;
           </h3>
           <div class="timeline-body">
             <?= $step['message']?><br>
-            <?= $prev_date ?><br>
           </div>
           <div class="timeline-footer">
             <?php if ($step['no_send'] == 1):?>
@@ -249,8 +222,7 @@ $prev_date = null;
                    './incident-steps/send',
                    'incident_steps_id' => $step['id'],
                    'ref_importance_id' => $step['importance_id'],
-                   'inc_number' => $model->inc_number,
-                   'ref_company_id' => $model->ref_company_id], [
+                   'inc_number' => $model->inc_number], [
                    'class' => 'btn btn-danger btn-xs',
                    'title' => "Выполнить рассылку",
               ]) ?>

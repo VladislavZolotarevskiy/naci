@@ -14,7 +14,7 @@ elseif ($ref_type_steps_id == 3){
 }
 ?>
 <div class="incident-steps-create">
-  
+    
     <?= $this->render('_form', [
         'model' => $model,
         'importance' => $importance,

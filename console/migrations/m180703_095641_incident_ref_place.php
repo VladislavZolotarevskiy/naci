@@ -7,11 +7,16 @@ use yii\db\Migration;
  */
 class m180703_095641_incident_ref_place extends Migration
 {
+
     /**
      * {@inheritdoc}
      */
     public function safeUp()
     {
+        $tableOptions = 
+            'CHARACTER SET utf8 '
+            . 'COLLATE utf8_unicode_ci '
+            . 'ENGINE=InnoDB';
         /**
          * create table incident_ref_place
          */

@@ -9,6 +9,10 @@ class m180703_091738_incident_ref_service extends Migration
 {
     public function safeUp()
     {
+        $tableOptions = 
+                'CHARACTER SET utf8 '
+                . 'COLLATE utf8_unicode_ci '
+                . 'ENGINE=InnoDB';
         /**
          * create table incident_ref_service
          */

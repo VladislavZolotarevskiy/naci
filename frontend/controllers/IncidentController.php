@@ -9,6 +9,8 @@ use frontend\models\IncidentRefCity;
 use frontend\models\IncidentRefService;
 use frontend\models\IncidentRefPlace;
 use frontend\models\IncidentSearch;
+use frontend\models\TTicket;
+use frontend\models\TTicketSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -55,8 +57,13 @@ class IncidentController extends SiteController
      */
     public function actionView($id)
     {
+        $tticketSearchModel = new TTicketSearch(['incident_id' => $id]);
+        $tticketDataProvider = $tticketSearchModel
+                ->search(Yii::$app->request->queryParams);
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'tticketSearchModel' => $tticketSearchModel,
+            'tticketDataProvider' => $tticketDataProvider,
         ]);
     }
     

@@ -1,5 +1,6 @@
 <?php
 use frontend\models\IncidentSteps;
+use frontend\models\Incident;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 $info = (IncidentSteps::incidentStep($incident_steps_id));
@@ -10,6 +11,7 @@ $contacts_mail = IncidentSteps::contacts($info['incident_id'],
 $contacts_phone = IncidentSteps::contacts($info['incident_id'],
         $ref_importance_id,1);
 ?>
+
 <div class="incident-send">
 
     <div class="incident-text">
@@ -41,8 +43,9 @@ $contacts_phone = IncidentSteps::contacts($info['incident_id'],
         .$info['super_person'].' +79873242404, +74957877667 доб. 7377.' ?>
 
         <?php else:?>
-        <?php $this->title = 'Закрытие инцидента № '.$inc_number?>
-        <?= $this->title. '. Завершение: '.$info['clock']
+        <?php $this->title = 'Закрытие инцидента № '.$inc_number;
+        $duration = mb_substr(Incident::findOne($info['incident_id'])['duration'], 0, 5)?>
+        <?= $this->title. '. Завершение: '.$info['clock'].'. Продолжительность: '. $duration
         .'. Приоритет: ' . $info['refImportance']['name'] . '. '. $info['message']
         .'Ответственный: '.$info['res_person'].'. Контроль:'
         .$info['super_person'].' +79873242404, +74957877667 доб. 7377.' ?>
@@ -85,7 +88,7 @@ $contacts_phone = IncidentSteps::contacts($info['incident_id'],
         ])->label('Телефоны') ?>
         </div>
 
-        <?php if($ref_importance_id == 4 || $ref_company_id == 1):?>
+        <?php if($ref_importance_id == 4):?>
         <div class="col-md-4 col-sm-6 col-xs-6">
             <?php if ($contacts_mail !== null) {
                 $mail = '';

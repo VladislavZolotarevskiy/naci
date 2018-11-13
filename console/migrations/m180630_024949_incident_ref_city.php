@@ -13,6 +13,11 @@ class m180630_024949_incident_ref_city extends Migration
 
     public function safeUp()
     {
+   
+        $tableOptions = 
+                'CHARACTER SET utf8 '
+                . 'COLLATE utf8_unicode_ci '
+                . 'ENGINE=InnoDB';
         /**
          * create table incident_ref_city
          */
