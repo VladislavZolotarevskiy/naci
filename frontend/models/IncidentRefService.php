@@ -14,6 +14,7 @@ namespace frontend\models;
  */
 class IncidentRefService extends \yii\db\ActiveRecord
 {
+    public $ref_service_id_multiply;
     /**
      * {@inheritdoc}
      */
@@ -51,6 +52,7 @@ class IncidentRefService extends \yii\db\ActiveRecord
     {
         return [
             'ref_service_id' => 'Затронутые сервисы',
+            'ref_service_id_multiply' => 'Затронутые сервисы',
         ];
     }
 

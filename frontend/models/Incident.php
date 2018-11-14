@@ -237,59 +237,95 @@ class Incident extends \yii\db\ActiveRecord
         else {
             $status = 'created';
         }
-        return $status;
-     }
-     /**
-      * @param int $incident_id
-      * @return array
-      */
-     public function incidentSteps($incident_id){   
-        $steps = (new Query())
+       return $status;
+    }
+    /**
+     * @param int $incident_id
+     * @return array
+     */
+    public function incidentSteps($incident_id){   
+       $steps = (new Query())
+               ->select([
+                   'incident_steps.clock',
+                   'incident_steps.id',
+                   'incident_steps.message',
+                   'incident_steps.no_send',
+                   'incident_steps.snapshot',
+                   'ref_type_steps.name AS type',
+                   'ref_importance.name AS importance',
+                   'ref_importance.id AS importance_id'
+               ])
+               ->from('incident_steps_ref_importance')
+               ->join(
+                       'LEFT JOIN', 'ref_importance', 
+                       'incident_steps_ref_importance.ref_importance_id=
+                           ref_importance.id')
+               ->join(
+                       'LEFT JOIN',
+                       'incident_steps',
+                       'incident_steps_ref_importance.incident_steps_id=incident_steps.id'
+                       )        
+               ->join(
+                       'LEFT JOIN', 'incident',
+                       'incident_steps.incident_id=
+                           incident.id')
+               ->join(
+                       'LEFT JOIN', 'ref_type_steps', 
+                       'incident_steps.ref_type_steps_id = ref_type_steps.id')
+               ->where(['incident_id' => $incident_id])
+               ->orderBy('clock DESC')
+               ->all();
+       return $steps;
+    }
+    public function incidentNumber($incident_id)
+    {
+        $number = (new Query())
                 ->select([
-                    'incident_steps.clock',
-                    'incident_steps.id',
-                    'incident_steps.message',
-                    'incident_steps.no_send',
-                    'incident_steps.snapshot',
-                    'ref_type_steps.name AS type',
-                    'ref_importance.name AS importance',
-                    'ref_importance.id AS importance_id'
+                    'inc_number'
                 ])
-                ->from('incident_steps_ref_importance')
-                ->join(
-                        'LEFT JOIN', 'ref_importance', 
-                        'incident_steps_ref_importance.ref_importance_id=
-                            ref_importance.id')
-                ->join(
-                        'LEFT JOIN',
-                        'incident_steps',
-                        'incident_steps_ref_importance.incident_steps_id=incident_steps.id'
-                        )
-                
-                ->join(
-                        'LEFT JOIN', 'incident',
-                        'incident_steps.incident_id=
-                            incident.id')
-                ->join(
-                        'LEFT JOIN', 'ref_type_steps', 
-                        'incident_steps.ref_type_steps_id = ref_type_steps.id')
-                ->where(['incident_id' => $incident_id])
-                ->orderBy('clock DESC')
-                ->all();
-        return $steps;
-     }
-     public function incidentNumber($incident_id)
-     {
-         $number = (new Query())
-                 ->select([
-                     'inc_number'
-                 ])
-                 ->from('incident')
-                 ->where([
-                     'id' => $incident_id
-                 ])
-                 ->one();
-         return $number;
-     }
-
+                ->from('incident')
+                ->where([
+                    'id' => $incident_id
+                ])
+                ->one();
+        return $number;
+    }
+    public function printCities($array){
+       $query = new Query();
+       $query->select(['ref_city.id, CONCAT (ref_city_type.name,"'
+       . ' ",ref_city.name) AS city'])
+       ->from('ref_city')
+       ->where(['in', 'ref_city.id', $array])
+       ->join('INNER JOIN', 'ref_city_type',
+       'ref_city_type.id = ref_city.ref_city_type_id');
+       $command = $query->createCommand()->queryAll();
+       return ArrayHelper::map($command, 'id', 'city');
+    }
+    
+    public function printRegions($array){
+       $query = new Query();
+       $query->select(['id','name'])
+       ->from('ref_region')
+       ->where(['in', 'id', $array]);
+       $command = $query->createCommand()->queryAll();
+       return ArrayHelper::map($command, 'id', 'name');
+    }
+    
+    public function printPlaces($array){
+       $query = new Query();
+       $query->select(['id','name'])
+       ->from('ref_place')
+       ->where(['in', 'id', $array]);
+       $command = $query->createCommand()->queryAll();
+       return ArrayHelper::map($command, 'id', 'name');
+    }
+    
+    public function printServices($array){
+       $query = new Query();
+       $query->select(['id','name'])
+       ->from('ref_service')
+       ->where(['in', 'id', $array]);
+       $command = $query->createCommand()->queryAll();
+       return ArrayHelper::map($command, 'id', 'name');
+    }
 }

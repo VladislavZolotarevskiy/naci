@@ -18,7 +18,8 @@ class IncidentRefRegion extends \yii\db\ActiveRecord
     /**
      * @var array
      */
-    public $regions;
+    //public $regions;
+    public $ref_region_id_multiply;
     /**
      * {@inheritdoc}
      */
@@ -55,6 +56,7 @@ class IncidentRefRegion extends \yii\db\ActiveRecord
     {
         return [
             'ref_region_id' => 'Затронутые регионы',
+            'ref_region_id_multiply' => 'Затронутые регионы ',
         ];
     }
 

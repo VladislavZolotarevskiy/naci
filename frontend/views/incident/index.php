@@ -208,12 +208,8 @@ $this->registerCss(".grid-view { overflow-x: auto;}");
             ],    
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{view} {update}',
+                'template' => '{update}',
                 'urlCreator' => function ($action, $model, $key, $index) {
-                    if ($action === 'view') {
-                        $url ='';
-                        return $url;
-                    }
                     if ($action === 'update') {
                         $url = ['view', 'id' => $model->id];
                         return $url;
