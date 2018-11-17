@@ -54,7 +54,7 @@ $fieldOptions2 = [
         <?php ActiveForm::end(); ?>
 
        <!--<a href="/user/default/request-password-reset">Напомнить пароль</a><br>-->
-       <a href="signup" class="text-center">Регистрация</a>-->
+       <!--<a href="signup" class="text-center">Регистрация</a>-->
 
     </div>
     <!-- /.login-box-body -->
