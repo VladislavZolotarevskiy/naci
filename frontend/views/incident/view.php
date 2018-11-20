@@ -1,11 +1,11 @@
-<?php
-
+<?php 
 use yii\helpers\Html;
 use yii\bootstrap\Modal;
-use frontend\models\TTicket;
+use yii\helpers\Url;
 use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Incident */
+Url::remember(['view', 'id'=> $model->id],'incident-view');
 $status = $model->status;
 $this->title = 'Инцидент № '.$model->inc_number;
 $prev_date = null;
@@ -17,6 +17,10 @@ $prev_date = null;
 <?= Modal::widget([
     'id' => 'mymodel-win',
     'header' => Html::tag('h4', Html::encode('Добавить заявку'),['class' => 'username']),
+]);?>
+<?= Modal::widget([
+    'id' => 'ticket-modal',
+    'header' => Html::tag('h4', Html::encode('Редактировать заявку'),['class' => 'username']),
 ]);?>
 <div class="incident-view">
   <div class="management">
@@ -145,18 +149,43 @@ $prev_date = null;
             <h3 class="box-title">Заявки</h3>
         </div>
         <div class="box-body no-padding">
-            <?php yii\widgets\Pjax::begin([
-        'timeout' => 99999,
+        <?php yii\widgets\Pjax::begin([
         'id' => 'tickets'])?>
         <?= GridView::widget([
+            'emptyText' => 'Заявки отсутствуют',
             'layout'=>"{items}",
             'dataProvider' => $tticketDataProvider,
-            //'filterModel' => $tticketSearchModel,
             'columns' => [
-            'refTypeTt.name',
-            't_number',    
-            ['class' => 'yii\grid\ActionColumn'],
+                'refTypeTt.name',
+                't_number',    
+                ['class' => 'yii\grid\ActionColumn',
+                    'template' => '{update} {delete}',
+                    'urlCreator' => function ($action, $model, $key, $index) {
+                        if ($action === 'delete') {
+                            $url = Url::toRoute(['./t-ticket/delete', 'id' => $key]);
+                            return $url;
+                        }
+                    },
+                    'buttons' => [
+                        'update' => function ($action, $model, $key) {
+                            if ($model->incident->status == 3) {
+                                return false;
+                            }
+                            else {
+                                return Html::a('<span class="glyphicon glyphicon-pencil"></span> ' . 
+                                    '', Url::toRoute(['./t-ticket/update', 'id' => $key]), [
+                                    'data-toggle' => 'modal',
+                                    'data-target' => '#ticket-modal',
+                                    'onclick' => 
+                                        "$('#ticket-modal .modal-dialog .modal-content .modal-body').load($(this).attr('href'))",
+                                    ]
+                                );
+                            }    
+                        },
+                    ]    
+                ],
             ],
+            
         ]); ?>
         </div>
           <div class="box-footer">

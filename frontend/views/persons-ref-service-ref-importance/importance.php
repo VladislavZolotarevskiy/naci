@@ -1,9 +1,11 @@
 <?php
 use yii\helpers\Html;
 use frontend\models\PersonsRefService;
-$service = PersonsRefService::ServiceList(['person_ref_service_id' => $person_ref_service_id]);
+use yii\helpers\Url;
 
+$service = PersonsRefService::ServiceList(['person_ref_service_id' => $person_ref_service_id]);
 $this->title = 'Приоритеты для '.$service['refService']['name'];
+Url::remember(['importance', 'person_ref_service_id'=> $person_ref_service_id],'persons-service-importance');
 ?>
 <div class="importance-change">
     <table class="table table-condensed">

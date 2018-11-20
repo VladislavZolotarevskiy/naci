@@ -4,9 +4,9 @@ namespace frontend\controllers;
 
 use Yii;
 use frontend\models\PersonsRefRegion;
-use frontend\models\PersonsRefRegionSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
 
 /**
  * PersonsRefRegionController implements the CRUD actions for PersonsRefRegion model.
@@ -29,83 +29,24 @@ class PersonsRefRegionController extends SiteController
     }
 
     /**
-     * Lists all PersonsRefRegion models.
-     * @return mixed
-     */
-    public function actionIndex()
-    {
-        $searchModel = new PersonsRefRegionSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single PersonsRefRegion model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
      * Creates a new PersonsRefRegion model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($person_id = null)
+    public function actionCreate($person_id)
     {
         $model = new PersonsRefRegion();
-        
-        if (!$person_id == null) {
-           if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['/persons/view', 'id' => $person_id]);
-           }
-           else {
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(Url::previous('persons-view'));
+        }
+        else {
             return $this->render('create', [
             'model' => $model,
             'person_id' => $person_id,    
-        ]);
-           }
-        } 
-        elseif ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-            }
-
-        else {return $this->render('create', [
-            'model' => $model,
-        ]);
+            ]);
         }
     }
-
-    /**
-     * Updates an existing PersonsRefRegion model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-    }
-
+    
     /**
      * Deletes an existing PersonsRefRegion model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
@@ -113,16 +54,10 @@ class PersonsRefRegionController extends SiteController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id, $view_id = null)
+    public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
-        if (!$view_id == null) {
-            return $this->redirect(['/persons/view', 'id' => $view_id]);
-        }
-        else {
-            return $this->redirect(['index']);
-        }
+        return $this->redirect(Url::previous('persons-view'));
     }
     /**
      * Finds the PersonsRefRegion model based on its primary key value.

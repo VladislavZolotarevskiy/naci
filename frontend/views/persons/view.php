@@ -1,11 +1,14 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Persons */
 
 $this->title = $model->personFullName($model->id)['full_name'];
+Url::remember(['view', 'id'=> $model->id],'persons-view');
 ?>
+
 <div class="persons-view">
 
     <p>
@@ -305,7 +308,7 @@ $this->title = $model->personFullName($model->id)['full_name'];
                                         as $two ):?>
                                 <?= $two['refImportance']['name']?>
                                 <?php endforeach ?><?= Html::a('',[
-                                '/persons-ref-service-ref-importance/',
+                                '/persons-ref-service-ref-importance/importance',
                                 'person_ref_service_id' =>
                                     $one['id']],
                                 ['class' => 'fa fa-pencil text-blue'])?>
