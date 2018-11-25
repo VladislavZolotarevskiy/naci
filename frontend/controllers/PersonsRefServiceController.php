@@ -34,7 +34,7 @@ class PersonsRefServiceController extends SiteController
         $model = new PersonsRefService();
         
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['/persons/view', 'id' => $person_id]);
+            return $this->redirect(Url::previous('persons-view'));
         }
         else {
             return $this->render('create', [
