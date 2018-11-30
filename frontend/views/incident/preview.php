@@ -48,5 +48,5 @@ $session = Yii::$app->session;
 <?php ActiveForm::end(); ?>
 <div class="form-group">
     <?= Html::a('Назад', Url::previous(), ['class' => 'btn btn-danger']) ?>
-    <?= Html::a('Далее', ['create', 'open' => true], ['class' => 'btn btn-success']) ?>
+    <?= Html::a('Далее', 'open', ['class' => 'btn btn-success']) ?>
 </div>

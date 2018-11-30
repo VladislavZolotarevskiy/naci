@@ -73,7 +73,7 @@ class IncidentController extends SiteController
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($open = false)
+    public function actionCreate()
     {
         $session = Yii::$app->session;
         $session->open();
@@ -84,6 +84,7 @@ class IncidentController extends SiteController
         $model_incident_ref_service = new IncidentRefService();
         if (Yii::$app->request->post()) {
             $session->destroy();
+            $session['open'] = true;
             $session['ref_company_id'] = Yii::$app->request->post()['Incident']['ref_company_id'];
             $session['ref_city_id'] = Yii::$app->request->post()['IncidentRefCity']['ref_city_id'];
             $session['ref_region_id'] = Yii::$app->request->post()['IncidentRefRegion']['ref_region_id'];
@@ -92,58 +93,19 @@ class IncidentController extends SiteController
             Url::remember();
             return $this->redirect('preview');
         }
-        elseif ($open == true) {
-            $model_incident->ref_company_id = $session['ref_company_id'];
-            $period = date('Y');
-            $model_incident->inc_number = Incident::find()
-                    ->where(['period' => $period])
-                    ->andWhere(['ref_company_id'=>$model_incident->ref_company_id])
-                    ->max('inc_number')+1;
-            $model_incident->period = $period;
-            $model_incident->save();
-            foreach($session['ref_region_id'] as $region_id){
-                $model_incident_ref_region = new IncidentRefRegion();
-                $model_incident_ref_region->incident_id = $model_incident->id;
-                $model_incident_ref_region->ref_region_id = $region_id;
-                $model_incident_ref_region->save();
-            }    
-            foreach($session['ref_city_id'] as $city_id){
-                $model_incident_ref_city = new IncidentRefCity();
-                $model_incident_ref_city->incident_id = $model_incident->id;
-                $model_incident_ref_city->ref_city_id = $city_id;
-                $model_incident_ref_city->save();
-            }    
-            foreach($session['ref_place_id'] as $place_id){
-                $model_incident_ref_place = new IncidentRefPlace();
-                $model_incident_ref_place->incident_id = $model_incident->id;
-                $model_incident_ref_place->ref_place_id = $place_id;
-                $model_incident_ref_place->save();
-            }
-            foreach($session['ref_service_id'] as $service_id){
-                $model_incident_ref_service = new IncidentRefService();
-                $model_incident_ref_service->incident_id = $model_incident->id;
-                $model_incident_ref_service->ref_service_id = $service_id;
-                $model_incident_ref_service->save();
-            }
-            $session->destroy();
-            return $this->redirect(['/incident-steps/create',
-                'incident_id' => $model_incident->id,
-                'ref_type_steps_id' => 1,
+        else {
+            return $this->render('create', [
+                'model_incident' => $model_incident,
+                'model_incident_ref_city' => $model_incident_ref_city,
+                'model_incident_ref_region' => $model_incident_ref_region,
+                'model_incident_ref_place' => $model_incident_ref_place,
+                'model_incident_ref_service' => $model_incident_ref_service,
             ]);
-            
-        }
-        return $this->render('create', [
-            'model_incident' => $model_incident,
-            'model_incident_ref_city' => $model_incident_ref_city,
-            'model_incident_ref_region' => $model_incident_ref_region,
-            'model_incident_ref_place' => $model_incident_ref_place,
-            'model_incident_ref_service' => $model_incident_ref_service,
-        ]);
+        }    
     }
     
     public function actionPreview() {
         $session = Yii::$app->session;
-        
         $model_incident = new Incident(); 
         //$model_incident_ref_city = new IncidentRefCity();
         $model_incident_ref_region = new IncidentRefRegion();
@@ -223,7 +185,58 @@ class IncidentController extends SiteController
     return $result;
     }
 
-    /**
+    public function actionOpen() {
+            $session = Yii::$app->session;
+            if ($session['open'] == true) {
+                $model_incident = new Incident(); 
+                $model_incident_ref_city = new IncidentRefCity();
+                $model_incident_ref_region = new IncidentRefRegion();
+                $model_incident_ref_place = new IncidentRefPlace();
+                $model_incident_ref_service = new IncidentRefService();
+                $model_incident->ref_company_id = $session['ref_company_id'];
+                $period = date('Y');
+                $model_incident->inc_number = Incident::find()
+                        ->where(['period' => $period])
+                        ->andWhere(['ref_company_id'=>$model_incident->ref_company_id])
+                        ->max('inc_number')+1;
+                $model_incident->period = $period;
+                $model_incident->save();
+                foreach($session['ref_region_id'] as $region_id){
+                    $model_incident_ref_region = new IncidentRefRegion();
+                    $model_incident_ref_region->incident_id = $model_incident->id;
+                    $model_incident_ref_region->ref_region_id = $region_id;
+                    $model_incident_ref_region->save();
+                }    
+                foreach($session['ref_city_id'] as $city_id){
+                    $model_incident_ref_city = new IncidentRefCity();
+                    $model_incident_ref_city->incident_id = $model_incident->id;
+                    $model_incident_ref_city->ref_city_id = $city_id;
+                    $model_incident_ref_city->save();
+                }    
+                foreach($session['ref_place_id'] as $place_id){
+                    $model_incident_ref_place = new IncidentRefPlace();
+                    $model_incident_ref_place->incident_id = $model_incident->id;
+                    $model_incident_ref_place->ref_place_id = $place_id;
+                    $model_incident_ref_place->save();
+                }
+                foreach($session['ref_service_id'] as $service_id){
+                    $model_incident_ref_service = new IncidentRefService();
+                    $model_incident_ref_service->incident_id = $model_incident->id;
+                    $model_incident_ref_service->ref_service_id = $service_id;
+                    $model_incident_ref_service->save();
+                }
+                $session->destroy();
+                return $this->redirect(['/incident-steps/create',
+                    'incident_id' => $model_incident->id,
+                    'ref_type_steps_id' => 1,
+                ]);
+            }
+            else {
+                return $this->redirect('site/error');
+            }
+    }
+
+        /**
      * Updates an existing Incident model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
