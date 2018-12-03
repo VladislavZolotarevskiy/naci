@@ -2,8 +2,6 @@
 
 namespace frontend\models;
 
-use Yii;
-
 /**
  * This is the model class for table "incident_ref_place".
  *
@@ -16,6 +14,7 @@ use Yii;
  */
 class IncidentRefPlace extends \yii\db\ActiveRecord
 {
+    public $ref_place_id_multiply;
     /**
      * {@inheritdoc}
      */
@@ -53,6 +52,7 @@ class IncidentRefPlace extends \yii\db\ActiveRecord
     {
         return [
             'ref_place_id' => 'Затронутые площадки',
+            'ref_place_id_multiply' => 'Затронутые площадки',
         ];
     }
 

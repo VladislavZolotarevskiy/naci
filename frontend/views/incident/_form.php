@@ -22,6 +22,8 @@ use kartik\select2\Select2;
         'data' => RefCity::citiesList(),
         'language' => 'ru',
         'options' => ['multiple' => true, 'placeholder' => 'Выберите город'],
+        //'pluginEvents' => [
+          //  "select2:open" => "function() { alert($('.select2-selection__choice')); }"], 
         
     ]) ?>
      <?= $form->field($model_incident_ref_region, 'ref_region_id')->widget(Select2::classname(),[

@@ -4,12 +4,12 @@ namespace frontend\controllers;
 
 use Yii;
 use frontend\models\TTicket;
-use frontend\models\TTicketSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
+use yii\helpers\Url;
 
 /**
  * TTicketController implements the CRUD actions for TTicket model.
@@ -29,34 +29,6 @@ class TTicketController extends Controller
                 ],
             ],
         ];
-    }
-
-    /**
-     * Lists all TTicket models.
-     * @return mixed
-     */
-    public function actionIndex()
-    {
-        $searchModel = new TTicketSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single TTicket model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
     }
 
     /**
@@ -89,8 +61,6 @@ class TTicketController extends Controller
         }
     }
 
-
-
     /**
      * Updates an existing TTicket model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -103,10 +73,10 @@ class TTicketController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(Url::previous('incident-view'));
         }
 
-        return $this->render('update', [
+        return $this->renderAjax('update', [
             'model' => $model,
         ]);
     }
@@ -118,11 +88,11 @@ class TTicketController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id, $incident_id)
+    public function actionDelete($id)
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['./incident/view', 'id' => $incident_id]);
+        return $this->redirect(Url::previous('incident-view'));
     }
 
     /**

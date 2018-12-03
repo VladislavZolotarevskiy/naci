@@ -16,6 +16,7 @@ namespace frontend\models;
  */
 class IncidentRefCity extends \yii\db\ActiveRecord
 {
+    public $ref_city_id_multiply;
     /**
      * {@inheritdoc}
      */
@@ -52,6 +53,7 @@ class IncidentRefCity extends \yii\db\ActiveRecord
     {
         return [
             'ref_city_id' => 'Затронутые города',
+            'ref_city_id_multiply' => 'Затронутые города',
         ];
     }
 

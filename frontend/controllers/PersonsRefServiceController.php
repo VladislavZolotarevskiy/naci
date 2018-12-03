@@ -3,10 +3,11 @@
 namespace frontend\controllers;
 
 use Yii;
+use frontend\models\PersonsRefServiceRefImportance;
 use frontend\models\PersonsRefService;
-use frontend\models\PersonsRefServiceSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
 
 /**
  * PersonsRefServiceController implements the CRUD actions for PersonsRefService model.
@@ -28,83 +29,19 @@ class PersonsRefServiceController extends SiteController
         ];
     }
 
-    /**
-     * Lists all PersonsRefService models.
-     * @return mixed
-     */
-    public function actionIndex()
-    {
-        $searchModel = new PersonsRefServiceSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single PersonsRefService model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
-     * Creates a new PersonsRefService model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate($person_id = null)
+   public function actionCreate($person_id)
     {
         $model = new PersonsRefService();
         
-        if (!$person_id == null){
-            if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['/persons/view', 'id' => $person_id]);
-            }
-            else {
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(Url::previous('persons-view'));
+        }
+        else {
             return $this->render('create', [
             'model' => $model,
             'person_id' => $person_id,
             ]);    
-            }
         }
-        elseif ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        else {
-            return $this->render('create', [
-            'model' => $model,
-            ]);
-        }    
-    }
-
-    /**
-     * Updates an existing PersonsRefService model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
     }
 
     /**
@@ -114,17 +51,13 @@ class PersonsRefServiceController extends SiteController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id, $view_id = null)
+    public function actionDelete($id)
     {
+        PersonsRefServiceRefImportance::deleteAll(['persons_ref_service_id' => $id]);
         $this->findModel($id)->delete();
-
-        if (!$view_id == null) {
-            return $this->redirect(['/persons/view', 'id' => $view_id]);
-        }
-        else {
-            return $this->redirect(['index']);
-        }
+        return $this->redirect(Url::previous('persons-view'));
     }
+        
     /**
      * Finds the PersonsRefService model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

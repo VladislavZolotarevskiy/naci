@@ -4,9 +4,11 @@ namespace frontend\controllers;
 
 use Yii;
 use frontend\models\Contacts;
-use frontend\models\ContactsSearch;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
 
 /**
  * ContactsController implements the CRUD actions for Contacts model.
@@ -29,21 +31,6 @@ class ContactsController extends SiteController
     }
 
     /**
-     * Lists all Contacts models.
-     * @return mixed
-     */
-    public function actionIndex()
-    {
-        $searchModel = new ContactsSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
      * Displays a single Contacts model.
      * @param integer $id
      * @return mixed
@@ -61,30 +48,31 @@ class ContactsController extends SiteController
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($person_id = null)
-    {
+    public function actionCreate($person_id)
+    { 
         $model = new Contacts();
-        if (!$person_id == null){
-            if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['/persons/view', 'id' => $person_id]);
-            }
-            else {
-                return $this->render('create',[
-                'model' => $model,
-                'person_id' => $person_id,
-                ]);
-            }
-        }
-        elseif ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $request = Yii::$app->request;
+        if ($request->isPost && $model->load($request->post())) {
+            $model->id_person = $person_id;
+            $model->save();
+            return $this->redirect(Url::previous('persons-view'));
         }
         else {
-            return $this->render('create', [
+            return $this->renderAjax('create',[
             'model' => $model,
-        ]);
-        }    
+            'person_id' => $person_id,
+            ]);
+        }  
     }
-
+    public function actionPerformAjaxValidation($person_id)
+    {
+        $model = new Contacts();
+        $model->id_person = $person_id;
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
+    }
     /**
      * Updates an existing Contacts model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -97,10 +85,10 @@ class ContactsController extends SiteController
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(Url::previous('persons-view'));
         }
 
-        return $this->render('update', [
+        return $this->renderAjax('update', [
             'model' => $model,
         ]);
     }
@@ -112,17 +100,10 @@ class ContactsController extends SiteController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id, $view_id = null)
+    public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
-        if (!$view_id == null) {
-            return $this->redirect(['/persons/view/', 'id' => $view_id]);
-        }
-        
-        else {
-            return $this->redirect(['index']);
-        }
+        return $this->redirect(Url::previous('persons-view'));
     }    
 
     /**

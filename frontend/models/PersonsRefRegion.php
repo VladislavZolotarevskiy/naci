@@ -1,9 +1,6 @@
 <?php
 
 namespace frontend\models;
-
-use Yii;
-
 /**
  * This is the model class for table "persons_ref_region".
  *

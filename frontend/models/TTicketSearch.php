@@ -41,12 +41,13 @@ class TTicketSearch extends TTicket
      */
     public function search($params)
     {
-        $query = TTicket::find();
+        $query = TTicket::find()->with('incident');
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' =>false
         ]);
 
         $this->load($params);

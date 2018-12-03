@@ -56,10 +56,7 @@ use yii\helpers\Url;
                         'url' => ['/persons']],
                     ['label' => 'Инциденты',
                         'icon' => 'info-circle',
-                        'url' => Url::to(['incident/index', 'IncidentSearch[status]'=>2])],   
-                    ['label' => 'Контакты',
-                        'icon' => 'id-card', 
-                        'url' => ['/contacts']],
+                        'url' => Url::to(['incident/index', 'IncidentSearch[status]'=>2])],
                 ],
             ]
         ) ?>

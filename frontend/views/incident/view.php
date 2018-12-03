@@ -1,72 +1,22 @@
-<?php
-
+<?php 
 use yii\helpers\Html;
-use yii\bootstrap\Modal;
-use frontend\models\TTicket;
-use yii\grid\GridView;
-/* @var $this yii\web\View */
-/* @var $model frontend\models\Incident */
+use yii\helpers\Url;
+
+Url::remember(['view', 'id'=> $model->id],'incident-view');
 $status = $model->status;
 $this->title = 'Инцидент № '.$model->inc_number;
 $prev_date = null;
 ?>
-<?= Modal::widget([
-    'id' => 'contacts',
-    'header' => Html::tag('h4', Html::encode('Контакты рассылки'),['class' => 'username']),
-]);?>
-<?= Modal::widget([
-    'id' => 'mymodel-win',
-    'header' => Html::tag('h4', Html::encode('Добавить заявку'),['class' => 'username']),
-]);?>
+
+<?=$this->render('_modal',[
+    'status' => $status
+])?>
+
 <div class="incident-view">
-  <div class="management">
-    <?= Html::a('Назад', ['./incident'], ['class' => 'btn btn-danger'])?>
-    <?php if($status == 1):?>
-    <?= Html::a('Открытие', [
-      '/incident-steps/create',
-      'incident_id' => $model->id,
-      'ref_type_steps_id' => $status], [
-      'class' => 'btn btn-success'])?>
-    <div class="row">
-      <div class="col-md-3 col-sm-12 col-xs-12" style="padding:15px">
-        <div class="callout callout-info">
-          <div class="status">
-            <h4>Статус инцидента</h4>
-            <p>Создан</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <?php elseif ($status == 2): ?>
-    <?= Html::a('Дополнение', [
-      '/incident-steps/create',
-      'incident_id' => $model->id,
-      'ref_type_steps_id' => $status], [
-      'class' => 'btn btn-primary']) ?>
-    <?= Html::a('Закрытие', [
-      '/incident-steps/create',
-      'incident_id' => $model->id,
-      'ref_type_steps_id' => $status+1], [
-      'class' => 'btn btn-danger'])?>
-      <div class="row">
-          <div class="col-md-4 col-sm-12 col-xs-12" style="padding:15px">
-          <div class="callout callout-success">
-            <h4>Статус инцидента</h4>
-            <p>Открыт</p>
-          </div>
-        </div>
-      </div>
-    <?php elseif ($status == 3): ?>
-      <div class="row">
-        <div class="col-md-5 col-sm-12 col-xs-12" style="padding:15px">
-          <div class="callout callout-danger">
-            <h4>Статус инцидента</h4>
-            <p>Закрыт</p>
-          </div>
-        </div>
-      </div>
-    <?php endif ?>
-  </div>
+    <?= $this->render('_management',[
+        'incident_id' => $model->id,
+        'status' => $status
+    ])?>
 
   <div class="row">
     <div class="col-md-6 col-sm-12 col-xs-12">
@@ -140,40 +90,13 @@ $prev_date = null;
       </div>
     </div> 
     <div class="col-md-6 col-sm-12 col-xs-12">
-      <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Заявки</h3>
-        </div>
-        <div class="box-body no-padding">
-            <?php yii\widgets\Pjax::begin([
-        'timeout' => 99999,
-        'id' => 'tickets'])?>
-        <?= GridView::widget([
-            'layout'=>"{items}",
-            'dataProvider' => $tticketDataProvider,
-            //'filterModel' => $tticketSearchModel,
-            'columns' => [
-            'refTypeTt.name',
-            't_number',    
-            ['class' => 'yii\grid\ActionColumn'],
-            ],
-        ]); ?>
-        </div>
-          <div class="box-footer">
-            <?= Html::a('<span class="fa fa-plus"></span> ' . 
-                'Добавить', ['/t-ticket/create','incident_id' => $model->id], [
-                'id' => 'tticket-add',
-                'data-toggle' => 'modal',
-                'data-target' => '#mymodel-win',
-                'class' => 'btn btn-primary',
-                'onclick' => 
-                    "$('#mymodel-win .modal-dialog .modal-content .modal-body').load($(this).attr('href'))",
-                ]
-            ) ?>
-        </div> 
-        </div>
-      </div>
-    <?php yii\widgets\Pjax::end()?>
+        <?= $this->render('_t-ticket',[
+            'tticketDataProvider' => $tticketDataProvider,
+            'inc_status' => $status,
+            'incident_id' => $model->id
+            ])?>
+    </div>
+   
 
     </div>
    <ul class="timeline">

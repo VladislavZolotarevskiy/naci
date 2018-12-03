@@ -5,17 +5,8 @@
 
 $this->title = 'Привязать к населённому пункту';?>
 <div class="persons-ref-city-create">
-    
-    <?php if (!$person_id == null): ?>
-    <?= $this->render('_bond', [
-        'model' => $model,
-        'person_id' => $person_id,
-        ]); 
-    ?>
-    <?php else: ?> 
-    <?= $this->render('_form', [
-        'model' => $model,
-        ]);
-    ?>
-    <?php endif ?>
+<?= $this->render('_form', [
+    'model' => $model,
+    'person_id' => $person_id,
+    ]);?>
 </div>

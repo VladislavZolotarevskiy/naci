@@ -7,13 +7,13 @@
 //    var data = $(".modal-body#tticket-form").serialize();
 //    
 //    $(".modal-body").on(("#tticket-form").submit, function(){
-////        $.ajax({
-////            url:href,
-////            data:$('#tticket-form').serialize()
-////            dataType:"json"
-////            type:'POST'
-////            
-////        });
+//        $.ajax({
+//            url:href,
+//            data:$('#tticket-form').serialize()
+//            dataType:"json"
+//            type:'POST'
+//            
+//        });
 //        console.log('data');
 //    });
 //    $("#add-item").on("pjax:complete", function() {

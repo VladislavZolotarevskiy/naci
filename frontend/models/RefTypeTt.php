@@ -41,7 +41,7 @@ class RefTypeTt extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
+            'name' => 'Тип',
             'description' => 'Description',
         ];
     }

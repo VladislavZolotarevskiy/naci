@@ -7,6 +7,8 @@ use frontend\models\Persons;
 use frontend\models\PersonsSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use frontend\models\ContactsSearch;
+use frontend\models\PersonsRefCompanySearch;
 
 /**
  * PersonsController implements the CRUD actions for Persons model.
@@ -51,8 +53,16 @@ class PersonsController extends SiteController
      */
     public function actionView($id)
     {
+        $contactsSearchModel = new ContactsSearch(['id_person' => $id]);
+        $contactsDataProvider = $contactsSearchModel->search(Yii::$app->request->queryParams);
+        $contactsDataProvider->sort = false;
+        $companiesSearchModel = new PersonsRefCompanySearch(['persons_id' => $id]);
+        $companiesDataProvider = $companiesSearchModel->search(Yii::$app->request->queryParams);
+        $companiesDataProvider->sort = false;
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'contactsDataProvider' => $contactsDataProvider,
+            'companiesDataProvider' => $companiesDataProvider,
         ]);
     }
 

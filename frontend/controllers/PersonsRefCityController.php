@@ -4,9 +4,9 @@ namespace frontend\controllers;
 
 use Yii;
 use frontend\models\PersonsRefCity;
-use frontend\models\PersonsRefCitySearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
 
 /**
  * PersonsRefCityController implements the CRUD actions for PersonsRefCity model.
@@ -29,80 +29,22 @@ class PersonsRefCityController extends SiteController
     }
 
     /**
-     * Lists all PersonsRefCity models.
-     * @return mixed
-     */
-    public function actionIndex()
-    {
-        $searchModel = new PersonsRefCitySearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single PersonsRefCity model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
      * Creates a new PersonsRefCity model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($person_id = null)
+    public function actionCreate($person_id)
     {
         $model = new PersonsRefCity();
-
-        if (!$person_id == null){
-            if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['/persons/view', 'id' => $person_id]);
-            }
-            else {
-                return $this->render('create', [
-                'model' => $model,
-                'person_id' => $person_id,
-                ]);    
-            }
-        }
-        elseif ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(Url::previous('persons-view'));
         }
         else {
             return $this->render('create', [
             'model' => $model,
-        ]);
+            'person_id' => $person_id,
+            ]);    
         }
-    }
-    /**
-     * Updates an existing PersonsRefCity model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
     }
 
     /**
@@ -112,13 +54,10 @@ class PersonsRefCityController extends SiteController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id, $view_id = null)
+    public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-        if (!$view_id == null) {
-            return $this->redirect(['/persons/view', 'id' => $view_id]);
-        }
-        return $this->redirect(['index']);
+        return $this->redirect(Url::previous('persons-view'));
     }
 
     /**
