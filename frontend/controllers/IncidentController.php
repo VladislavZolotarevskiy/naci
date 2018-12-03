@@ -13,6 +13,7 @@ use yii\helpers\Url;
 use frontend\models\TTicketSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * IncidentController implements the CRUD actions for Incident model.
@@ -73,7 +74,7 @@ class IncidentController extends SiteController
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($motherlover=null)
     {
         $session = Yii::$app->session;
         $session->open();
@@ -82,7 +83,7 @@ class IncidentController extends SiteController
         $model_incident_ref_region = new IncidentRefRegion();
         $model_incident_ref_place = new IncidentRefPlace();
         $model_incident_ref_service = new IncidentRefService();
-        if (Yii::$app->request->post()) {
+        if (Yii::$app->request->post() && !Yii::$app->request->isAjax) {
             $session->destroy();
             $session['open'] = true;
             $session['ref_company_id'] = Yii::$app->request->post()['Incident']['ref_company_id'];
@@ -93,8 +94,21 @@ class IncidentController extends SiteController
             Url::remember();
             return $this->redirect('preview');
         }
+        elseif (Yii::$app->request->isAjax) {
+            //Yii::$app->response->format = Response::FORMAT_JSON;
+            $motherlover=5;
+            return $this->renderAjax('create', [
+                'motherlover' => $motherlover,
+                'model_incident' => $model_incident,
+                'model_incident_ref_city' => $model_incident_ref_city,
+                'model_incident_ref_region' => $model_incident_ref_region,
+                'model_incident_ref_place' => $model_incident_ref_place,
+                'model_incident_ref_service' => $model_incident_ref_service,
+            ]);
+        }
         else {
             return $this->render('create', [
+                'motherlover' => $motherlover,
                 'model_incident' => $model_incident,
                 'model_incident_ref_city' => $model_incident_ref_city,
                 'model_incident_ref_region' => $model_incident_ref_region,
