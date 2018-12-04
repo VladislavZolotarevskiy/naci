@@ -55,8 +55,12 @@ class RefRegion extends \yii\db\ActiveRecord
     /**
      * @return array
      */
-    public function regionList()
+    public function regionList($id=null)
     {
-        return ArrayHelper::map(RefRegion::find()->all(), 'id', 'name'); 
+        if ($id == null) {
+        return ArrayHelper::map(RefRegion::find()->all(), 'id', 'name');}
+        else {
+            return ArrayHelper::map(RefRegion::findAll(['id' => $id]), 'id', 'name');
+        }
     }
 }

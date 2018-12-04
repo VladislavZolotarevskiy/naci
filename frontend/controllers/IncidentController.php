@@ -74,11 +74,15 @@ class IncidentController extends SiteController
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($motherlover=null)
+    public function actionCreate($ref_company_id=NULL)
     {
+        
         $session = Yii::$app->session;
         $session->open();
-        $model_incident = new Incident(); 
+        $model_incident = new Incident();
+        if ($ref_company_id !== NULL) {
+        $find = \frontend\models\RefCompany::findOne(['name' => $ref_company_id]);    
+        $model_incident->ref_company_id = $find->id;}
         $model_incident_ref_city = new IncidentRefCity();
         $model_incident_ref_region = new IncidentRefRegion();
         $model_incident_ref_place = new IncidentRefPlace();
@@ -95,10 +99,10 @@ class IncidentController extends SiteController
             return $this->redirect('preview');
         }
         elseif (Yii::$app->request->isAjax) {
-            //Yii::$app->response->format = Response::FORMAT_JSON;
-            $motherlover=5;
-            return $this->renderAjax('create', [
-                'motherlover' => $motherlover,
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model_incident->ref_company_id = Yii::$app->request->post()['Incident']['ref_company_id'];
+            return  Yii::$app->response->data = ['data' => 'OKAY'];
+                $this->renderAjax('create', [
                 'model_incident' => $model_incident,
                 'model_incident_ref_city' => $model_incident_ref_city,
                 'model_incident_ref_region' => $model_incident_ref_region,
@@ -108,7 +112,6 @@ class IncidentController extends SiteController
         }
         else {
             return $this->render('create', [
-                'motherlover' => $motherlover,
                 'model_incident' => $model_incident,
                 'model_incident_ref_city' => $model_incident_ref_city,
                 'model_incident_ref_region' => $model_incident_ref_region,

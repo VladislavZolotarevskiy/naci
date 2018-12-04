@@ -16,11 +16,7 @@ use yii\widgets\Pjax;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<?php if ($motherlover == null):?>
-Motherlover is null
-<?php else :?>
-<?= $motherlover?>
-<?php endif ?>
+<?= $model_incident->ref_company_id ?>
 
 <div class="incident-form">
 
@@ -36,11 +32,11 @@ Motherlover is null
         'options' => ['placeholder' => 'Выберите компанию'],
         'language' => 'ru',
         'pluginEvents' => [
-            "select2:selecting" => "function() { var alerts; alerts = $('#select2-incident-ref_company_id-container').serialize(); console.log(alerts); }"],
+            "select2:select" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function() { $.pjax.reload({container : '#incident-create-form'});}) }"],
     ])?>
     
     <?= $form->field($model_incident_ref_region, 'ref_region_id')->widget(Select2::classname(),[
-        'data' => RefRegion::regionList(),
+        'data' => RefRegion::regionList($model_incident->ref_company_id),
         'language' => 'ru',
         'options' => ['multiple' => true, 'placeholder' => 'Выберите регион'],
         
@@ -54,7 +50,7 @@ Motherlover is null
 //            'ajax' => true
 //        ],
         'pluginEvents' => [
-            "select2:open" => "function() { var alerts; alerts = $('.select2-selection__choice').text(); alert(alerts); }"], 
+            "select2:selecting" => "function() { var alerts; alerts = $('.select2-selection__choice').text(); window.open('create','_self'); }"], 
         
     ]) ?>
      
