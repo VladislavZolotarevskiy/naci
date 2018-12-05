@@ -24,13 +24,13 @@ class m181205_104937_parents extends Migration
                 'fk_ref_city_ref_region_id', 
                 'ref_city',
                 'ref_region_id', 
-                true
+                false
         );
         $this->createIndex(
                 'fk_ref_place_ref_city_id', 
                 'ref_place',
                 'ref_city_id', 
-                true
+                false
         );
         $this->addForeignKey(
                 'fk_ref_city_ref_region_id', 

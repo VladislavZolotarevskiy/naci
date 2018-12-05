@@ -22,11 +22,10 @@ $this->title = 'Площадки';
         'dataProvider' => $dataProvider,
         //'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
             'name',
-
-            ['class' => 'yii\grid\ActionColumn'],
+            ['attribute' => 'refCity.name',
+            'label' => 'Населённый пункт'],
+['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
     <?php Pjax::end(); ?>

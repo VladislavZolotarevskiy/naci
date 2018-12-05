@@ -28,7 +28,7 @@ class RefPlace extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            ['name', 'required'],
+            [['name', 'ref_city_id'], 'required'],
             ['name', 'unique',
                 'message' => 'Такая площадка уже существует'],
             [['name'], 'string', 'max' => 250],
@@ -42,6 +42,7 @@ class RefPlace extends \yii\db\ActiveRecord
     {
         return [
             'name' => 'Наименование',
+            'ref_city_id' => 'Город',
         ];
     }
 
@@ -51,6 +52,13 @@ class RefPlace extends \yii\db\ActiveRecord
     public function getPersonsRefPlaces()
     {
         return $this->hasMany(PersonsRefPlace::className(), ['ref_place_id' => 'id']);
+    }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRefCity()
+    {
+        return $this->hasOne(RefCity::className(), ['id' => 'ref_city_id']);
     }
     /**
      * @return array

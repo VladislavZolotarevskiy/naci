@@ -4,7 +4,7 @@ namespace frontend\controllers;
 
 use Yii;
 use frontend\models\RefCity;
-use common\models\RefCitySearch;
+use frontend\models\RefCitySearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -36,23 +36,9 @@ class RefCityController extends SiteController
     {
         $searchModel = new RefCitySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single RefCity model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
         ]);
     }
 
@@ -66,7 +52,7 @@ class RefCityController extends SiteController
         $model = new RefCity();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect('index');
         }
 
         return $this->render('create', [
@@ -86,7 +72,7 @@ class RefCityController extends SiteController
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect('index');
         }
 
         return $this->render('update', [

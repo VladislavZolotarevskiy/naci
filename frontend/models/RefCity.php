@@ -30,8 +30,8 @@ class RefCity extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            ['ref_city_type_id', 'integer'],
-            [['ref_city_type_id', 'name'], 'required'],
+            [['ref_city_type_id','ref_region_id'], 'integer'],
+            [['ref_city_type_id', 'ref_region_id', 'name'], 'required'],
             [['name'], 'unique',
                 'targetAttribute' => [
                     'name',
@@ -51,6 +51,7 @@ class RefCity extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Наименование',
             'ref_city_type_id' => 'Тип',
+            'ref_region_id' => 'Регион',
         ];
     }
 
@@ -70,9 +71,16 @@ class RefCity extends \yii\db\ActiveRecord
         return $this->hasOne(RefCityType::className(), ['id' => 'ref_city_type_id']);
     }
     /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRefRegion()
+    {
+        return $this->hasOne(RefRegion::className(), ['id' => 'ref_region_id']);
+    }
+    /**
      * @return array
      */
-    public function citiesList($id = null)
+    public function citiesList($id = null,$ref_region_id=null)
     {
         $query = new Query();
         if (!$id == null)
@@ -86,7 +94,20 @@ class RefCity extends \yii\db\ActiveRecord
                 $command = $query->createCommand()->queryAll();
                 return ArrayHelper::map($command, 'id', 'city');
             }
-        $query->select(['ref_city.id, CONCAT (ref_city_type.name,"'
+        elseif ($ref_region_id !== null)
+        {
+            $query->select(['ref_city.id, CONCAT (ref_city_type.name,"'
+                . ' ",ref_city.name) AS city'])
+                      ->from('ref_city')
+                      ->where(['ref_city.ref_region_id' => $ref_region_id])
+                      ->join('INNER JOIN', 'ref_city_type',
+                      'ref_city_type.id = ref_city.ref_city_type_id');
+                $command = $query->createCommand()->queryAll();
+                return ArrayHelper::map($command, 'id', 'city');
+        }
+        else 
+        {
+            $query->select(['ref_city.id, CONCAT (ref_city_type.name,"'
         . ' ",ref_city.name) AS city'])
                ->from('ref_city')
                //->where(['ref_city.id' => 'ALL'])
@@ -94,6 +115,8 @@ class RefCity extends \yii\db\ActiveRecord
                         'ref_city_type.id = ref_city.ref_city_type_id');
         $command = $query->createCommand()->queryAll();
         return ArrayHelper::map($command, 'id', 'city');        
+    
+        }
     }
     public function  citiesListById ($id)
     {

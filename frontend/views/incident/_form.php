@@ -13,6 +13,7 @@ use kartik\select2\Select2;
 /* @var $model frontend\models\Incident */
 /* @var $form yii\widgets\ActiveForm */
 ?>
+<?= $model_incident_ref_region->id ?>
 
 <div class="incident-form">
 
@@ -26,18 +27,19 @@ use kartik\select2\Select2;
         'options' => ['placeholder' => 'Выберите компанию'],
         'language' => 'ru',
         'pluginEvents' => [
-            "select2:select" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').replaceWith(data);});} "],
+            "select2:select" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').replaceWith(data); alert(alerts)});} "],
     ])?>
     
     <?= $form->field($model_incident_ref_region, 'ref_region_id')->widget(Select2::classname(),[
-        'data' => RefRegion::regionList($model_incident->ref_company_id),
+        'data' => RefRegion::regionList(),
         'language' => 'ru',
         'options' => ['multiple' => true, 'placeholder' => 'Выберите регион'],
-        
+        'pluginEvents' => [
+            "select2:select" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.get('create',alerts,function(data){ $('#incident-create-form').replaceWith(data); alert(alerts)});} "],
     ]) ?>
     
     <?= $form->field($model_incident_ref_city, 'ref_city_id')->widget(Select2::classname(),[
-        'data' => RefCity::citiesList(),
+        'data' => RefCity::citiesList(['ref_region_id' => $model_incident_ref_region->id]),
         'language' => 'ru',
         'options' => ['multiple' => true, 'placeholder' => 'Выберите город'],
 //        'pluginOptions' => [
