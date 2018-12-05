@@ -8,15 +8,11 @@ use frontend\models\RefRegion;
 use frontend\models\RefPlace;
 use frontend\models\RefService;
 use kartik\select2\Select2;
-use yii\web\View;
-use yii\web\JsExpression;
-use yii\widgets\Pjax;
+
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Incident */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-
-<?= $model_incident->ref_company_id ?>
 
 <div class="incident-form">
 
@@ -30,7 +26,7 @@ use yii\widgets\Pjax;
         'options' => ['placeholder' => 'Выберите компанию'],
         'language' => 'ru',
         'pluginEvents' => [
-            "select2:select" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').html(data); alert('hunta')});} "],
+            "select2:select" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').replaceWith(data);});} "],
     ])?>
     
     <?= $form->field($model_incident_ref_region, 'ref_region_id')->widget(Select2::classname(),[

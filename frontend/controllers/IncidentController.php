@@ -101,7 +101,11 @@ class IncidentController extends SiteController
         elseif (Yii::$app->request->isAjax) {
             //Yii::$app->response->format = Response::FORMAT_JSON;
             //$model_incident->ref_company_id = Yii::$app->request->post()['Incident']['ref_company_id'];
-            $model_incident->load(Yii::$app->request->post()['Incident']);
+            $model_incident->load(Yii::$app->request->post());
+            $model_incident_ref_city->load(Yii::$app->request->post());
+            $model_incident_ref_region->load(Yii::$app->request->post());
+            $model_incident_ref_place->load(Yii::$app->request->post());
+            $model_incident_ref_service->load(Yii::$app->request->post());
             return 
                 $this->renderAjax('create', [
                 'model_incident' => $model_incident,
