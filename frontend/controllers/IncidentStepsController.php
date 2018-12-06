@@ -291,8 +291,12 @@ class IncidentStepsController extends SiteController
     {
         $model = $this->findModel($incident_steps_id);
         $snapshot = new Snapshot;
+        $incident_step = (IncidentSteps::incidentStep($incident_steps_id));
+        $incident = Incident::findOne(['id'=>$incident_step->incident_id]);
+        $contacts_mail = IncidentSteps::contacts($incident->id,$ref_importance_id,2);
+        $contacts_phone = IncidentSteps::contacts($incident->id,$ref_importance_id,1);
         if ($model->load(Yii::$app->request->post(), '') &&
-                $snapshot->load(Yii::$app->request->post())){
+            $snapshot->load(Yii::$app->request->post())){
             $phone_array = explode("\r\n", $snapshot->phone);
             $mail_array = explode("\r\n", $snapshot->email);
             $model->no_send = 2;
@@ -316,12 +320,14 @@ class IncidentStepsController extends SiteController
             ]);
         }
         else {
-            return $this->render('send', [
+            return $this->render('_contacts', [
             'ref_importance_id' => $ref_importance_id,
             'incident_steps_id' => $incident_steps_id,
             'model' => $model,
             'snapshot' => $snapshot,
-            'inc_number' => $inc_number    
+            'inc_number' => $incident->inc_number,  
+            'contacts_mail' => $contacts_mail,
+            'contacts_phone' => $contacts_phone
         ]);
         }    
     }

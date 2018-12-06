@@ -64,10 +64,9 @@ class RefPlace extends \yii\db\ActiveRecord
     /**
      * @return array
      */
-    public function placeList($ref_city_id=null,$ref_region_id=null)
+    public function placeList($ref_city_id=null)
     {
         $ref_city_arr = [];
-        $ref_region_arr = [];
         if ($ref_city_id !== null){
             foreach ($ref_city_id as $city_item){
                 $ref_city_arr = $city_item;
@@ -79,7 +78,6 @@ class RefPlace extends \yii\db\ActiveRecord
         if (!empty($ref_city_arr[0])) {        
             $query->where(['ref_city_id' => $ref_city_arr]);
         }      
-   
         $command = $query->createCommand()->queryAll();
         return ArrayHelper::map($command, 'id', 'name');
         //return $ref_city_arr;

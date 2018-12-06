@@ -250,21 +250,23 @@ class IncidentSteps extends \yii\db\ActiveRecord
         ->select([
             'ref_contact_type.name AS type',
             'contacts.name AS contact',
+            'contacts.id AS contacts_id',
+            'persons.id AS persons_id',
             'CONCAT ('
             . 'persons.surname,'
             . '" ",persons.name,'
-            . '" ",persons.midname) AS full_name'
+            . '" ",persons.midname) AS persons_full_name'
         ])
-        ->from('contacts')
+        ->from('persons')
         ->join(
                 'INNER JOIN',
-                'ref_contact_type',
-                'contacts.ref_contact_type_id = ref_contact_type.id'
+                'contacts',
+                'contacts.id_person = persons.id'
         )
         ->join(
                 'INNER JOIN',
-                'persons',
-                'contacts.id_person = persons.id'
+                'ref_contact_type',
+                'ref_contact_type.id = contacts.ref_contact_type_id'
         )
         ->where(['ref_contact_type_id' => $contact_type])
         ->andWhere(['in', 'id_person', $persons_ref_company])

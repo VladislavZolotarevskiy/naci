@@ -67,7 +67,7 @@ $contacts_phone = IncidentSteps::contacts($info['incident_id'],
             <h5 style="margin-top:0;"><b>ФИО</b></h5>
             <?php if($contacts_phone !== null):?>
             <?php foreach ($contacts_phone as $contact):?>
-                <?= $contact['full_name']."<br>";?>
+                <?= $contact['persons_full_name']."<br>";?>
             <?php endforeach;?>
             <?php endif ?>
         </div>
@@ -115,3 +115,9 @@ $contacts_phone = IncidentSteps::contacts($info['incident_id'],
     <?php ActiveForm::end()?>
     </div>
 </div>
+<div class="new_incident_send">
+    <?= $this->render('_contacts',[
+        'contacts' => $contacts
+    ])?>
+
+</div>    

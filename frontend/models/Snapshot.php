@@ -5,6 +5,7 @@ class Snapshot extends \yii\db\ActiveRecord
 {
     public $phone;
     public $email;
+    public $id;
     /**
      * {@inheritdoc}
      */
