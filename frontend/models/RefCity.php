@@ -80,43 +80,61 @@ class RefCity extends \yii\db\ActiveRecord
     /**
      * @return array
      */
-    public function citiesList($id = null,$ref_region_id=null)
+    public function citiesList($ref_region_id = null,$id = null)
     {
-        $query = new Query();
-        if (!$id == null)
-            {
-                $query->select(['ref_city.id, CONCAT (ref_city_type.name,"'
-                . ' ",ref_city.name) AS city'])
-                      ->from('ref_city')
-                      ->where(['ref_city.id' => $id])
-                      ->join('INNER JOIN', 'ref_city_type',
-                      'ref_city_type.id = ref_city.ref_city_type_id');
-                $command = $query->createCommand()->queryAll();
-                return ArrayHelper::map($command, 'id', 'city');
+        if ($ref_region_id !== null){
+            $ref_region_arr = [];
+            foreach ($ref_region_id as $item){
+                $ref_region_arr = $item;
             }
-        elseif ($ref_region_id !== null)
-        {
-            $query->select(['ref_city.id, CONCAT (ref_city_type.name,"'
-                . ' ",ref_city.name) AS city'])
-                      ->from('ref_city')
-                      ->where(['ref_city.ref_region_id' => $ref_region_id])
-                      ->join('INNER JOIN', 'ref_city_type',
-                      'ref_city_type.id = ref_city.ref_city_type_id');
-                $command = $query->createCommand()->queryAll();
-                return ArrayHelper::map($command, 'id', 'city');
         }
-        else 
-        {
-            $query->select(['ref_city.id, CONCAT (ref_city_type.name,"'
+        $query = new Query();
+        $query->select(['ref_city.id, ref_city.ref_region_id, CONCAT (ref_city_type.name,"'
         . ' ",ref_city.name) AS city'])
                ->from('ref_city')
-               //->where(['ref_city.id' => 'ALL'])
                ->join('INNER JOIN', 'ref_city_type',
                         'ref_city_type.id = ref_city.ref_city_type_id');
-        $command = $query->createCommand()->queryAll();
-        return ArrayHelper::map($command, 'id', 'city');        
-    
-        }
+        if ($ref_region_arr !== null) {        
+            $query->where(['ref_city.ref_region_id' => $ref_region_arr]);
+        }      
+        if ($id !== null) {        
+            $query->where(['ref_city.id' => $id]);
+        }         $command = $query->createCommand()->queryAll();
+        return ArrayHelper::map($command, 'id', 'city');  
+        ////$query = new Query();
+//            {
+//                $query->select(['ref_city.id, CONCAT (ref_city_type.name,"'
+//                . ' ",ref_city.name) AS city'])
+//                      ->from('ref_city')
+//                      ->where(['ref_city.id' => $id])
+//                      ->join('INNER JOIN', 'ref_city_type',
+//                      'ref_city_type.id = ref_city.ref_city_type_id');
+//                $command = $query->createCommand()->queryAll();
+//                return ArrayHelper::map($command, 'id', 'city');
+//            }
+//        elseif ($ref_region_id !== null)
+//        {
+//            $query->select(['ref_city.id, CONCAT (ref_city_type.name,"'
+//                . ' ",ref_city.name) AS city'])
+//                      ->from('ref_city')
+//                      ->join('INNER JOIN', 'ref_city_type',
+//                      'ref_city_type.id = ref_city.ref_city_type_id')
+//                      ->where(['ref_city.ref_region_id' => 6]);
+//                $command = $query->createCommand()->queryAll();
+//                return ArrayHelper::map($command, 'id', 'city');
+//        }
+//        else 
+//        {
+//            $query->select(['ref_city.id, CONCAT (ref_city_type.name,"'
+//        . ' ",ref_city.name) AS city'])
+//               ->from('ref_city')
+//               //->where(['ref_city.id' => 'ALL'])
+//               ->join('INNER JOIN', 'ref_city_type',
+//                        'ref_city_type.id = ref_city.ref_city_type_id');
+//        $command = $query->createCommand()->queryAll();
+//        return ArrayHelper::map($command, 'id', 'city');        
+//    
+//        }
     }
     public function  citiesListById ($id)
     {
