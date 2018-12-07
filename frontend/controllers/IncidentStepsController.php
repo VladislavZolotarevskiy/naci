@@ -333,8 +333,7 @@ class IncidentStepsController extends SiteController
     }
     public function actionSnapshot($incident_steps_id,$ref_importance_id) {
         $model = $this->findModel($incident_steps_id);
-        $this->layout = '/no_menu';
-        return $this->render('snapshot',[
+        return $this->renderAjax('snapshot',[
             'model' => $model,
             'ref_importance_id' => $ref_importance_id   
         ]);
