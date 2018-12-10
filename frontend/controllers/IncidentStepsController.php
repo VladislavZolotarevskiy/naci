@@ -12,6 +12,8 @@ use frontend\models\IncidentStepsSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use DateTime;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * IncidentStepsController implements the CRUD actions for IncidentSteps model.
@@ -117,6 +119,7 @@ class IncidentStepsController extends SiteController
                 '/incident/view',
                     'id' => $incident_id]);
             }
+            $this->snapshotCreate($model->id,$importance->ref_importance_id);
             return $this->redirect([
                 'send',
                 'incident_steps_id' => $model->id,
@@ -260,6 +263,7 @@ class IncidentStepsController extends SiteController
                 $incident->stoppage = $this->convertTimestamp($this->serviceStopped($model->incident_id));
                 $incident->save();
             }    
+            $this->snapshotCreate($model->id,$importance->ref_importance_id);
             return $this->redirect(['send',
                 'incident_steps_id' => $model->id,
                 'ref_importance_id' => $importance->ref_importance_id,
@@ -293,41 +297,22 @@ class IncidentStepsController extends SiteController
         $snapshot = new Snapshot;
         $incident_step = (IncidentSteps::incidentStep($incident_steps_id));
         $incident = Incident::findOne(['id'=>$incident_step->incident_id]);
-        $contacts_mail = IncidentSteps::contacts($incident->id,$ref_importance_id,2);
-        $contacts_phone = IncidentSteps::contacts($incident->id,$ref_importance_id,1);
-        if ($model->load(Yii::$app->request->post(), '') &&
-            $snapshot->load(Yii::$app->request->post())){
-            $phone_array = explode("\r\n", $snapshot->phone);
-            $mail_array = explode("\r\n", $snapshot->email);
+        $contacts = json_decode($model['snapshot'],true);
+        if (Yii::$app->request->post()){
             $model->no_send = 2;
-            if ($ref_importance_id == 4){
-                $array = [
-                    'phone' => $phone_array,
-                    'mail' => $mail_array  
-                ];
-                $model->snapshot = json_encode($array, JSON_FORCE_OBJECT);
-                $model->save();
-            }
-            else {
-                $array = [
-                    'phone' => $phone_array
-                ];
-                $model->snapshot = json_encode($array, JSON_FORCE_OBJECT);
-                $model->save();
-            }
+            $model->save();
             return $this->redirect(['/incident/view',
-            'id' => $model->incident_id,    
+                'id' => $model->incident_id,    
             ]);
         }
         else {
-            return $this->render('_contacts', [
+            return $this->render('send', [
             'ref_importance_id' => $ref_importance_id,
             'incident_steps_id' => $incident_steps_id,
             'model' => $model,
             'snapshot' => $snapshot,
             'inc_number' => $incident->inc_number,  
-            'contacts_mail' => $contacts_mail,
-            'contacts_phone' => $contacts_phone
+            'contacts' => $contacts
         ]);
         }    
     }
@@ -338,6 +323,45 @@ class IncidentStepsController extends SiteController
             'ref_importance_id' => $ref_importance_id   
         ]);
     }
+    public function actionSnapshotAdd($incident_steps_id){
+        $incident_steps_model = $this->findModel($incident_steps_id);
+        $snapshot_model = new Snapshot;
+        $snapshot_model->incident_steps_snapshot = json_decode($incident_steps_model['snapshot'], true);
+        if ($snapshot_model->load(Yii::$app->request->post())) {
+            
+        }
+        return $this->renderAjax('_add-snapshot-form',[
+            'snapshot_model' => $snapshot_model,
+            'incident_steps_model' => $incident_steps_model
+        ]);
+    }
+    protected function snapshotCreate ($incident_steps_id,$ref_importance_id) {
+        $model = $this->findModel($incident_steps_id);
+        $incident = Incident::findOne(['id'=>$model->incident_id]);
+        $contacts_phone = IncidentSteps::contacts($incident->id,$ref_importance_id,1);
+        if ($ref_importance_id == 4) {
+            $contacts_mail = IncidentSteps::contacts($incident->id,$ref_importance_id,2);
+            $array = [
+                'phone' => $contacts_phone,
+                'mail' => $contacts_mail];
+        }
+        else {
+            $array = [
+                'phone' => $contacts_phone,
+            ];
+        }
+        $model->snapshot = json_encode($array, JSON_FORCE_OBJECT);
+        $model->save();
+    }
+    public function actionPerformAjaxValidation()
+    {
+        $model = new Snapshot();
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
+    }
+
     /**
      * Finds the IncidentSteps model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
