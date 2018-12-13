@@ -1,11 +1,14 @@
 <?php
 use frontend\models\IncidentSteps;
 use yii\helpers\Html;
-
+use yii\helpers\Url;
+Url::remember(['send',
+    'incident_steps_id' => $incident_steps_id,
+    'ref_importance_id' => $ref_importance_id,
+    'inc_number' => $inc_number],'incident-steps-send');
 $info = (IncidentSteps::incidentStep($incident_steps_id));
 ?>
 <?= $this->render ('_modal')?>
-
 <div class="incident-send">
     <div class="incident-text">
         <?= $this->render ('_text', [
@@ -49,8 +52,7 @@ $info = (IncidentSteps::incidentStep($incident_steps_id));
     <div class="form-group">
         <?= Html::a('Вернуться', [
             'incident-steps/update',
-            'id' => $incident_steps_id, 
-            'ref_type_steps_id' => $info['ref_type_steps_id'],
+            'id' => $incident_steps_id,
             ],
                 ['class' => 'btn btn-danger']) ?>
         <?= Html::a('Отправить', [
@@ -62,4 +64,4 @@ $info = (IncidentSteps::incidentStep($incident_steps_id));
              'data' => [
                 'method' => 'post',]]) ?>
     </div>
-</div>   
+</div>

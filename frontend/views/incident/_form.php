@@ -18,7 +18,6 @@ use kartik\select2\Select2;
     <?php $form = ActiveForm::begin([
         'id' => 'incident-create-form',
         ]); ?>
-  
     <?= $form->field($model_incident, 'ref_company_id')->widget(Select2::classname(),[
         'data' => RefCompany::companyList(),
         'options' => ['placeholder' => 'Выберите компанию'],
@@ -26,7 +25,6 @@ use kartik\select2\Select2;
         'pluginEvents' => [
             "select2:select" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').replaceWith(data);});} "],
     ])?>
-    
     <?= $form->field($model_incident_ref_region, 'ref_region_id')->widget(Select2::classname(),[
         'data' => RefRegion::regionList([
         ]),

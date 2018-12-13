@@ -3,10 +3,10 @@ namespace frontend\models;
 
 class Snapshot extends \yii\db\ActiveRecord
 {
-    public $phone;
-    public $email;
-    public $id;
+    public $type;
     public $contact;
+    public $contacts_id;
+    public $persons_id;
     public $persons_full_name;
     public $incident_steps_snapshot;
     /**
@@ -15,13 +15,10 @@ class Snapshot extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['email', 'phone', 'persons_full_name'],'string'],
-            ['persons_full_name', function ($attribute, $incident_steps_id) {
-                if (in_array($attribute, IncidentSteps::find()->where(['id' => 36])->asArray()->all())){
-                    $this->addError($attribute, 'Такой контакт уже существует');
-                }
+            [['type', 'incident_steps_snapshot'],'string'],
+            [['contact', 'persons_full_name'],'string'],
+            [['contact', 'persons_full_name'], 'required'],
             
-            }],
             ];
     }
     public function attributeLabels()

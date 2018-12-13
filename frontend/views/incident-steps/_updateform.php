@@ -2,7 +2,6 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use frontend\models\RefImportance;
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\IncidentSteps */

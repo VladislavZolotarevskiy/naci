@@ -19,6 +19,7 @@ elseif ($ref_type_steps_id == 3){
         'model' => $model,
         'importance' => $importance,
         'ref_type_steps_id' => $ref_type_steps_id,
+        'incident_id' => $incident_id,
         'old_step' => $old_step
     ]) ?>
 

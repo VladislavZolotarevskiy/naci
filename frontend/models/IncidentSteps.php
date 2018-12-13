@@ -37,7 +37,7 @@ class IncidentSteps extends \yii\db\ActiveRecord
     {
         return [
             [['incident_id', 'ref_type_steps_id', 'clock', 'res_person',
-                'super_person', 'message', 'no_send'], 'required',
+                'super_person', 'message'], 'required',
                 'message' => 'Поле обязательно к заполнению.'],
             [['incident_id', 'ref_type_steps_id', 'no_send', 'service_stop_marker'], 'integer'],
             [['res_person', 'super_person'], 'string',
@@ -61,7 +61,8 @@ class IncidentSteps extends \yii\db\ActiveRecord
                 'skipOnError' => true,
                 'targetClass' => RefTypeSteps::className(),
                 'targetAttribute' => ['ref_type_steps_id' => 'id']],
-        ];
+            ['snapshot', 'string'],
+            ];
     }
 
     /**
@@ -78,6 +79,7 @@ class IncidentSteps extends \yii\db\ActiveRecord
             'super_person' => 'Оператор',
             'message' => 'Описание',
             'no_send' => 'Без рассылки',
+            'service_stop_marker' => 'Учет длительности'
         ];
     }
 
@@ -285,7 +287,8 @@ public function oldIncidentStep($incident_id)
                 'res_person',
                 'super_person',
                 'message',
-                'no_send'
+                'no_send',
+                'snapshot'
             ])
             ->from('incident_steps_ref_importance')
             ->join(
@@ -301,5 +304,4 @@ public function oldIncidentStep($incident_id)
     if (isset($step)){
         return $step;
     }
-}
-}
+}}
