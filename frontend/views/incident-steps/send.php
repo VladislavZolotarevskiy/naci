@@ -7,7 +7,7 @@ Url::remember(['send',
     'ref_importance_id' => $ref_importance_id,
     'inc_number' => $inc_number],'incident-steps-send');
 $info = (IncidentSteps::incidentStep($incident_steps_id));
-?>
+?> 
 <?= $this->render ('_modal')?>
 <div class="incident-send">
     <div class="incident-text">

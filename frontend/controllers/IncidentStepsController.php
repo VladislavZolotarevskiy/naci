@@ -108,12 +108,14 @@ class IncidentStepsController extends SiteController
             return $this->redirect([
                 'send',
                 'incident_steps_id' => $model->id,
-                'ref_importance_id' => $importance->ref_importance_id,
-                'inc_number' => Incident::findOne($incident_id)['inc_number'],
+                'ref_importance_id' => $importance->ref_importance_id
                 ]);
         }    
         elseif (Yii::$app->request->isAjax) {
+            $model->clock = Yii::$app->request->get()['IncidentSteps']['clock'];
             $importance->ref_importance_id = Yii::$app->request->get()['IncidentStepsRefImportance']['ref_importance_id'];
+            $model->res_person = Yii::$app->request->get()['IncidentSteps']['res_person'];
+            $model->message = Yii::$app->request->get()['IncidentSteps']['message'];
             return $this->renderAjax('create', [
                 'incident_id' => $incident_id,
                 'model' => $model,
@@ -171,10 +173,21 @@ class IncidentStepsController extends SiteController
             $this->snapshotCreate($model->id,$importance->ref_importance_id,IncidentSteps::oldIncidentStep($model->incident_id));
             return $this->redirect(['send',
                 'incident_steps_id' => $model->id,
-                'ref_importance_id' => $importance->ref_importance_id,
-                'inc_number' => $incident['inc_number']]);
+                'ref_importance_id' => $importance->ref_importance_id]);
         }
-
+        elseif (Yii::$app->request->isAjax) {
+            $model->clock = Yii::$app->request->get()['IncidentSteps']['clock'];
+            $importance->ref_importance_id = Yii::$app->request->get()['IncidentStepsRefImportance']['ref_importance_id'];
+            $model->res_person = Yii::$app->request->get()['IncidentSteps']['res_person'];
+            $model->message = Yii::$app->request->get()['IncidentSteps']['message'];
+            return $this->renderAjax('update', [
+                'model' => $model,
+                'incident_id' => $incident->id,
+                'ref_type_steps_id' => $model->ref_type_steps_id,
+                'importance' => $importance,
+                'inc_number' => $incident['inc_number']                
+            ]);
+        }    
         return $this->render('update', [
             'model' => $model,
             'incident_id' => $incident->id,
@@ -198,7 +211,7 @@ class IncidentStepsController extends SiteController
         return $this->redirect(['index']);
     }
     
-    public function actionSend($ref_importance_id, $incident_steps_id, $inc_number)
+    public function actionSend($ref_importance_id, $incident_steps_id)
     {
         $model = $this->findModel($incident_steps_id);
         $snapshot = new Snapshot;
@@ -459,9 +472,7 @@ class IncidentStepsController extends SiteController
                     array_push($secondArray, $item); 
                 }
             }
-             
                 ksort($secondArray);
-            
         }
         return $secondArray;
     }

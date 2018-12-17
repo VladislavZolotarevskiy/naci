@@ -2,8 +2,6 @@
 
 namespace frontend\models;
 
-use Yii;
-
 /**
  * This is the model class for table "incident_steps_ref_importance".
  *
@@ -31,6 +29,7 @@ class IncidentStepsRefImportance extends \yii\db\ActiveRecord
     {
         return [
             [['incident_steps_id', 'ref_importance_id'], 'integer'],
+            [['incident_steps_id', 'ref_importance_id'], 'required'],
             [['incident_steps_id'], 'exist', 'skipOnError' => true, 'targetClass' => IncidentSteps::className(), 'targetAttribute' => ['incident_steps_id' => 'id']],
             [['ref_importance_id'], 'exist', 'skipOnError' => true, 'targetClass' => RefImportance::className(), 'targetAttribute' => ['ref_importance_id' => 'id']],
         ];

@@ -46,6 +46,7 @@ class IncidentSteps extends \yii\db\ActiveRecord
                 'max' => 1500],
             ['clock', 'date',
                 'format' => 'php:Y-m-d H:i:s'],
+            ['clock', 'compareDate'],
             ['ref_type_steps_id', 'unique', 'targetAttribute' => [
                     'ref_type_steps_id',
                     'incident_id',],
@@ -64,7 +65,17 @@ class IncidentSteps extends \yii\db\ActiveRecord
             ['snapshot', 'string'],
             ];
     }
-
+    
+    public function compareDate(){
+        $cur_date = $this->clock;
+        $last_date = IncidentSteps::oldIncidentStep($this->incident_id)['clock'];
+        if (isset($last_date)){
+            if (strtotime($cur_date) <= strtotime($last_date)) {
+                $this->addError('clock', 'Дата не может быть меньше '.$last_date);
+            }
+        }
+    }
+    
     /**
      * {@inheritdoc}
      */
