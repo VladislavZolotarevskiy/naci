@@ -15,7 +15,8 @@ $prev_date = null;
 <div class="incident-view">
     <?= $this->render('_management',[
         'incident_id' => $model->id,
-        'status' => $status
+        'status' => $status,
+        'model' => $model
     ])?>
 
   <div class="row">

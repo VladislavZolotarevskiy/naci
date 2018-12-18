@@ -79,19 +79,21 @@ class IncidentStepsController extends SiteController
             $importance->incident_steps_id = $model->id;
             $importance->load(Yii::$app->request->post());
             $importance->save();
-            $incident = Incident::findOne($incident_id);
         //if importance is critical change incident->type 1=2
             if ($importance->ref_importance_id == 4) {
+                $incident = Incident::findOne($incident_id);
                 $incident->type = 2;
                 $incident->save();
             }
         //switch ref_type_steps_id
             switch ($model->ref_type_steps_id){
                 case 1:
+                    $incident = Incident::findOne($incident_id);
                     $incident->status = 2;
                     $incident->save();
                     break;
                 case 3:
+                    $incident = Incident::findOne($incident_id);
                     $incident->status = 3;
                     $incident->duration = $this->convertTimestamp(strtotime($model->clock) - strtotime($model->needlessTime($model->incident_id, 1)['clock']));
                     $incident->stoppage = $this->convertTimestamp($this->serviceStopped($model->incident_id));
@@ -135,6 +137,19 @@ class IncidentStepsController extends SiteController
         ]);
     }
     
+    public function actionPerformAjaxValidationStep ($incident_id,$ref_type_steps_id) {
+        $model = $model = new IncidentSteps();
+        $model->super_person = User::fullName();
+        $model->incident_id = $incident_id;
+        $model->ref_type_steps_id = $ref_type_steps_id;
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
+    }
+
+    
+
     /**
      * Updates an existing IncidentSteps model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -307,7 +322,7 @@ class IncidentStepsController extends SiteController
         
     }
     
-    public function actionPerformAjaxValidation()
+    public function actionPerformAjaxValidationSnapshot()
     {
         $model = new Snapshot();
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {

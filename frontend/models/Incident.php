@@ -31,8 +31,7 @@ class Incident extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['duration', 'stoppage'], 'time',
-                'format' => 'php:H:i:s'],
+            [['duration', 'stoppage'], 'string', 'max' => 10],
             [['ref_company_id', 'inc_number', 'period'], 'integer'],
             [['type','status'], 'integer']
         ];

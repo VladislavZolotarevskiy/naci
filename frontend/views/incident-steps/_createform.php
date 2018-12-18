@@ -5,6 +5,7 @@ use yii\widgets\ActiveForm;
 use frontend\models\RefImportance;
 use frontend\assets\CustomAsset;
 use kartik\select2\Select2;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\IncidentSteps */
@@ -13,8 +14,13 @@ CustomAsset::register($this);
 ?>
 <div class="incident-steps-form">
     <?php $form = ActiveForm::begin([
-        'id' => 'incident-steps-create-form'
-    ]); ?>
+        'id' => 'incident-steps-create-form',
+        'enableAjaxValidation' => true,
+        'validationUrl' => Url::toRoute([
+            'perform-ajax-validation-step',
+            'incident_id' => $incident_id,
+            'ref_type_steps_id' => $ref_type_steps_id]),
+        ]); ?>
 
     <?= $form->field($model, 'clock')->widget(kartik\datetime\DateTimePicker::classname(), [
         'language' => 'ru',

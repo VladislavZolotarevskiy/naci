@@ -49,15 +49,23 @@ use yii\helpers\Url; ?>
         </div>
             <?php elseif ($status == 3): ?>
             </div>
-            <div class="col-md-6 col-sm-6 col-xs-6">
+        <div class="col-md-6 col-sm-6 col-xs-6">
             <div class="row">
-                    <div class="col-md-offset-4 col-sm-offset-4 col-xs-offset-4" style="padding-bottom:15px;padding-right:15px">
-                        <div class="callout callout-danger">
-                            <h4>Статус инцидента</h4>
-                        <p>Закрыт</p>
-                        </div>
+                <div class="col-md-offset-4 col-sm-offset-4 col-xs-offset-4" style="padding-bottom:15px;padding-right:15px">
+                    <div class="callout callout-danger" style="padding:15px;">
+                        <h4>Статус инцидента</h4>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <p><b>Закрыт</b></p>
+                            </div>
+                            <div class="col-md-9" style="padding-right:2px">
+                                <p>Продолжительность: <?= $model->duration ?></p>
+                                <p>Время простоя: <?= $model->stoppage ?></p>
+                            </div>
+                        </div>    
                     </div>
                 </div>
+            </div>
         </div>    
             <?php endif ?>
     </div>

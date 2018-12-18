@@ -68,10 +68,10 @@ class IncidentSteps extends \yii\db\ActiveRecord
     
     public function compareDate(){
         $cur_date = $this->clock;
-        $last_date = IncidentSteps::oldIncidentStep($this->incident_id)['clock'];
-        if (isset($last_date)){
-            if (strtotime($cur_date) <= strtotime($last_date)) {
-                $this->addError('clock', 'Дата не может быть меньше '.$last_date);
+        $prev_inc = IncidentSteps::oldIncidentStep($this->incident_id);
+        if (($this->id != $prev_inc['incident_steps_id'])&&isset($prev_inc['clock'])){
+            if (strtotime($cur_date) <= strtotime($prev_inc['clock'])) {
+                $this->addError('clock', 'Дата не может быть меньше '.$prev_inc['clock']);
             }
         }
     }
@@ -291,6 +291,7 @@ public function oldIncidentStep($incident_id)
 {
     $step = (new Query())
             ->select([
+                'incident_steps_id',
                 'ref_importance_id',
                 'incident_id',
                 'ref_type_steps_id',

@@ -11,7 +11,7 @@ use yii\helpers\Url;
         'options' => ['data-pjax' => true],
         'enableAjaxValidation' => true,
         'validationUrl' => Url::toRoute([
-            'perform-ajax-validation']),
+            'perform-ajax-validation-snapshot']),
         ]); ?>
 
   <?= $form->field($snapshot_model, 'persons_full_name') ?>
