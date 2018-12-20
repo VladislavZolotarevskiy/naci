@@ -74,6 +74,12 @@ class IncidentSteps extends \yii\db\ActiveRecord
                 $this->addError('clock', 'Дата не может быть меньше '.$prev_inc['clock']);
             }
         }
+        elseif ($this->id == $prev_inc['incident_steps_id']) {
+            $prev_inc = IncidentSteps::oldIncidentStep($this->incident_id,1);
+            if (strtotime($cur_date) <= strtotime($prev_inc['clock'])) {
+                $this->addError('clock', 'Дата не может быть меньше '.$prev_inc['clock']);
+            }
+        }
     }
     
     /**
@@ -287,10 +293,11 @@ class IncidentSteps extends \yii\db\ActiveRecord
         ->all();
         return $contacts;
 }
-public function oldIncidentStep($incident_id)
+public function oldIncidentStep($incident_id,$prev=null)
 {
     $step = (new Query())
             ->select([
+                'incident_steps.id',
                 'incident_steps_id',
                 'ref_importance_id',
                 'incident_id',
@@ -313,7 +320,42 @@ public function oldIncidentStep($incident_id)
             ])
             ->orderBy(['clock' => SORT_DESC])
             ->one();
-    if (isset($step)){
+    if (isset($step)&&$prev == null){
         return $step;
     }
-}}
+    elseif (isset ($step)) {
+        $newstep = (new Query())
+                ->select([
+                'incident_steps.id',
+                'incident_steps_id',
+                'ref_importance_id',
+                'incident_id',
+                'ref_type_steps_id',
+                'clock',
+                'res_person',
+                'super_person',
+                'message',
+                'no_send',
+                'snapshot'
+            ])
+            ->from('incident_steps_ref_importance')
+            ->join(
+                    'INNER JOIN',
+                    'incident_steps',
+                    'incident_steps.id = incident_steps_ref_importance.incident_steps_id'
+            )
+            ->where([
+                'incident_id' => $incident_id
+            ])
+            ->andWhere([
+                '<',
+                'incident_steps.id',
+                $step['id']
+            ])    
+            ->orderBy(['clock' => SORT_DESC])
+            ->one();
+        return $newstep;
+    }
+}
+}
+    

@@ -14,7 +14,7 @@ class ModalContactsAsset extends AssetBundle
     public $css = [
     ];
     public $js = [
-        'js/modalContacts.js',
+        'js/IncidentOpenOnClick.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

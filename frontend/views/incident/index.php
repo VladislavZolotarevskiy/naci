@@ -3,11 +3,13 @@ use frontend\models\Incident;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use frontend\assets\IncidentOpenOnClick;
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\IncidentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 $this->title = 'Инциденты';
 $this->registerCss(".grid-view { overflow-x: auto;}");
+IncidentOpenOnClick::register($this);
 ?>
 <div class="incident-index">
 

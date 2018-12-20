@@ -15,7 +15,17 @@ use yii\helpers\Url; ?>
         </div>
         <div class="col-md-6 col-sm-6 col-xs-6">
             <div class="row">
-                <div class="col-md-3 col-sm-12 col-xs-12" style="padding-bottom:15px;padding-right:15px">
+                <div class="col-md-4">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Компания</h3>
+                        </div>
+                        <div class="box-body">
+                        <?=$model->company->name?>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4" style="padding-bottom:15px;padding-right:15px">
                     <div class="callout callout-info">
                         <div class="status">
                             <h4>Статус инцидента</h4>
@@ -39,7 +49,17 @@ use yii\helpers\Url; ?>
         </div>
         <div class="col-md-6 col-sm-6 col-xs-6">
             <div class="row">
-                <div class="col-md-offset-4 col-sm-offset-4 col-xs-offset-4" style="padding-bottom:15px;padding-right:15px">
+                <div class="col-md-4">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Компания</h3>
+                        </div>
+                        <div class="box-body">
+                        <?=$model->company->name?>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6" style="padding-bottom:15px;padding-right:15px">
                     <div class="callout callout-success no-margin">
                         <h4>Статус инцидента</h4>
                         <p>Открыт</p>
@@ -51,14 +71,24 @@ use yii\helpers\Url; ?>
             </div>
         <div class="col-md-6 col-sm-6 col-xs-6">
             <div class="row">
-                <div class="col-md-offset-4 col-sm-offset-4 col-xs-offset-4" style="padding-bottom:15px;padding-right:15px">
+                <div class="col-md-4">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Компания</h3>
+                        </div>
+                        <div class="box-body">
+                        <?=$model->company->name?>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8" style="padding-bottom:15px;padding-right:15px">
                     <div class="callout callout-danger" style="padding:15px;">
                         <h4>Статус инцидента</h4>
                         <div class="row">
-                            <div class="col-md-3">
+                            <div class="col-md-6">
                                 <p><b>Закрыт</b></p>
                             </div>
-                            <div class="col-md-9" style="padding-right:2px">
+                            <div class="col-md-6">
                                 <p>Продолжительность: <?= $model->duration ?></p>
                                 <p>Время простоя: <?= $model->stoppage ?></p>
                             </div>
