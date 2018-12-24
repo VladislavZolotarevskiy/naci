@@ -9,6 +9,7 @@ use frontend\assets\IncidentOpenOnClick;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 $this->title = 'Инциденты';
 $this->registerCss(".grid-view { overflow-x: auto;}");
+$this->registerCss(".clickedRow { background-color: blue;}");
 IncidentOpenOnClick::register($this);
 ?>
 <div class="incident-index">
