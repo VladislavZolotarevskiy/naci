@@ -2,31 +2,44 @@
 use frontend\models\Incident;
 use yii\helpers\Html;
 use yii\grid\GridView;
-use yii\widgets\Pjax;
 use frontend\assets\IncidentOpenOnClick;
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\IncidentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 $this->title = 'Инциденты';
 $this->registerCss(".grid-view { overflow-x: auto;}");
-$this->registerCss(".clickedRow { background-color: blue;}");
+//$this->registerCss(".clickedRow { border: 0.22em solid #3c8dbc !important; background-color: #f4f4f4 !important;}");
+$this->registerCss(".clickedRow { color: #f4f4f4 !important; background-color: #3c8dbc !important;}");
+$this->registerCss("h1 { color: #337ab7;}");
 IncidentOpenOnClick::register($this);
 ?>
 <div class="incident-index">
-
-
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a('Создать', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-    <?php Pjax::begin([
-        'timeout' => 999999,
-    ]) ?>
+    <div class="management">
+        <div class="row">
+            <div class="col-md-6">
+                <?= Html::a('Создать', ['create'], ['class' => 'btn btn-success']) ?>
+            </div>
+            <div class="col-md-6" style="text-align: right">
+                <?= \yii\bootstrap\Button::widget([
+                        'label' => 'Фильтр',
+                        'options' => [
+                            'type' => 'button',
+                            'class' => 'btn btn-primary', 
+                            'data-toogle' => 'collapse',
+                            'data-target' => '#incident-search',]]) ?>
+                <a class="btn btn-primary" role="button" data-toggle="collapse" href="#incident-search" aria-expanded="false" aria-controls="incident-search"></a>
+            </div>
+        </div>
+    </div>
+    <?= $this->render('_search', ['model' => $searchModel]); ?>
     <?= GridView::widget([
+        'id' => 'incident-table',
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+        //'filterModel' => $searchModel,
         'layout'=>"{items}\n{pager}",
+        'tableOptions' => [
+            'class' => 'table table-bordered'
+        ],
         'columns' => [
             [
                 'headerOptions' => ['width' => '140'],
@@ -36,7 +49,7 @@ IncidentOpenOnClick::register($this);
                     if ($model->type == 1) {
                         return 'Обычный';
                     }
-                    return 'Критичный';
+                    return 'Кризисный';
                 },
                 'filter' =>  [
                         1 => 'Обычный',
@@ -44,7 +57,7 @@ IncidentOpenOnClick::register($this);
                 ]
             ],
             [
-                'headerOptions' => ['width' => '130'],
+                //'headerOptions' => ['width' => '130'],
                 'attribute' => 'status',
                 'label' => 'Статус',
                 'value' => function ($model){
@@ -63,7 +76,7 @@ IncidentOpenOnClick::register($this);
                     ]
                 ],
             [
-                'headerOptions' => ['width' => '80'],
+                //'headerOptions' => ['width' => '80'],
                 'attribute' => 'inc_number',
                 'label' => '№',
             ],
@@ -175,32 +188,32 @@ IncidentOpenOnClick::register($this);
                     return $data;
                 }
             ],
-            [
-                'format'=>'raw',
-                'label' => 'Провайдер',
-                'value' => function ($model){
-                    $data = '';
-                    if (isset($model->incidentTt)){
-                        foreach ($model->incidentTt as $item){
-                            $data .= $item->t_number.Html::tag('br');
-                        }
-                        return $data;
-                    }
-                }
-            ],
-            [
-                'format'=>'raw',
-                'label' => 'ServiceNow',
-                'value' => function ($model){
-                    $data = '';
-                    if (isset($model->incidentSn)){
-                        foreach ($model->incidentSn as $item){
-                            $data .= $item->t_number.Html::tag('br');
-                        }
-                        return $data;
-                    }
-                }
-            ],
+//            [
+//                'format'=>'raw',
+//                'label' => 'Провайдер',
+//                'value' => function ($model){
+//                    $data = '';
+//                    if (isset($model->incidentTt)){
+//                        foreach ($model->incidentTt as $item){
+//                            $data .= $item->t_number.Html::tag('br');
+//                        }
+//                        return $data;
+//                    }
+//                }
+//            ],
+//            [
+//                'format'=>'raw',
+//                'label' => 'ServiceNow',
+//                'value' => function ($model){
+//                    $data = '';
+//                    if (isset($model->incidentSn)){
+//                        foreach ($model->incidentSn as $item){
+//                            $data .= $item->t_number.Html::tag('br');
+//                        }
+//                        return $data;
+//                    }
+//                }
+//            ],
             [        
                 'attribute' => 'duration',
                 'label' => 'Продолжительность (чч:мм:сс)'
@@ -209,17 +222,16 @@ IncidentOpenOnClick::register($this);
                 'attribute' => 'stoppage',
                 'label' => 'Время простоя (чч:мм:сс)'
             ],    
-            [
-                'class' => 'yii\grid\ActionColumn',
-                'template' => '{update}',
-                'urlCreator' => function ($action, $model, $key, $index) {
-                    if ($action === 'update') {
-                        $url = ['view', 'id' => $model->id];
-                        return $url;
-                    }
-                }
-            ],
+//            [
+//                'class' => 'yii\grid\ActionColumn',
+//                'template' => '{update}',
+//                'urlCreator' => function ($action, $model, $key, $index) {
+//                    if ($action === 'update') {
+//                        $url = ['view', 'id' => $model->id];
+//                        return $url;
+//                    }
+//                }
+//            ],
         ],
     ]); ?>
-    <?php Pjax::end()?>
 </div>

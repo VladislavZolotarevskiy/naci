@@ -1,18 +1,22 @@
 $(document).ready(function(){
-    var DELAY = 700, clicks = 0, timer = null;
-    $("div.grid-view > table > tbody > tr").click(function(){
+    var DELAY = 200, clicks = 0, timer = null;
+    //var table = $('#incident-table').DataTable();
+    //$("div.grid-view > table > tbody > tr").click(function(){
+    $("#incident-table tbody").on('click', 'tr', function() {
         clicks++;
         if(clicks === 1) {
             timer = setTimeout(function() {
-                $(this).find('tr').removeClass();
-                $(this).find('tr').addClass('clickedRow');
-                console.log("Single Click");  //perform single-click action    
                 clicks = 0;             //after action performed, reset counter
             }, DELAY);
+            $("#incident-table tbody tr").removeClass('clickedRow');
+            $(this).addClass('clickedRow');
 
         } else {
             clearTimeout(timer);    //prevent single-click action
-            console.log("Double Click");  //perform double-click action
+            var data = $(this).attr('data-key');
+            window.open('view?id='+data);
+            //$.get('view', 'id=5');
+            //console.log(data);  //perform double-click action
             clicks = 0;             //after action performed, reset counter
         }
     });   

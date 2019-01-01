@@ -8,7 +8,7 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="incident-search">
+<div class="collapse" id="incident-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
