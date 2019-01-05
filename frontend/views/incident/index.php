@@ -20,14 +20,7 @@ IncidentOpenOnClick::register($this);
                 <?= Html::a('Создать', ['create'], ['class' => 'btn btn-success']) ?>
             </div>
             <div class="col-md-6" style="text-align: right">
-                <?= \yii\bootstrap\Button::widget([
-                        'label' => 'Фильтр',
-                        'options' => [
-                            'type' => 'button',
-                            'class' => 'btn btn-primary', 
-                            'data-toogle' => 'collapse',
-                            'data-target' => '#incident-search',]]) ?>
-                <a class="btn btn-primary" role="button" data-toggle="collapse" href="#incident-search" aria-expanded="false" aria-controls="incident-search"></a>
+                <a class="btn btn-primary" role="button" data-toggle="collapse" href="#incident-search" aria-expanded="false" aria-controls="incident-search">Фильтр</a>
             </div>
         </div>
     </div>

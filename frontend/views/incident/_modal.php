@@ -5,6 +5,7 @@ use yii\bootstrap\Modal?>
 <?= Modal::widget([
     'id' => 'contacts',
     'header' => Html::tag('h4', Html::encode('Контакты рассылки'),['class' => 'username']),
+    'size' => 'modal-lg'
 ]);?>
 <?php if ($status !== 3):?>
 <?= Modal::widget([
