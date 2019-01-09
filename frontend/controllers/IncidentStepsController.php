@@ -236,6 +236,7 @@ class IncidentStepsController extends SiteController
         if (Yii::$app->request->post()){
             $model->no_send = 2;
             $model->save();
+            shell_exec('/opt/shitov/jshon/naci_sms_send.sh '.'\''.$model->snapshot.'\'');
             return $this->redirect(['/incident/view',
                 'id' => $model->incident_id,    
             ]);
@@ -445,6 +446,17 @@ class IncidentStepsController extends SiteController
         $incident = Incident::findOne(['id'=>$model->incident_id]);
         $contacts_phone = IncidentSteps::contacts($incident->id,$ref_importance_id,1);
         $previous_snapshot = json_decode($old_step['snapshot'], true);
+        if (($incident->ref_company_id === 1)||($incident->ref_company_id === 3)) {
+            $header = 'NORNIK';
+        }
+        elseif ($incident->ref_company_id === 2) {
+            $header = 'NN.EDINSTVO';
+        }
+        $message = [
+            0 => [
+                'text' => $model->message,
+                'sms_header' => $header,]
+        ];
         if ($ref_importance_id == 4) {
             $contacts_mail = IncidentSteps::contacts($incident->id,$ref_importance_id,2);
             if ($model->ref_type_steps_id == 2 || $model->ref_type_steps_id == 3){
@@ -455,11 +467,13 @@ class IncidentStepsController extends SiteController
                 $contacts_mail = $this->deltaArrayAdd($previous_snapshot['mail'], $contacts_mail);
                 }
                 $array = [
+                    'message' => $message,
                     'phone' => $contacts_phone,
                     'mail' => $contacts_mail];
                 }
             else {
                 $array = [
+                    'message' => $message,
                     'phone' => $contacts_phone,
                     'mail' => $contacts_mail];
             }
@@ -468,11 +482,13 @@ class IncidentStepsController extends SiteController
             if ($model->ref_type_steps_id == 2 || $model->ref_type_steps_id == 3){
                 $contacts_phone = $this->deltaArrayAdd($previous_snapshot['phone'], $contacts_phone);
                 $array = [
+                    'message' => $message,
                     'phone' => $contacts_phone,
                 ];
             }
             elseif ($model->ref_type_steps_id == 1){
                 $array = [
+                    'message' => $message,
                     'phone' => $contacts_phone];
             }
         }    

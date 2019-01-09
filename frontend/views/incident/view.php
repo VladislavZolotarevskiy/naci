@@ -7,7 +7,15 @@ $status = $model->status;
 $this->title = 'Инцидент № '.$model->inc_number;
 $prev_date = null;
 ?>
-
+<?php
+//Yii::$app->mailer->compose()
+//            ->setFrom('EyeShare@nornik.ru') 
+//            ->setTo('zolotarevskiyVS@nornik.ru') // кому отправляем - реальный адрес куда придёт письмо формата asdf @asdf.com
+//            ->setSubject('test') // тема письма
+//            ->setTextBody('test') // текст письма без HTML
+//            
+//            ->send();
+?>
 <?=$this->render('_modal',[
     'status' => $status
 ])?>

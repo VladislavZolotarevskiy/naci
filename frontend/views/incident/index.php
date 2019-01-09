@@ -19,11 +19,7 @@ IncidentOpenOnClick::register($this);
             <div class="col-md-6">
                 <?= Html::a('Создать', ['create'], ['class' => 'btn btn-success']) ?>
             </div>
-            <div class="col-md-6" style="text-align: right">
-                <a class="btn btn-primary" role="button" data-toggle="collapse" href="#incident-search" aria-expanded="false" aria-controls="incident-search">Фильтр</a>
-            </div>
-        </div>
-    </div>
+            
     <?= $this->render('_search', ['model' => $searchModel]); ?>
     <?= GridView::widget([
         'id' => 'incident-table',

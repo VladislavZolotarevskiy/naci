@@ -20,7 +20,7 @@ return [
         ],
         'debug' => [
             'class' => 'yii\debug\Module',
-            'allowedIPs' => ['10.0.0.*']
+            'allowedIPs' => ['*.*.*.*']
         ],
     ],
     'components' => [

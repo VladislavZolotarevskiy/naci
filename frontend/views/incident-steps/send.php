@@ -8,12 +8,15 @@ Url::remember(['send',
     'inc_number' => $inc_number],'incident-steps-send');
 $info = (IncidentSteps::incidentStep($incident_steps_id));
 ?> 
+<pre>
+    <?php print_r($model->snapshot)?>
+</pre>
 <?= $this->render ('_modal')?>
 <div class="incident-send">
     <div class="incident-text">
         <?= $this->render ('_text', [
             'ref_type_steps_id'=> $info['refTypeSteps']['id'],
-            'info' => $info,
+            'model' => $model,
             'inc_number' => $inc_number,
         ])?>
     </div>
