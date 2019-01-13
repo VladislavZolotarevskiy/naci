@@ -33,7 +33,7 @@ CustomAsset::register($this);
         'options' => ['placeholder' => 'Выберите приоритет'],
         'language' => 'ru',
         'pluginEvents' => [
-            "select2:select" => "function() { var alerts; alerts = $('#incident-steps-create-form').serialize();$.get('update',alerts+'&ref_type_steps_id=$ref_type_steps_id&incident_id=$incident_id',function(data){ $('#incident-steps-create-form').replaceWith(data);});} "],
+            "select2:select" => "function() { var alerts; alerts = $('#incident-steps-create-form').serialize();$.get('update',alerts+'&id=$model->id',function(data){ $('#incident-steps-create-form').replaceWith(data);});} "],
     ])?> <?php endif ?>
     
     <?= $form->field($model, 'res_person')->textInput(['maxlength' => true]) ?>

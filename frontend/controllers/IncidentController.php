@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use Yii;
 use frontend\models\Incident;
+use frontend\models\IncidentSteps;
 use frontend\models\IncidentRefRegion;
 use frontend\models\IncidentRefCity;
 use frontend\models\IncidentRefService;
@@ -13,8 +14,6 @@ use yii\helpers\Url;
 use frontend\models\TTicketSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\web\Response;
-
 /**
  * IncidentController implements the CRUD actions for Incident model.
  */
@@ -61,8 +60,9 @@ class IncidentController extends SiteController
         $tticketSearchModel = new TTicketSearch(['incident_id' => $id]);
         $tticketDataProvider = $tticketSearchModel
                 ->search(Yii::$app->request->queryParams);
+        $model = $this->findModel($id);
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
             'tticketSearchModel' => $tticketSearchModel,
             'tticketDataProvider' => $tticketDataProvider,
         ]);

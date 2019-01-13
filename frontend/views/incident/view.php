@@ -4,13 +4,28 @@ use yii\helpers\Url;
 
 Url::remember(['view', 'id'=> $model->id],'incident-view');
 $status = $model->status;
-$this->title = 'Инцидент № '.$model->inc_number;
 $prev_date = null;
+if ($model->ref_company_id === 1) {
+    if ($model->type === 1) {
+        $this->title = 'Инцидент на ВОЛС ООО "Единство" № '.$model->inc_number;
+    }
+    elseif ($model->type ===2) {
+        $this->title = 'Критичный инцидент на ВОЛС ООО "Единство" № '.$model->inc_number;
+    }
+}
+else if ($model->ref_company_id === 2) {
+    if ($model->type === 1) {
+        $this->title = 'ИТ инцидент № '.$model->inc_number;
+    }
+    elseif ($model->type ===2) {
+        $this->title = 'Кризисный ИТ инцидент № '.$model->inc_number;
+    }
+}
 ?>
-<?php
+<?php //
 //Yii::$app->mailer->compose()
-//            ->setFrom('EyeShare@nornik.ru') 
-//            ->setTo('zolotarevskiyVS@nornik.ru') // кому отправляем - реальный адрес куда придёт письмо формата asdf @asdf.com
+//            ->setFrom('itmonitoring@nornik.ru') 
+//            ->setTo('asdsadsada@adadsadad.dsaas') // кому отправляем - реальный адрес куда придёт письмо формата asdf @asdf.com
 //            ->setSubject('test') // тема письма
 //            ->setTextBody('test') // текст письма без HTML
 //            
@@ -133,9 +148,10 @@ $prev_date = null;
         <div class="timeline-item">
           <span class="time"><i class="fa fa-clock-o"></i> <?= mb_substr($step['clock'], 11, 5)?></span>
           <h3 class="timeline-header">
-              <a href="../incident-steps/view?id=<?=$step['id']?>">
-                <?= $step['type']?>
-              </a>
+              <?= Html::a($step['type'], [
+                   Url::to('/incident-steps/view'),
+                   'id' => $step['id'],
+              ]) ?>
               <a class="btn btn-primary btn-xs"
                  style="float: right;">Приоритет: <?= $step['importance']?>
               </a>
@@ -151,7 +167,7 @@ $prev_date = null;
               ]) ?>
             <?php elseif ($step['no_send'] == 0):?>
               <?= Html::a('Выполнить рассылку', [
-                   './incident-steps/send',
+                   Url::to('/incident-steps/send'),
                    'incident_steps_id' => $step['id'],
                    'ref_importance_id' => $step['importance_id'],
                    'inc_number' => $model->inc_number], [
@@ -160,7 +176,7 @@ $prev_date = null;
               ]) ?>
             <?php else :?>
               <?= Html::a('Контакты рассылки', [
-                  './incident-steps/snapshot',
+                  Url::to('/incident-steps/snapshot'),
                   'incident_steps_id' => $step['id'],
                   'ref_importance_id' => $step['importance_id'],], [
                   'data-toggle' => 'modal',

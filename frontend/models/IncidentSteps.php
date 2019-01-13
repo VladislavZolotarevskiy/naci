@@ -357,5 +357,84 @@ public function oldIncidentStep($incident_id,$prev=null)
         return $newstep;
     }
 }
+public function createText ($model){
+        $starting_time_inc = IncidentSteps::needlessTime($model->incident_id, 1)['clock'];
+        $incident = Incident::findOne($model->incident_id);
+        //Инцидент на инфраструктуре
+        if ($incident->ref_company_id === 1) {
+            switch ($model->ref_type_steps_id) {
+            //Открытие
+            case 1:
+                if ($model->refImportance->id === 4) {
+                    $title = 'Открытие кризисного ИТ инцидента № '.$incident->inc_number;
+                }
+                else {
+                    $title = 'Открытие инцидента № '.$incident->inc_number;
+                }
+                $text = $title . '. Начало: '.$model->clock
+                    .'. '.$model->message
+                    .'. Ответственный: '.$model->res_person.'. Контроль:'
+                    .$model->super_person.' +79873242404, +74957877667 доб. 7377.';
+                break;
+            //Дополнение
+            case 2:
+                if ($model->refImportance->id === 4) {
+                    $title = 'Дополнение по кризисному ИТ инциденту № '.$incident->inc_number;
+                }
+                else {
+                    $title = 'Дополнение по инциденту № '.$incident->inc_number;
+                }
+                $text = $title. '. Начало: '.$starting_time_inc
+                    .'. '.$model->message.'. Ответственный: '.$model->res_person
+                    .'. Контроль:'.$model->super_person.' +79873242404, +74957877667 доб. 7377.'; 
+                break;
+            //Закрытие
+            case 3:
+                if ($model->refImportance->id === 4) {
+                    $title = 'Закрытие кризисного ИТ инцидента № '.$incident->inc_number;
+                }
+                else {
+                    $title = 'Закрытие инцидента № '.$incident->inc_number;
+                }
+                $text = $title. '. Завершение: '.$model->clock.'. Продолжительность: '.mb_substr($incident->duration, 0, 5)
+                    .'. '.$model->message.'. Ответственный: '.$model->res_person
+                    .'. Контроль:'.$model->super_person.' +79873242404, +74957877667 доб. 7377.';
+                break;
+            }
+        }    
+        //Инцидент на ВОЛС ООО Единство
+        elseif (($incident->ref_company_id === 2)||($incident->ref_company_id ===3)) {
+            switch ($model->ref_type_steps_id) {
+            //Открытие
+            case 1:
+                $title = 'Открытие инцидента на ВОЛС Единство № '.$incident->inc_number;
+                $text = $title . '. Начало: '.$model->clock
+                    .'. Приоритет: '.$model->refImportance->name. '. '.$model->message
+                    .'. Ответственный: '.$model->res_person.'. Контроль:'
+                    .$model->super_person.' +79873242404, +74957877667 доб. 7377.';
+                break;
+            //Дополнение
+            case 2:
+                $title = 'Дополнение по инциденту на ВОЛС Единство № '.$incident->inc_number;
+                $text = $title. '. Начало: '.$starting_time_inc
+                    .'. Приоритет: ' .$model->refImportance->name.'. '.$model->message
+                    .'. Ответственный: '.$model->res_person.'. Контроль:'
+                    .$model->super_person.' +79873242404, +74957877667 доб. 7377.'; 
+                break;
+            //Закрытие
+            case 3:
+                $title = 'Закрытие инцидента на ВОЛС Единство № '.$incident->inc_number;
+                $text = $title. '. Завершение: '.$model->clock.'. Продолжительность: '. mb_substr($incident->duration, 0, 5)
+                    .'. Приоритет: ' . $model->refImportance->name . '. '.$model->message
+                    .'. Ответственный: '.$model->res_person.'. Контроль:'
+                    .$model->super_person.' +79873242404, +74957877667 доб. 7377.';
+                break;
+            }
+        }
+        return [
+            'text' => $text, 
+            'title' => $title,
+                ];
+    }
 }
     

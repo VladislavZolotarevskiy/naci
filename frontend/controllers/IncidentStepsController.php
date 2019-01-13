@@ -67,6 +67,7 @@ class IncidentStepsController extends SiteController
         $model->incident_id = $incident_id;
         $model->ref_type_steps_id = $ref_type_steps_id;
         $old_step = null;
+        $incident = Incident::findOne($incident_id);
         //add old incident info to model                
         if ($ref_type_steps_id ==2 || $ref_type_steps_id ==3){
             $old_step = IncidentSteps::oldIncidentStep($incident_id);
@@ -81,19 +82,16 @@ class IncidentStepsController extends SiteController
             $importance->save();
         //if importance is critical change incident->type 1=2
             if ($importance->ref_importance_id == 4) {
-                $incident = Incident::findOne($incident_id);
                 $incident->type = 2;
                 $incident->save();
             }
         //switch ref_type_steps_id
             switch ($model->ref_type_steps_id){
                 case 1:
-                    $incident = Incident::findOne($incident_id);
                     $incident->status = 2;
                     $incident->save();
                     break;
                 case 3:
-                    $incident = Incident::findOne($incident_id);
                     $incident->status = 3;
                     $incident->duration = $this->convertTimestamp(strtotime($model->clock) - strtotime($model->needlessTime($model->incident_id, 1)['clock']));
                     $incident->stoppage = $this->convertTimestamp($this->serviceStopped($model->incident_id));
@@ -124,7 +122,8 @@ class IncidentStepsController extends SiteController
                 'importance' => $importance,
                 'ref_type_steps_id' => $ref_type_steps_id,
                 'old_step' => $old_step,
-                'inc_number' => Incident::findOne($incident_id)['inc_number']                
+                'inc_number' => $incident->inc_number,
+                'incident' => $incident
         ]); 
         }
         return $this->render('create', [
@@ -133,7 +132,8 @@ class IncidentStepsController extends SiteController
             'incident_id' => $incident_id,
             'ref_type_steps_id' => $ref_type_steps_id,
             'old_step' => $old_step,
-            'inc_number' => Incident::findOne($incident_id)['inc_number']                
+            'inc_number' => $incident->inc_number,
+            'incident' => $incident            
         ]);
     }
     
@@ -200,7 +200,8 @@ class IncidentStepsController extends SiteController
                 'incident_id' => $incident->id,
                 'ref_type_steps_id' => $model->ref_type_steps_id,
                 'importance' => $importance,
-                'inc_number' => $incident['inc_number']                
+                'inc_number' => $incident->inc_number,
+                'incident' => $incident
             ]);
         }    
         return $this->render('update', [
@@ -208,7 +209,8 @@ class IncidentStepsController extends SiteController
             'incident_id' => $incident->id,
             'ref_type_steps_id' => $model->ref_type_steps_id,
             'importance' => $importance,
-            'inc_number' => $incident['inc_number']
+            'inc_number' => $incident->inc_number,
+            'incident' => $incident
         ]);
     }
 
@@ -225,7 +227,7 @@ class IncidentStepsController extends SiteController
 
         return $this->redirect(['index']);
     }
-    
+
     public function actionSend($ref_importance_id, $incident_steps_id)
     {
         $model = $this->findModel($incident_steps_id);
@@ -233,9 +235,13 @@ class IncidentStepsController extends SiteController
         $incident_step = (IncidentSteps::incidentStep($incident_steps_id));
         $incident = Incident::findOne(['id'=>$incident_step->incident_id]);
         $contacts = json_decode($model['snapshot'],true);
+        $text = $model->createText($model);
         if (Yii::$app->request->post()){
             $model->no_send = 2;
             $model->save();
+            $snapshot = json_decode($model->snapshot, true);
+            $snapshot['message'][0]['text'] = $text['text'];
+            $model->snapshot = json_encode($snapshot, JSON_FORCE_OBJECT);
             shell_exec('/opt/shitov/jshon/naci_sms_send.sh '.'\''.$model->snapshot.'\'');
             return $this->redirect(['/incident/view',
                 'id' => $model->incident_id,    
@@ -248,10 +254,12 @@ class IncidentStepsController extends SiteController
             'model' => $model,
             'snapshot' => $snapshot,
             'inc_number' => $incident->inc_number,  
-            'contacts' => $contacts
+            'contacts' => $contacts,
+            'text' => $text
         ]);
         }    
     }
+      
     public function actionSnapshot($incident_steps_id,$ref_importance_id) {
         $model = $this->findModel($incident_steps_id);
         return $this->renderAjax('snapshot',[
@@ -402,7 +410,7 @@ class IncidentStepsController extends SiteController
                     }
                     break;
             }
-    }
+        }
         return $result;
     }
     /*

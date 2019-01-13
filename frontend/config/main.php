@@ -41,7 +41,7 @@ return [
             'targets' => [
                 [
                     'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
+                    'levels' => ['info', 'error', 'warning'],
                 ],
             ],
         ],
@@ -52,7 +52,8 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'persons/view/<id:\d+>' => 'persons/view'
+                'persons/view/<id:\d+>' => 'persons/view',
+                'incident/view/<id:\d+>' => 'incident/view'
             ],
         ],
         'formatter' => [

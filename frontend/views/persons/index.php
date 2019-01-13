@@ -20,13 +20,21 @@ $this->title = 'Сотрудники';
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+        //'filterModel' => $searchModel,
+        'layout'=>"{items}\n{pager}",
+        'tableOptions' => [
+            'class' => 'table table-bordered'
+        ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'name',
-            'midname',
-            'surname',
+            [
+                'label' => 'ФИО',
+                'format'=>'raw',
+                'value' => function($model){
+                    return $model->surname.' '.$model->name.' '.$model->midname;
+                }
+            ],
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>

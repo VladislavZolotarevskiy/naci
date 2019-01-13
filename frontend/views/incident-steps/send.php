@@ -18,6 +18,7 @@ $info = (IncidentSteps::incidentStep($incident_steps_id));
             'ref_type_steps_id'=> $info['refTypeSteps']['id'],
             'model' => $model,
             'inc_number' => $inc_number,
+            'text' => $text
         ])?>
     </div>
     <div class="incident-contacts">
