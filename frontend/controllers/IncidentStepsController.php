@@ -236,13 +236,14 @@ class IncidentStepsController extends SiteController
         $incident = Incident::findOne(['id'=>$incident_step->incident_id]);
         $contacts = json_decode($model['snapshot'],true);
         $text = $model->createText($model);
+        //$email = IncidentStepsMailController::mailCreate($model,$text['title']);
         if (Yii::$app->request->post()){
             $model->no_send = 2;
             $model->save();
             $snapshot = json_decode($model->snapshot, true);
             $snapshot['message'][0]['text'] = $text['text'];
             $model->snapshot = json_encode($snapshot, JSON_FORCE_OBJECT);
-            shell_exec('/opt/shitov/jshon/naci_sms_send.sh '.'\''.$model->snapshot.'\'');
+            //shell_exec('/opt/shitov/jshon/naci_sms_send.sh '.'\''.$model->snapshot.'\'');
             return $this->redirect(['/incident/view',
                 'id' => $model->incident_id,    
             ]);
@@ -255,7 +256,8 @@ class IncidentStepsController extends SiteController
             'snapshot' => $snapshot,
             'inc_number' => $incident->inc_number,  
             'contacts' => $contacts,
-            'text' => $text
+            'text' => $text,
+            'email' => $email
         ]);
         }    
     }

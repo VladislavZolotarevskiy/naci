@@ -108,20 +108,20 @@ class DefaultController extends Controller {
      *
      * @return mixed
      */
-    public function actionSignup() {
-        $model = new SignupForm();
-        if ($model->load(Yii::$app->request->post())) {
-            if ($user = $model->signup()) {
-                if (Yii::$app->getUser()->login($user)) {
-                    return $this->goHome();
-                }
-            }
-        }
-        $this->layout = '/main-login';
-        return $this->render('signup', [
-                    'model' => $model,
-        ]);
-    }
+//    public function actionSignup() {
+//        $model = new SignupForm();
+//        if ($model->load(Yii::$app->request->post())) {
+//            if ($user = $model->signup()) {
+//                if (Yii::$app->getUser()->login($user)) {
+//                    return $this->goHome();
+//                }
+//            }
+//        }
+//        $this->layout = '/main-login';
+//        return $this->render('signup', [
+//                    'model' => $model,
+//        ]);
+//    }
 
     /**
      * Requests password reset.

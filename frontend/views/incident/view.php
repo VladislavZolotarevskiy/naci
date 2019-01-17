@@ -22,6 +22,7 @@ else if ($model->ref_company_id === 2) {
     }
 }
 ?>
+
 <?php //
 //Yii::$app->mailer->compose()
 //            ->setFrom('itmonitoring@nornik.ru') 

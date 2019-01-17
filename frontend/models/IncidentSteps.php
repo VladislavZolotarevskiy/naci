@@ -361,7 +361,7 @@ public function createText ($model){
         $starting_time_inc = IncidentSteps::needlessTime($model->incident_id, 1)['clock'];
         $incident = Incident::findOne($model->incident_id);
         //Инцидент на инфраструктуре
-        if ($incident->ref_company_id === 1) {
+        if ($incident->ref_company_id === 2) {
             switch ($model->ref_type_steps_id) {
             //Открытие
             case 1:
@@ -382,7 +382,7 @@ public function createText ($model){
                     $title = 'Дополнение по кризисному ИТ инциденту № '.$incident->inc_number;
                 }
                 else {
-                    $title = 'Дополнение по инциденту № '.$incident->inc_number;
+                    $title = 'Дополнение по ИТ инциденту № '.$incident->inc_number;
                 }
                 $text = $title. '. Начало: '.$starting_time_inc
                     .'. '.$model->message.'. Ответственный: '.$model->res_person
@@ -394,7 +394,7 @@ public function createText ($model){
                     $title = 'Закрытие кризисного ИТ инцидента № '.$incident->inc_number;
                 }
                 else {
-                    $title = 'Закрытие инцидента № '.$incident->inc_number;
+                    $title = 'Закрытие ИТ инцидента № '.$incident->inc_number;
                 }
                 $text = $title. '. Завершение: '.$model->clock.'. Продолжительность: '.mb_substr($incident->duration, 0, 5)
                     .'. '.$model->message.'. Ответственный: '.$model->res_person
@@ -403,7 +403,7 @@ public function createText ($model){
             }
         }    
         //Инцидент на ВОЛС ООО Единство
-        elseif (($incident->ref_company_id === 2)||($incident->ref_company_id ===3)) {
+        elseif (($incident->ref_company_id === 1)||($incident->ref_company_id ===3)) {
             switch ($model->ref_type_steps_id) {
             //Открытие
             case 1:

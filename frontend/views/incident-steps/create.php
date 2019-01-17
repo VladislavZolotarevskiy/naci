@@ -2,7 +2,7 @@
 /* @var $this yii\web\View */
 /* @var $incident frontend\incidents\IncidentSteps */
 
-if ($incident->ref_company_id === 3) {
+if ($incident->ref_company_id === 1) {
     switch ($ref_type_steps_id) {
         case 1:
             $this->title = 'Открытие инцидента на ВОЛС ООО "Единство" № '.$incident->inc_number;
@@ -15,7 +15,7 @@ if ($incident->ref_company_id === 3) {
         break;
     }
 }
-else {
+elseif ($incident->ref_company_id === 2) {
     if ($incident->type === 1) {
         switch ($ref_type_steps_id) {
         case 1:
