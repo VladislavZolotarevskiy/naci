@@ -8,7 +8,6 @@ use frontend\assets\IncidentOpenOnClick;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 $this->title = 'Инциденты';
 $this->registerCss(".grid-view { overflow-x: auto;}");
-//$this->registerCss(".clickedRow { border: 0.22em solid #3c8dbc !important; background-color: #f4f4f4 !important;}");
 $this->registerCss(".clickedRow { color: #f4f4f4 !important; background-color: #3c8dbc !important;}");
 $this->registerCss("h1 { color: #337ab7;}");
 IncidentOpenOnClick::register($this);
@@ -78,9 +77,10 @@ IncidentOpenOnClick::register($this);
             [   'label' => 'Регион',
                 'format'=>'raw',
                 'value' => function ($model) {
-                    foreach ($model->incidentRegions as $item) {
+                    $regions = Incident::regionList($model->id);
+                    foreach ($regions as $item) {
                         $data = '';
-                        $data .= $item->name.Html::tag('br');
+                        $data .= $item->refRegion->name.Html::tag('br');
                     }
                     return $data;
                 }

@@ -56,7 +56,7 @@ use yii\helpers\Url;
                         'url' => ['/persons']],
                     ['label' => 'Инциденты',
                         'icon' => 'info-circle',
-                        'url' => ['/incident']],
+                        'url' => ['/incident/index']],
                 ],
             ]
         ) ?>
