@@ -14,7 +14,7 @@ $(document).ready(function(){
         } else {
             clearTimeout(timer);    //prevent single-click action
             var data = $(this).attr('data-key');
-            window.open('/naci-test/incident/view/'+data);
+            window.open('incident/view/'+data);
             //$.get('view', 'id=5');
             //console.log(data);  //perform double-click action
             clicks = 0;             //after action performed, reset counter
