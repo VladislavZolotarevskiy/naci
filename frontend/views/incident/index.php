@@ -77,10 +77,9 @@ IncidentOpenOnClick::register($this);
             [   'label' => 'Регион',
                 'format'=>'raw',
                 'value' => function ($model) {
-                    $regions = Incident::regionList($model->id);
-                    foreach ($regions as $item) {
-                        $data = '';
-                        $data .= $item->refRegion->name.Html::tag('br');
+                    $data = '';
+                    foreach ($model->incidentRegions as $item) {
+                        $data .= $item->name.Html::tag('br');
                     }
                     return $data;
                 }
@@ -88,8 +87,8 @@ IncidentOpenOnClick::register($this);
             ['label' => 'Сервис',
                 'format'=>'raw',
                 'value' => function ($model) {
+                    $data = '';
                     foreach ($model->incidentServices as $item) {
-                        $data = '';
                         $data .= $item->name.Html::tag('br');
                     }
                     return $data;
@@ -98,8 +97,8 @@ IncidentOpenOnClick::register($this);
             [   'label' => 'Нас. пункт',
                 'format'=>'raw',
                 'value' => function ($model) {
+                    $data = '';
                     foreach ($model->incidentCities as $item) {
-                        $data = '';
                         $data .= $item->name.Html::tag('br');
                     }
                     return $data;
@@ -108,8 +107,8 @@ IncidentOpenOnClick::register($this);
             [   'label' => 'Площадка',
                 'format'=>'raw',
                 'value' => function ($model) {
+                    $data = '';
                     foreach ($model->incidentPlaces as $item) {
-                        $data = '';
                         $data .= $item->name.Html::tag('br');
                     }
                     return $data;
