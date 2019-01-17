@@ -1,15 +1,25 @@
 <?php 
 namespace frontend\controllers;
 use frontend\models\IncidentRefService;
-
+use frontend\models\IncidentSteps;
+use frontend\models\TTicket;
 
 class IncidentStepsMailController extends SiteController
 {
     function mailCreate($model,$title) {
         $services_model = IncidentRefService::find()->where(['incident_id' => $model->incident_id])->with('refService')->all();
         $services = '';
+        $start_time = IncidentSteps::needlessTime($model->incident_id,1);
+        $end_time = IncidentSteps::needlessTime($model->incident_id,3);
+        $tticket = TTicket::find()->where(['incident_id' => $model->incident_id])->andWhere(['ref_type_tt_id' => 1])->one();
+        if (isset($tticket->refTypeTtId)){
+            $serviceNow = $tticket->refTypeTtId;
+        }
+        else {
+            $serviceNow = null;
+        }
         foreach ($services_model as $service){
-            $services .= $service->refService->name.', ';
+            $services .= $service->refService->name.'<br>';
         }
         $path = \yii\helpers\Url::toRoute(['/img'], 'http').'/'.sha1('o4kotvoeimamashi' );
         
@@ -174,44 +184,97 @@ class IncidentStepsMailController extends SiteController
                                                                             </p>
                                                                         </td>
                                                                     </tr>
-               <tr style="mso-yfti-irow:1;height:22.15pt">
-                <td width="316" valign="top" style="width:237.05pt;border:solid #BFBFBF 1.0pt;
-                border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:22.15pt">
-                <p class="MsoNormal" style="mso-element:frame;mso-element-frame-hspace:
-                9.0pt;mso-element-wrap:around;mso-element-anchor-vertical:paragraph;
-                mso-element-anchor-horizontal:column;mso-height-rule:exactly"><span style="font-family:&quot;Tahoma&quot;,sans-serif">Время начала инцидента:<o:p></o:p></span></p>
-                </td>
-                <td width="255" valign="top" style="width:191.6pt;border-top:none;
-                border-left:none;border-bottom:solid #BFBFBF 1.0pt;border-right:solid #BFBFBF 1.0pt;
-                padding:0cm 5.4pt 0cm 5.4pt;height:22.15pt">
-                <p class="MsoNormal" style="mso-element:frame;mso-element-frame-hspace:
-                9.0pt;mso-element-wrap:around;mso-element-anchor-vertical:paragraph;
-                mso-element-anchor-horizontal:column;mso-height-rule:exactly"><i><span style="font-family:&quot;Tahoma&quot;,sans-serif">23.11 в 08:03(MCK)<o:p></o:p></span></i></p>
-                </td>
-               </tr>
-               <tr style="mso-yfti-irow:2;height:21.95pt">
-                <td width="316" valign="top" style="width:237.05pt;border:solid #BFBFBF 1.0pt;
-                border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:21.95pt">
-                <p class="MsoNormal" style="mso-element:frame;mso-element-frame-hspace:
-                9.0pt;mso-element-wrap:around;mso-element-anchor-vertical:paragraph;
-                mso-element-anchor-horizontal:column;mso-height-rule:exactly"><span style="font-family:&quot;Tahoma&quot;,sans-serif">Планируемое время окончания
-                инцидента:<o:p></o:p></span></p>
-                </td>
-                <td width="255" valign="top" style="width:191.6pt;border-top:none;
-                border-left:none;border-bottom:solid #BFBFBF 1.0pt;border-right:solid #BFBFBF 1.0pt;
-                padding:0cm 5.4pt 0cm 5.4pt;height:21.95pt"></td>
-               </tr>
-               <tr style="mso-yfti-irow:3;height:22.5pt">
-                <td width="316" valign="top" style="width:237.05pt;border:solid #BFBFBF 1.0pt;
-                border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:22.5pt">
-                <p class="MsoNormal" style="mso-element:frame;mso-element-frame-hspace:
-                9.0pt;mso-element-wrap:around;mso-element-anchor-vertical:paragraph;
-                mso-element-anchor-horizontal:column;mso-height-rule:exactly"><span style="font-family:&quot;Tahoma&quot;,sans-serif">Номер инцидента в ServiceNow:<o:p></o:p></span></p>
-                </td>
-                <td width="255" valign="top" style="width:191.6pt;border-top:none;
-                border-left:none;border-bottom:solid #BFBFBF 1.0pt;border-right:solid #BFBFBF 1.0pt;
-                padding:0cm 5.4pt 0cm 5.4pt;height:22.5pt"></td>
-               </tr>
+                                                                    <tr style="mso-yfti-irow:1;height:22.15pt">
+                                                                        <td width="316" valign="top" style="width:237.05pt;
+                                                                            border:solid #BFBFBF 1.0pt;
+                                                                            border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:22.15pt">
+                                                                            <p class="MsoNormal" style="mso-element:frame;
+                                                                                mso-element-frame-hspace:9.0pt;
+                                                                                mso-element-wrap:around;
+                                                                                mso-element-anchor-vertical:paragraph;
+                                                                                mso-element-anchor-horizontal:column;
+                                                                                mso-height-rule:exactly">
+                                                                                <span style="font-family:&quot;Tahoma&quot;,sans-serif">Время начала инцидента:<o:p></o:p>
+                                                                                </span>
+                                                                            </p>
+                                                                        </td>
+                                                                        <td width="255" valign="top" style="width:191.6pt;border-top:none;
+                                                                            border-left:none;
+                                                                            border-bottom:solid #BFBFBF 1.0pt;
+                                                                            border-right:solid #BFBFBF 1.0pt;
+                                                                            padding:0cm 5.4pt 0cm 5.4pt;height:22.15pt">
+                                                                            <p class="MsoNormal" style="mso-element:frame;
+                                                                                mso-element-frame-hspace:9.0pt;
+                                                                                mso-element-wrap:around;
+                                                                                mso-element-anchor-vertical:paragraph;
+                                                                                mso-element-anchor-horizontal:column;mso-height-rule:exactly">
+                                                                                <i>
+                                                                                    <span style="font-family:&quot;Tahoma&quot;,sans-serif">
+                                                                                    '.$start_time.'<o:p></o:p></span></i></p>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr style="mso-yfti-irow:2;height:21.95pt">
+                                                                        <td width="316" valign="top" style="width:237.05pt;border:solid #BFBFBF 1.0pt;
+                                                                            border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:21.95pt">
+                                                                            <p class="MsoNormal" style="mso-element:frame;
+                                                                                mso-element-frame-hspace:9.0pt;
+                                                                                mso-element-wrap:around;
+                                                                                mso-element-anchor-vertical:paragraph;
+                                                                                mso-element-anchor-horizontal:column;
+                                                                                mso-height-rule:exactly">
+                                                                                <span style="font-family:&quot;Tahoma&quot;,sans-serif">Время окончания инцидента:<o:p></o:p></span>
+                                                                            </p>
+                                                                        </td>
+                                                                        <td width="255" valign="top" style="width:191.6pt;border-top:none;
+                                                                            border-left:none;border-bottom:solid #BFBFBF 1.0pt;
+                                                                            border-right:solid #BFBFBF 1.0pt;
+                                                                            padding:0cm 5.4pt 0cm 5.4pt;height:21.95pt">
+                                                                            <p class="MsoNormal" style="mso-element:frame;
+                                                                                mso-element-frame-hspace:9.0pt;
+                                                                                mso-element-wrap:around;
+                                                                                mso-element-anchor-vertical:paragraph;
+                                                                                mso-element-anchor-horizontal:column;mso-height-rule:exactly">
+                                                                                <i>
+                                                                                    <span style="font-family:&quot;Tahoma&quot;,sans-serif">
+                                                                                    '.$end_time.'<o:p></o:p>
+                                                                                    </span>
+                                                                                </i>
+                                                                            </p>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr style="mso-yfti-irow:3;height:22.5pt">
+                                                                        <td width="316" valign="top" style="width:237.05pt;
+                                                                            border:solid #BFBFBF 1.0pt;
+                                                                            border-top:none;
+                                                                            padding:0cm 5.4pt 0cm 5.4pt;
+                                                                            height:22.5pt">
+                                                                            <p class="MsoNormal" style="mso-element:frame;
+                                                                                mso-element-frame-hspace:9.0pt;
+                                                                                mso-element-wrap:around;
+                                                                                mso-element-anchor-vertical:paragraph;
+                                                                                mso-element-anchor-horizontal:column;
+                                                                                mso-height-rule:exactly">
+                                                                                <span style="font-family:&quot;Tahoma&quot;,sans-serif">Номер инцидента в ServiceNow:<o:p></o:p>
+                                                                                </span>
+                                                                            </p>
+                                                                        </td>
+                                                                        <td width="255" valign="top" style="width:191.6pt;border-top:none;
+                                                                            border-left:none;border-bottom:solid #BFBFBF 1.0pt;
+                                                                            border-right:solid #BFBFBF 1.0pt;
+                                                                            padding:0cm 5.4pt 0cm 5.4pt;height:22.5pt">
+                                                                            p class="MsoNormal" style="mso-element:frame;
+                                                                                mso-element-frame-hspace:9.0pt;
+                                                                                mso-element-wrap:around;
+                                                                                mso-element-anchor-vertical:paragraph;
+                                                                                mso-element-anchor-horizontal:column;mso-height-rule:exactly">
+                                                                                <i>
+                                                                                    <span style="font-family:&quot;Tahoma&quot;,sans-serif">
+                                                                                    '.$serviceNow.'<o:p></o:p>
+                                                                                    </span>
+                                                                                </i>
+                                                                            </p>
+                                                                        </td>
+                                                                    </tr>
                <tr style="mso-yfti-irow:4;height:24.35pt">
                 <td width="316" valign="top" style="width:237.05pt;border:solid #BFBFBF 1.0pt;
                 border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:24.35pt">
