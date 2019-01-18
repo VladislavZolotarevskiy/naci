@@ -358,7 +358,9 @@ public function oldIncidentStep($incident_id,$prev=null)
     }
 }
 public function createText ($model){
-        $starting_time_inc = IncidentSteps::needlessTime($model->incident_id, 1)['clock'];
+        $clock = IncidentSteps::needlessTime($model->incident_id,1)['clock'];
+        $dataTime = new \DateTime($clock);
+        $clock_format = $dataTime->format('d.m.y в H:i');
         $incident = Incident::findOne($model->incident_id);
         //Инцидент на инфраструктуре
         if ($incident->ref_company_id === 2) {
@@ -384,7 +386,7 @@ public function createText ($model){
                 else {
                     $title = 'Дополнение по ИТ инциденту № '.$incident->inc_number;
                 }
-                $text = $title. '. Начало: '.$starting_time_inc
+                $text = $title. '. Начало: '.$clock_format
                     .'. '.$model->message.'. Ответственный: '.$model->res_person
                     .'. Контроль:'.$model->super_person.' +79873242404, +74957877667 доб. 7377.'; 
                 break;
@@ -416,7 +418,7 @@ public function createText ($model){
             //Дополнение
             case 2:
                 $title = 'Дополнение по инциденту на ВОЛС Единство № '.$incident->inc_number;
-                $text = $title. '. Начало: '.$starting_time_inc
+                $text = $title. '. Начало: '.$clock_format
                     .'. Приоритет: ' .$model->refImportance->name.'. '.$model->message
                     .'. Ответственный: '.$model->res_person.'. Контроль:'
                     .$model->super_person.' +79873242404, +74957877667 доб. 7377.'; 

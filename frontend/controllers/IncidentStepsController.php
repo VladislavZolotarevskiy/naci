@@ -236,7 +236,7 @@ class IncidentStepsController extends SiteController
         $incident = Incident::findOne(['id'=>$incident_step->incident_id]);
         $contacts = json_decode($model['snapshot'],true);
         $text = $model->createText($model);
-        //$email = IncidentStepsMailController::mailCreate($model,$text['title']);
+        $email = IncidentStepsMailController::mailCreate($model,$text['title']);
         if (Yii::$app->request->post()){
             $model->no_send = 2;
             $model->save();

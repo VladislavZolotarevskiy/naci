@@ -9,8 +9,12 @@ class IncidentStepsMailController extends SiteController
     function mailCreate($model,$title) {
         $services_model = IncidentRefService::find()->where(['incident_id' => $model->incident_id])->with('refService')->all();
         $services = '';
-        $start_time = IncidentSteps::needlessTime($model->incident_id,1);
-        $end_time = IncidentSteps::needlessTime($model->incident_id,3);
+        $start_time = IncidentSteps::needlessTime($model->incident_id,1)['clock'];
+        $startDataTime = new \DateTime($start_time);
+        $start_time_format = $startDataTime->format('d.m.y в H:i');
+        $end_time = IncidentSteps::needlessTime($model->incident_id,3)['clock'];
+        $endDataTime = new \DateTime($end_time);
+        $end_time_format = $endDataTime->format('d.m.y в H:i');
         $tticket = TTicket::find()->where(['incident_id' => $model->incident_id])->andWhere(['ref_type_tt_id' => 1])->one();
         if (isset($tticket->refTypeTtId)){
             $serviceNow = $tticket->refTypeTtId;
@@ -210,7 +214,7 @@ class IncidentStepsMailController extends SiteController
                                                                                 mso-element-anchor-horizontal:column;mso-height-rule:exactly">
                                                                                 <i>
                                                                                     <span style="font-family:&quot;Tahoma&quot;,sans-serif">
-                                                                                    '.$start_time.'<o:p></o:p></span></i></p>
+                                                                                    '.$start_time_format.'<o:p></o:p></span></i></p>
                                                                         </td>
                                                                     </tr>
                                                                     <tr style="mso-yfti-irow:2;height:21.95pt">
@@ -236,7 +240,7 @@ class IncidentStepsMailController extends SiteController
                                                                                 mso-element-anchor-horizontal:column;mso-height-rule:exactly">
                                                                                 <i>
                                                                                     <span style="font-family:&quot;Tahoma&quot;,sans-serif">
-                                                                                    '.$end_time.'<o:p></o:p>
+                                                                                    '.$end_time_format.'<o:p></o:p>
                                                                                     </span>
                                                                                 </i>
                                                                             </p>
