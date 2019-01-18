@@ -5,7 +5,7 @@ use yii\helpers\Url; ?>
 <div class="management">
     <div class="row">
         <div class="col-md-6 col-sm-6 col-xs-6">
-            <?= Html::a('Назад', Url::toRoute('/incident'), ['class' => 'btn btn-danger', 'title' => 'Вернуться к списку инцидентов'])?>
+            <?= Html::a('Назад', Url::toRoute('/incident/index'), ['class' => 'btn btn-danger', 'title' => 'Вернуться к списку инцидентов'])?>
             <?php if($status == 1):?>
                 <?= Html::a('Открытие', [
                     '/incident-steps/create',
