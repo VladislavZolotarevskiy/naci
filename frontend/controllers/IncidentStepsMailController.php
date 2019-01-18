@@ -266,7 +266,7 @@ class IncidentStepsMailController extends SiteController
                                                                             border-left:none;border-bottom:solid #BFBFBF 1.0pt;
                                                                             border-right:solid #BFBFBF 1.0pt;
                                                                             padding:0cm 5.4pt 0cm 5.4pt;height:22.5pt">
-                                                                            p class="MsoNormal" style="mso-element:frame;
+                                                                            <p class="MsoNormal" style="mso-element:frame;
                                                                                 mso-element-frame-hspace:9.0pt;
                                                                                 mso-element-wrap:around;
                                                                                 mso-element-anchor-vertical:paragraph;
