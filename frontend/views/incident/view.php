@@ -21,8 +21,9 @@ else if ($model->ref_company_id === 2) {
         $this->title = 'Кризисный ИТ инцидент № '.$model->inc_number;
     }
 }
-?>
-
+?><pre>
+    <?php $test = frontend\models\Incident::find()->where(['id' => $model->id])->one();
+    print($test->duration)?></pre>
 <?php //
 //Yii::$app->mailer->compose()
 //            ->setFrom('itmonitoring@nornik.ru') 
