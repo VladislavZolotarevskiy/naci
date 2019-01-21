@@ -30,7 +30,7 @@ IncidentOpenOnClick::register($this);
         ],
         'columns' => [
             [
-                'headerOptions' => ['width' => '140'],
+                //'headerOptions' => ['width' => '140'],
                 'attribute' => 'type',
                 'label' => 'Тип',
                 'value' => function ($model){
@@ -74,21 +74,21 @@ IncidentOpenOnClick::register($this);
                 'filter' => Incident::companyList(),
                 'label' => 'Компания',
             ],
-            [   'label' => 'Регион',
-                'format'=>'raw',
-                'value' => function ($model) {
-                    $data = '';
-                    foreach ($model->incidentRegions as $item) {
-                        $data .= $item->name.Html::tag('br');
-                    }
-                    return $data;
-                }
-                ],
             ['label' => 'Сервис',
                 'format'=>'raw',
                 'value' => function ($model) {
                     $data = '';
                     foreach ($model->incidentServices as $item) {
+                        $data .= $item->name.Html::tag('br');
+                    }
+                    return $data;
+                }
+            ],
+            [   'label' => 'Регион',
+                'format'=>'raw',
+                'value' => function ($model) {
+                    $data = '';
+                    foreach ($model->incidentRegions as $item) {
                         $data .= $item->name.Html::tag('br');
                     }
                     return $data;

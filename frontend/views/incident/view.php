@@ -21,17 +21,6 @@ else if ($model->ref_company_id === 2) {
         $this->title = 'Кризисный ИТ инцидент № '.$model->inc_number;
     }
 }
-?><pre>
-    <?php $test = frontend\models\Incident::find()->where(['id' => $model->id])->one();
-    print($test->duration)?></pre>
-<?php //
-//Yii::$app->mailer->compose()
-//            ->setFrom('itmonitoring@nornik.ru') 
-//            ->setTo('asdsadsada@adadsadad.dsaas') // кому отправляем - реальный адрес куда придёт письмо формата asdf @asdf.com
-//            ->setSubject('test') // тема письма
-//            ->setTextBody('test') // текст письма без HTML
-//            
-//            ->send();
 ?>
 <?=$this->render('_modal',[
     'status' => $status

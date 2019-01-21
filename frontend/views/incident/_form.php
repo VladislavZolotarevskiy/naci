@@ -40,8 +40,7 @@ use kartik\select2\Select2;
         'language' => 'ru',
         'options' => ['multiple' => true, 'placeholder' => 'Выберите город'],
         'pluginEvents' => [
-            "select2:select" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').replaceWith(data);});} "], 
-        
+            "select2:select" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').replaceWith(data);});} "],
     ]) ?>
      
      <?= $form->field($model_incident_ref_place, 'ref_place_id')->widget(Select2::classname(),[
@@ -49,17 +48,15 @@ use kartik\select2\Select2;
             'ref_city_id' => $model_incident_ref_city->ref_city_id,]),
         'language' => 'ru',
         'options' => ['multiple' => true, 'placeholder' => 'Выберите площадку'],
-        
     ]) ?>
      <?= $form->field($model_incident_ref_service, 'ref_service_id')->widget(Select2::classname(),[
         'data' => RefService::serviceList(),
         'language' => 'Ru',
         'options' => ['multiple' => true, 'placeholder' => 'Выберите сервис'],
-        
     ]) ?>
         
     <div class="form-group">
-        <?= Html::a('Назад', './', [
+        <?= Html::a('Назад', 'index', [
                 'class' => 'btn btn-danger']) ?>
         <?= Html::submitButton('Далее', ['class' => 'btn btn-success']) ?>
     </div>

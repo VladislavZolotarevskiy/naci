@@ -43,8 +43,16 @@ class Incident extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'ref_company_id' => 'Затронутые компании',
+            'ref_company_id' => 'Затронутая компания',
             'inc_number' => 'Порядковый № инцидента',
+            'type' => 'Тип',
+            'status' => 'Статус',
+            'region' => 'Регион',
+            'service' => 'Сервис',
+            'city' => 'Нас. пункт',
+            'place' => 'Площадка',
+            'start_date' => 'С',
+            'end_date' => 'По'
         ];
     }
     /**

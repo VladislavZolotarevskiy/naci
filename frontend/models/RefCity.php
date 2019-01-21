@@ -94,7 +94,7 @@ class RefCity extends \yii\db\ActiveRecord
                ->from('ref_city')
                ->join('INNER JOIN', 'ref_city_type',
                         'ref_city_type.id = ref_city.ref_city_type_id');
-        if ($ref_region_arr !== null) {        
+        if ($ref_region_id !== null) {        
             $query->where(['ref_city.ref_region_id' => $ref_region_arr]);
         }      
         if ($id !== null) {        
