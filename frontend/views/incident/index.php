@@ -10,6 +10,9 @@ $this->title = 'Инциденты';
 $this->registerCss(".grid-view { overflow-x: auto;}");
 $this->registerCss(".clickedRow { color: #f4f4f4 !important; background-color: #3c8dbc !important;}");
 $this->registerCss("h1 { color: #337ab7;}");
+$this->registerCss(".select2-selection__rendered { margin-top: 0 !important;}");
+$this->registerCss(".select2-search--inline { width: 100% !important;}");
+$this->registerCss(".select2-search__field { width: 100% !important;}");
 IncidentOpenOnClick::register($this);
 ?>
 <div class="incident-index">

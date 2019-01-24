@@ -157,7 +157,7 @@ class IncidentSearch extends Incident
             }
         }]);
 //        $query->joinWith(['incidentSteps' => function($q) {
-//            
+//            $q->where('incident_steps.ref_type_steps_id=1 AND')
 //        }]);
 //        $query->joinWith(['incidentSteps' => function($q) {
 //            $q->where('incident_steps.clock LIKE "%' . $this->start . '%"');
