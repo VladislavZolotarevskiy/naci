@@ -2,7 +2,6 @@
 
 namespace frontend\models;
 
-use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use frontend\models\Persons;
@@ -41,7 +40,13 @@ class PersonsSearch extends Persons
      */
     public function search($params)
     {
-        $query = Persons::find();
+        $query = Persons::find()
+                ->with('personsCompanies')
+                ->with('personsRegions')
+                ->with('personsCities')
+                ->with('personsPlaces')
+                ->with('personsServices')
+                ->with('contacts');
 
         // add conditions that should always apply here
 
@@ -65,7 +70,7 @@ class PersonsSearch extends Persons
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'midname', $this->midname])
             ->andFilterWhere(['like', 'surname', $this->surname]);
-
+        
         return $dataProvider;
     }
 }

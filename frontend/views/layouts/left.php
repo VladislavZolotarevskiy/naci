@@ -53,7 +53,7 @@ use yii\helpers\Url;
                         ],
                     ['label' => 'Сотрудники', 
                         'icon' => 'user',
-                        'url' => ['/persons']],
+                        'url' => ['/persons/index']],
                     ['label' => 'Инциденты',
                         'icon' => 'info-circle',
                         'url' => ['/incident/index']],
