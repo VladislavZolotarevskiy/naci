@@ -8,17 +8,6 @@ Url::remember(['send',
     'inc_number' => $inc_number],'incident-steps-send');
 $info = (IncidentSteps::incidentStep($incident_steps_id));
 ?>
-<pre>
-<?php
-Yii::$app->mailer->compose()
-            ->setFrom('itmonitoring@nornik.ru') 
-            ->setTo('zolotarevskiyvs@nornik.ru') // кому отправляем - реальный адрес куда придёт письмо формата asdf @asdf.com
-            ->setSubject('test') // тема письма
-            ->setHtmlBody($email)
-            //->setTextBody('test') // текст письма без HTML
-            
-            ->send();?>
-</pre>
 <?= $this->render ('_modal')?>
 <div class="incident-send">
     <div class="incident-text">
@@ -31,7 +20,7 @@ Yii::$app->mailer->compose()
     </div>
     <div class="incident-contacts">
         <h4>Контакты рассылки</h4>
-        <?php if ($ref_importance_id == 4):?>
+        <?php if (($ref_importance_id == 4)||($ref_company_id == 1)):?>
         <div class="row">
             <div class="col-md-6 col-sm-12 col-xs-12">
                 <div class="contacts-phone">

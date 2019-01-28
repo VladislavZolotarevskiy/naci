@@ -243,7 +243,10 @@ class IncidentStepsController extends SiteController
             $snapshot = json_decode($model->snapshot, true);
             $snapshot['message'][0]['text'] = $text['text'];
             $model->snapshot = json_encode($snapshot, JSON_FORCE_OBJECT);
-            //shell_exec('/opt/shitov/jshon/naci_sms_send.sh '.'\''.$model->snapshot.'\'');
+            shell_exec('/opt/shitov/jshon/naci_sms_send.sh '.'\''.$model->snapshot.'\'');
+            if (($incident->ref_company_id == 1)||($ref_importance_id == 4)) {
+                $this->sendEmail($model,$email,$incident->ref_company_id,$text['title']);
+            }
             return $this->redirect(['/incident/view',
                 'id' => $model->incident_id,    
             ]);
@@ -257,11 +260,34 @@ class IncidentStepsController extends SiteController
             'inc_number' => $incident->inc_number,  
             'contacts' => $contacts,
             'text' => $text,
-            'email' => $email
+            'email' => $email,
+            'ref_company_id' => $incident->ref_company_id
         ]);
         }    
     }
       
+    public function sendEmail ($model, $email, $ref_company_id, $title) {
+        if ($ref_company_id == 1) {
+            $from_email = 'noc@nn-edinstvo.ru';
+        }
+        elseif ($ref_company_id == 2) {
+            $from_email = 'itmonitoring@nornik.ru';
+        }
+        $setTo = [];
+        $contacts = json_decode($model['snapshot'],true);
+        if (isset ($contacts['mail'])) {
+            foreach ($contacts['mail'] as $item) {
+                array_push($setTo, $item['contact']);
+            }
+        }    
+        Yii::$app->mailer->compose()
+            ->setFrom($from_email) 
+            ->setTo($setTo)
+            ->setSubject($title)
+            ->setHtmlBody($email)
+            ->send();
+    }
+
     public function actionSnapshot($incident_steps_id,$ref_importance_id) {
         $model = $this->findModel($incident_steps_id);
         return $this->renderAjax('snapshot',[
@@ -456,10 +482,10 @@ class IncidentStepsController extends SiteController
         $incident = Incident::findOne(['id'=>$model->incident_id]);
         $contacts_phone = IncidentSteps::contacts($incident->id,$ref_importance_id,1);
         $previous_snapshot = json_decode($old_step['snapshot'], true);
-        if (($incident->ref_company_id === 1)||($incident->ref_company_id === 3)) {
+        if ($incident->ref_company_id === 2) {
             $header = 'NORNIK';
         }
-        elseif ($incident->ref_company_id === 2) {
+        elseif ($incident->ref_company_id === 1) {
             $header = 'NN.EDINSTVO';
         }
         $message = [
