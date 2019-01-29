@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
-use yii\widgets\Pjax;
+use frontend\assets\PersonsOpenOnClick;
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\PersonsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -14,17 +14,25 @@ $this->registerCss(
         .scroll-block::-webkit-scrollbar {width: 6px;}
         .scroll-block::-webkit-scrollbar-thumb {border-radius: 4px;background: #f0f2f5;}
         .scroll-block:hover::-webkit-scrollbar-thumb {background: #6a7d9b;}');
+$this->registerCss(".grid-view { overflow-x: auto;}");
+$this->registerCss(".clickedRow { color: #f4f4f4 !important; background-color: #3c8dbc !important;}");
+$this->registerCss("h1 { color: #337ab7;}");
+$this->registerCss(".select2-selection__rendered { margin-top: 0 !important;}");
+$this->registerCss(".select2-search--inline { width: 100% !important;}");
+$this->registerCss(".select2-search__field { width: 100% !important;}");
+PersonsOpenOnClick::register($this);
+
 ?>
 <div class="persons-index">
-
-    <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a('Добавить', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    <div class="management">
+        <div class="row">
+            <div class="col-md-6">
+                <?= Html::a('Добавить', ['create'], ['class' => 'btn btn-success']) ?>
+            </div>    
+            <?= $this->render('_search', ['model' => $searchModel]); ?>
     <div class="scroll-block">
     <?= GridView::widget([
+        'id' => 'persons-table',
         'dataProvider' => $dataProvider,
         //'filterModel' => $searchModel,
         'layout'=>"{items}\n{pager}",
@@ -134,10 +142,8 @@ $this->registerCss(
                     }    
                     return $data;
                 }
-            ],        
-            ['class' => 'yii\grid\ActionColumn'],
+            ],
         ],
-    ]); ?>
+    ]); ?> 
     </div>    
-    <?php Pjax::end(); ?>
 </div>

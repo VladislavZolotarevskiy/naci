@@ -11,6 +11,7 @@ use frontend\models\Persons;
  */
 class PersonsSearch extends Persons
 {
+    public $full_name;
     /**
      * {@inheritdoc}
      */
@@ -18,7 +19,7 @@ class PersonsSearch extends Persons
     {
         return [
             [['id'], 'integer'],
-            [['name', 'midname', 'surname'], 'safe'],
+            [['name', 'midname', 'surname', 'full_name'], 'safe'],
         ];
     }
 
@@ -61,16 +62,12 @@ class PersonsSearch extends Persons
             // $query->where('0=1');
             return $dataProvider;
         }
-
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-        ]);
-
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'midname', $this->midname])
-            ->andFilterWhere(['like', 'surname', $this->surname]);
-        
+        $full_name_explode = explode(' ', $this->full_name);
+        $query_data = '';
+        foreach ($full_name_explode as $item){
+            $query_data .= '->andFilterWhere([\'like\', \'name\',\''.$item.'\'])->orFilterWhere([\'like\', \'midname\',\''.$item.'\'])->orFilterWhere([\'like\', \'surname\',\''.$item.'\'])';
+        }
+        $query.$query_data;
         return $dataProvider;
     }
 }

@@ -33,7 +33,6 @@ IncidentOpenOnClick::register($this);
         ],
         'columns' => [
             [
-                //'headerOptions' => ['width' => '140'],
                 'attribute' => 'type',
                 'label' => 'Тип',
                 'value' => function ($model){
@@ -48,7 +47,6 @@ IncidentOpenOnClick::register($this);
                 ]
             ],
             [
-                //'headerOptions' => ['width' => '130'],
                 'attribute' => 'status',
                 'label' => 'Статус',
                 'value' => function ($model){
@@ -67,7 +65,6 @@ IncidentOpenOnClick::register($this);
                     ]
                 ],
             [
-                //'headerOptions' => ['width' => '80'],
                 'attribute' => 'inc_number',
                 'label' => '№',
             ],
@@ -119,7 +116,6 @@ IncidentOpenOnClick::register($this);
                 ],
             [   'attribute' => 'start',
                 'label' => 'Начало',
-//                'filter' => Html::input('text','IncidentSearch[start]'),
                 'value' => function ($model){
                     $data ='';
                     foreach ($model->incidentSteps as $item) {
@@ -132,7 +128,6 @@ IncidentOpenOnClick::register($this);
             ],
             [   'attribute' => 'end',
                 'label' => 'Завершение',
-                //'filter' => Html::input('text','IncidentSearch[end]'),
                 'value' => function ($model){
                     $data ='';
                     foreach ($model->incidentSteps as $item) {
@@ -179,32 +174,6 @@ IncidentOpenOnClick::register($this);
                     return $data;
                 }
             ],
-//            [
-//                'format'=>'raw',
-//                'label' => 'Провайдер',
-//                'value' => function ($model){
-//                    $data = '';
-//                    if (isset($model->incidentTt)){
-//                        foreach ($model->incidentTt as $item){
-//                            $data .= $item->t_number.Html::tag('br');
-//                        }
-//                        return $data;
-//                    }
-//                }
-//            ],
-//            [
-//                'format'=>'raw',
-//                'label' => 'ServiceNow',
-//                'value' => function ($model){
-//                    $data = '';
-//                    if (isset($model->incidentSn)){
-//                        foreach ($model->incidentSn as $item){
-//                            $data .= $item->t_number.Html::tag('br');
-//                        }
-//                        return $data;
-//                    }
-//                }
-//            ],
             [        
                 'attribute' => 'duration',
                 'label' => 'Продолжительность (чч:мм:сс)'
@@ -213,16 +182,7 @@ IncidentOpenOnClick::register($this);
                 'attribute' => 'stoppage',
                 'label' => 'Время простоя (чч:мм:сс)'
             ],    
-//            [
-//                'class' => 'yii\grid\ActionColumn',
-//                'template' => '{update}',
-//                'urlCreator' => function ($action, $model, $key, $index) {
-//                    if ($action === 'update') {
-//                        $url = ['view', 'id' => $model->id];
-//                        return $url;
-//                    }
-//                }
-//            ],
         ],
     ]); ?>
-</div>
+            
+</div>    

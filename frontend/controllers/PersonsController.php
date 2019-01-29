@@ -36,6 +36,7 @@ class PersonsController extends SiteController
      */
     public function actionIndex()
     {
+        $this->layout = 'main-collapse';
         $searchModel = new PersonsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 

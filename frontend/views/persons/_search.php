@@ -8,29 +8,42 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="persons-search">
-
-    <?php $form = ActiveForm::begin([
-        'action' => ['index'],
-        'method' => 'get',
-        'options' => [
-            'data-pjax' => 1
-        ],
-    ]); ?>
-
-    <?= $form->field($model, 'id') ?>
-
-    <?= $form->field($model, 'name') ?>
-
-    <?= $form->field($model, 'midname') ?>
-
-    <?= $form->field($model, 'surname') ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
+<div class="col-md-6" style="text-align: right">
+<?php if (!($model->name == null)||!($model->midname == null)) :?>
+    <a class="btn btn-primary disabled" role="button" data-toggle="collapse" href="#persons-search" aria-expanded="false" aria-controls="persons-search">Фильтр</a>
+            </div><!--close col-->
+        </div><!--close row-->
+    </div><!--close management-->
+<div class="collapse show" id="persons-search">
+<?php else :?>
+    <a class="btn btn-primary" role="button" data-toggle="collapse" href="#persons-search" aria-expanded="false" aria-controls="persons-search">Фильтр</a>
+            </div>
+        </div>
     </div>
+<div class="collapse" id="persons-search">
+<?php endif ?>
 
-    <?php ActiveForm::end(); ?>
 
+
+
+<div class="collapse show" id="persons-search">
+    
+        <?php $form = ActiveForm::begin([
+            'action' => ['index'],
+            'method' => 'get',
+            'options' => [
+                'data-pjax' => 1
+            ],
+        ]); ?>
+
+        <?= $form->field($model, 'full_name') ?>
+
+        <div class="form-group">
+            <?= Html::submitButton('Найти', ['class' => 'btn btn-primary']) ?>
+            <?= Html::resetButton('Сброс', ['class' => 'btn btn-default']) ?>
+        </div>
+
+        <?php ActiveForm::end(); ?>
+
+    </div>
 </div>

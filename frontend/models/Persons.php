@@ -2,7 +2,6 @@
 
 namespace frontend\models;
 
-use Yii;
 use yii\db\Query;
 
 /**
@@ -55,6 +54,7 @@ class Persons extends \yii\db\ActiveRecord
             'name' => 'Имя',
             'midname' => 'Отчество',
             'surname' => 'Фамилия',
+            'full_name' => 'ФИО'
         ];
     }
     /**
