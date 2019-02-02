@@ -3,19 +3,18 @@ $(document).ready(function(){
     $("#incident-table tbody").on('click', 'tr', function() {
         clicks++;
         if(clicks === 1) {
-            timer = setTimeout(function() {
-                clicks = 0;             //after action performed, reset counter
-            }, DELAY);
-            $("#incident-table tbody tr").removeClass('clickedRow');
-            $(this).addClass('clickedRow');
-
-        } else {
+        timer = setTimeout(function() {
+            clicks = 0;             
+        }, DELAY);
+        $("#incident-table tbody tr").removeClass('clickedRow');
+        $(this).addClass('clickedRow');
+        console.log('mouseenter_function'); 
+        } 
+        else {
             clearTimeout(timer);    //prevent single-click action
             var data = $(this).attr('data-key');
             window.open('/naci-test/incident/view/'+data);
-            //$.get('view', 'id=5');
-            //console.log(data);  //perform double-click action
-            clicks = 0;             //after action performed, reset counter
+            clicks = 0;
         }
     });
     $("#incident-table thead").on('click', function() {
