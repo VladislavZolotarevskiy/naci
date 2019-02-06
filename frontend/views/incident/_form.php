@@ -8,7 +8,7 @@ use frontend\models\RefRegion;
 use frontend\models\RefPlace;
 use frontend\models\RefService;
 use kartik\select2\Select2;
-
+$this->registerCss(".select2-selection__rendered { margin-top: 0 !important;}");
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Incident */
 /* @var $form yii\widgets\ActiveForm */
@@ -23,7 +23,8 @@ use kartik\select2\Select2;
         'options' => ['placeholder' => 'Выберите компанию'],
         'language' => 'ru',
         'pluginEvents' => [
-            "select2:select" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').replaceWith(data);});} "],
+            "select2:select" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').replaceWith(data);});} ",
+        ]    
     ])?>
     <?= $form->field($model_incident_ref_region, 'ref_region_id')->widget(Select2::classname(),[
         'data' => RefRegion::regionList([
@@ -31,7 +32,9 @@ use kartik\select2\Select2;
         'language' => 'ru',
         'options' => ['multiple' => true, 'placeholder' => 'Выберите регион'],
         'pluginEvents' => [
-            "select2:select" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').replaceWith(data);});} "],
+            "select2:select" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').replaceWith(data);});} ",
+            "select2:unselect" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').replaceWith(data);});} ",
+        ],
     ]) ?>
     
     <?= $form->field($model_incident_ref_city, 'ref_city_id')->widget(Select2::classname(),[
@@ -40,7 +43,9 @@ use kartik\select2\Select2;
         'language' => 'ru',
         'options' => ['multiple' => true, 'placeholder' => 'Выберите город'],
         'pluginEvents' => [
-            "select2:select" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').replaceWith(data);});} "],
+            "select2:select" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').replaceWith(data);});} ",
+            "select2:unselect" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').replaceWith(data);});} ",
+        ],
     ]) ?>
      
      <?= $form->field($model_incident_ref_place, 'ref_place_id')->widget(Select2::classname(),[
