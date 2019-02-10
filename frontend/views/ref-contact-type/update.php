@@ -1,21 +1,11 @@
 <?php
-
-use yii\helpers\Html;
-
-/* @var $this yii\web\View */
-/* @var $model frontend\models\RefContactType */
-
-$this->title = 'Update Ref Contact Type: ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Ref Contact Types', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Редактировать тип контакта: ' . $model->name;
 ?>
-<div class="ref-contact-type-update">
-
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="ref-city-update">
 
     <?= $this->render('_form', [
         'model' => $model,
+        'button' => 'Применить'
     ]) ?>
 
 </div>

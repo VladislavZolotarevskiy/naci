@@ -36,7 +36,7 @@ class RefPlaceController extends SiteController
     {
         $searchModel = new RefPlaceSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+        $dataProvider->sort = false;
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -53,7 +53,7 @@ class RefPlaceController extends SiteController
         $model = new RefPlace();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+            return $this->redirect('index');
         }
 
         return $this->render('create', [
@@ -73,7 +73,7 @@ class RefPlaceController extends SiteController
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+            return $this->redirect('index');
         }
 
         return $this->render('update', [

@@ -32,6 +32,7 @@ class RefService extends \yii\db\ActiveRecord
             ['name', 'unique',
                 'message' => 'Такой сервис уже существует'],
             [['name'], 'string', 'max' => 250],
+            ['ref_company_id', 'integer'],
         ];
     }
 
@@ -42,6 +43,7 @@ class RefService extends \yii\db\ActiveRecord
     {
         return [
             'name' => 'Наименование',
+            'ref_company_id' => 'Компания',
         ];
     }
 
@@ -51,6 +53,13 @@ class RefService extends \yii\db\ActiveRecord
     public function getPersonsRefServices()
     {
         return $this->hasMany(PersonsRefService::className(), ['ref_service_id' => 'id']);
+    }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCompanyRefServices()
+    {
+        return $this->hasOne(RefCompany::className(), ['id' => 'ref_company_id']);
     }
     /**
      * @return array

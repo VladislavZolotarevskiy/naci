@@ -36,6 +36,7 @@ class RefCityController extends SiteController
     {
         $searchModel = new RefCitySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->sort = false;
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,

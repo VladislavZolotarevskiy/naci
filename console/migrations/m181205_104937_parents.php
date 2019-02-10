@@ -53,8 +53,6 @@ class m181205_104937_parents extends Migration
      */
     public function safeDown()
     {
-        echo "m181205_104937_parents cannot be reverted.\n";
-
         return false;
     }
 

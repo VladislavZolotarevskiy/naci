@@ -1,17 +1,11 @@
 <?php
-
-use yii\helpers\Html;
-
-
-/* @var $this yii\web\View */
-/* @var $model frontend\models\RefContactType */
-
-$this->title = 'Добавить тип контактов';
+$this->title = 'Добавить тип контакта';
 ?>
 <div class="ref-contact-type-create">
 
     <?= $this->render('_form', [
         'model' => $model,
+        'button' => 'Добавить'
     ]) ?>
 
 </div>

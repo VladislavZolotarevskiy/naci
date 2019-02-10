@@ -5,6 +5,7 @@ $this->title = 'Редактировать населённый пункт: ' . 
 
     <?= $this->render('_form', [
         'model' => $model,
+        'button' => 'Применить'
     ]) ?>
 
 </div>

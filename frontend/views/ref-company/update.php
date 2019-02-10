@@ -1,21 +1,11 @@
 <?php
-
-use yii\helpers\Html;
-
-/* @var $this yii\web\View */
-/* @var $model frontend\models\RefCompany */
-
-$this->title = 'Update Ref Company: ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Ref Companies', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Редактировать компанию: ' . $model->name;
 ?>
-<div class="ref-company-update">
-
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="ref-city-update">
 
     <?= $this->render('_form', [
         'model' => $model,
+        'button' => 'Применить'
     ]) ?>
 
 </div>

@@ -28,6 +28,7 @@ $this->registerCss(".select2-selection__rendered { margin-top: 0 !important;}");
     ])?>
     <?= $form->field($model_incident_ref_region, 'ref_region_id')->widget(Select2::classname(),[
         'data' => RefRegion::regionList([
+            'ref_company_id' => $model_incident->ref_company_id
         ]),
         'language' => 'ru',
         'options' => ['multiple' => true, 'placeholder' => 'Выберите регион'],

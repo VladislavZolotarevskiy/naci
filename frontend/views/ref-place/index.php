@@ -12,20 +12,24 @@ $this->title = 'Площадки';
 <div class="ref-place-index">
 
     <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
+    
     <p>
         <?= Html::a('Добавить', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        //'filterModel' => $searchModel,
+        'layout'=>"{items}\n{pager}",
         'columns' => [
             'name',
-            ['attribute' => 'refCity.name',
-            'label' => 'Населённый пункт'],
-['class' => 'yii\grid\ActionColumn'],
+            [
+                'attribute' => 'refCity.name',
+                'label' => 'Населённый пункт'
+            ],
+        [
+            'class' => 'yii\grid\ActionColumn',
+            'template' => '{update} {delete}',
+        ],
         ],
     ]); ?>
     <?php Pjax::end(); ?>

@@ -19,9 +19,9 @@ use frontend\models\RefCity;
             ->dropDownList(RefCity::citiesList()) ?>
     
     <div class="form-group">
-         <?= Html::a('Назад', '../ref-place', [
+         <?= Html::a('Назад', 'index', [
                 'class' => 'btn btn-danger']) ?>
-        <?= Html::submitButton('Применить', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton($button, ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
