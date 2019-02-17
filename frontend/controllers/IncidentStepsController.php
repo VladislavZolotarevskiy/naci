@@ -236,16 +236,16 @@ class IncidentStepsController extends SiteController
         $incident = Incident::findOne(['id'=>$incident_step->incident_id]);
         $contacts = json_decode($model['snapshot'],true);
         $text = $model->createText($model);
-        $email = IncidentStepsMailController::mailCreate($model,$text['title']);
+        //$email = IncidentStepsMailController::mailCreate($model,$text['title']);
         if (Yii::$app->request->post()){
             $model->no_send = 2;
             $model->save();
             $snapshot = json_decode($model->snapshot, true);
             $snapshot['message'][0]['text'] = $text['text'];
             $model->snapshot = json_encode($snapshot, JSON_FORCE_OBJECT);
-            shell_exec('/opt/shitov/jshon/naci_sms_send.sh '.'\''.$model->snapshot.'\'');
+            //shell_exec('/opt/shitov/jshon/naci_sms_send.sh '.'\''.$model->snapshot.'\'');
             if (($incident->ref_company_id == 1)||($ref_importance_id == 4)) {
-                $this->sendEmail($model,$email,$incident->ref_company_id,$text['title']);
+                $this->sendEmail($model,$incident->ref_company_id,$text['title']);
             }
             return $this->redirect(['/incident/view',
                 'id' => $model->incident_id,    
@@ -260,13 +260,13 @@ class IncidentStepsController extends SiteController
             'inc_number' => $incident->inc_number,  
             'contacts' => $contacts,
             'text' => $text,
-            'email' => $email,
+            //'email' => $email,
             'ref_company_id' => $incident->ref_company_id
         ]);
         }    
     }
       
-    public function sendEmail ($model, $email, $ref_company_id, $title) {
+    public function sendEmail ($model, $ref_company_id, $title) {
         if ($ref_company_id == 1) {
             $from_email = 'noc@nn-edinstvo.ru';
         }
@@ -279,13 +279,20 @@ class IncidentStepsController extends SiteController
             foreach ($contacts['mail'] as $item) {
                 array_push($setTo, $item['contact']);
             }
-        }    
-        Yii::$app->mailer->compose()
-            ->setFrom($from_email) 
-            ->setTo($setTo)
-            ->setSubject($title)
-            ->setHtmlBody($email)
-            ->send();
+        }
+        $filepath = '@app/web/img/'.sha1('o4kotvoeimamashi');
+        $message = Yii::$app->mailer->compose();
+        $message->setFrom($from_email);
+        $message->setTo($setTo);
+        $message->setSubject($title);
+        $message->setHtmlBody(Yii::$app->mailer->render('mail', [
+            'image002' => $message->embed((\Yii::getAlias($filepath.'/image002.png'))),
+            'image003' => $message->embed((\Yii::getAlias($filepath.'/image003.png'))),
+            'image005' => $message->embed((\Yii::getAlias($filepath.'/image005.png'))),
+            'model' => $model,
+            'title' => $title
+        ], Yii::$app->mailer->htmlLayout));
+        $message->send();
     }
 
     public function actionSnapshot($incident_steps_id,$ref_importance_id) {

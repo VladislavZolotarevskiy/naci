@@ -4,12 +4,12 @@ namespace frontend\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use frontend\models\RefPlace;
+use frontend\models\RefRegion;
 
 /**
  * RefPlaceSearch represents the model behind the search form of `frontend\models\RefPlace`.
  */
-class RefPlaceSearch extends RefPlace
+class RefRegionSearch extends RefRegion
 {
     /**
      * {@inheritdoc}
@@ -17,7 +17,7 @@ class RefPlaceSearch extends RefPlace
     public function rules()
     {
         return [
-            [['id','ref_city_id'], 'integer'],
+            [['id','ref_company_id'], 'integer'],
             [['name'], 'safe'],
         ];
     }
@@ -40,8 +40,8 @@ class RefPlaceSearch extends RefPlace
      */
     public function search($params)
     {
-        $query = RefPlace::find()
-                ->with('refCity');
+        $query = RefRegion::find()
+                ->with('companyRefRegions');
 
         // add conditions that should always apply here
 

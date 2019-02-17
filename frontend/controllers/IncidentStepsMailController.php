@@ -3,7 +3,7 @@ namespace frontend\controllers;
 use frontend\models\IncidentRefService;
 use frontend\models\IncidentSteps;
 use frontend\models\TTicket;
-
+use Yii;
 class IncidentStepsMailController extends SiteController
 {
     function mailCreate($model,$title) {
@@ -31,6 +31,9 @@ class IncidentStepsMailController extends SiteController
             $services .= $service->refService->name.'<br>';
         }
         $path = \yii\helpers\Url::toRoute(['/img'], 'http').'/'.sha1('o4kotvoeimamashi' );
+        $filepath = '/app/naci-test/frontend/web/img/'.sha1('o4kotvoeimamashi' );
+        $message = Yii::$app->mailer->compose(
+                ['image002' => $filepath.'/image002.png']);
         $incident = \frontend\models\Incident::find()->where(['id' => $model->incident_id])->one();
         if ($incident->status == 3) {
             $duration =
@@ -174,7 +177,7 @@ class IncidentStepsMailController extends SiteController
                                     line-height:105%;
                                     font-family:&quot;Times New Roman&quot;,serif;
                                 mso-fareast-language:RU">
-                                <img width="604" height="151" src="'.$path.'/image002.gif" 
+                                <img width="604" height="151" src="'.'" 
                                     style="height:1.572in;
                                     width:6.291in">
                                         <o:p></o:p>
@@ -233,7 +236,7 @@ class IncidentStepsMailController extends SiteController
                                                 mso-height-rule:exactly">
                                                 <span style="mso-fareast-language:RU">
                                                     <img width="5" height="1" 
-                                                    src="'.$path.'/image003.gif"
+                                                    src="'.$path.'/image003.png"
                                                     style="height:.01in;width:.052in">
                                                 </span>
                                                 <span style="font-size:12.0pt;
@@ -511,7 +514,7 @@ class IncidentStepsMailController extends SiteController
                                                                     9.0pt;mso-element-wrap:around;mso-element-anchor-vertical:paragraph;
                                                                     mso-element-anchor-horizontal:column;mso-height-rule:exactly"><span
                                                                     style="mso-fareast-language:RU"><img border=0 width=195 height=71
-                                                                    src="'.$path.'/image005.gif" style="height:.739in;width:2.031in"
+                                                                    src="'.$path.'/image005.png" style="height:.739in;width:2.031in"
                                                                     alt="NORNICKEL_ОЦО_hor_rus"></span><span
                                                                     style="font-size:8.0pt;line-height:105%;font-family:&quot;Tahoma&quot;,sans-serif;
                                                                     mso-fareast-language:RU"><o:p></o:p></span></p>

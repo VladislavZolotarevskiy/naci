@@ -4,12 +4,12 @@ namespace frontend\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use frontend\models\RefPlace;
+use frontend\models\RefService;
 
 /**
  * RefPlaceSearch represents the model behind the search form of `frontend\models\RefPlace`.
  */
-class RefPlaceSearch extends RefPlace
+class RefServiceSearch extends RefService
 {
     /**
      * {@inheritdoc}
@@ -17,7 +17,7 @@ class RefPlaceSearch extends RefPlace
     public function rules()
     {
         return [
-            [['id','ref_city_id'], 'integer'],
+            [['id','ref_company_id'], 'integer'],
             [['name'], 'safe'],
         ];
     }
@@ -40,29 +40,20 @@ class RefPlaceSearch extends RefPlace
      */
     public function search($params)
     {
-        $query = RefPlace::find()
-                ->with('refCity');
+        $query = RefService::find()
+                ->with('companyRefServices');
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            'query' => $query
         ]);
-
-        $this->load($params);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
         }
-
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-        ]);
-
-        $query->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;
     }

@@ -3,6 +3,7 @@
 namespace frontend\models;
 
 use yii\helpers\ArrayHelper;
+use yii\db\Query;
 
 /**
  * This is the model class for table "ref_region".
@@ -64,28 +65,42 @@ class RefRegion extends \yii\db\ActiveRecord
     /**
      * @return array
      */
-    public function regionList($id=null,$ref_company_id=null)
+    public function regionList($param=null)
     {
-//        if ($id == null) {
-//            return ArrayHelper::map(RefRegion::find()->all(), 'id', 'name');
-//        }
-        if ($id !== null) {
-            return ArrayHelper::map(RefRegion::findAll(['id' => $id]), 'id', 'name');
-        }
-        elseif ($ref_company_id !== null) {
-            $ref_company_arr = [];
-            foreach ($ref_company_id as $company_item){
-                $ref_company_arr = $company_item;
+        if ($param !== null) {
+            if (!empty($param['id'])) {
+                return ArrayHelper::map(RefRegion::findAll(['id' => $param['id']]), 'id', 'name');
             }
-            $query = new Query();
-            $query->select(['id', 'ref_company_id', 'name'])->from('ref_region');
-            //if $ref_city_id not empty
-            if (!empty($ref_company_arr[0])) {        
-                $query->where(['ref_company_id' => $ref_company_arr]);
-            }      
-        $command = $query->createCommand()->queryAll();
-        //return ArrayHelper::map($command, 'id', 'name');
-        return $ref_city_arr;
+            elseif ($param['ref_company_id'] !== null) {
+                return ArrayHelper::map(RefRegion::findAll(['ref_company_id' => $param['ref_company_id']]), 'id', 'name');
+            }
         }
+        else {
+            return ArrayHelper::map(RefRegion::find()->all(), 'id', 'name');
+        }
+//        if ($id !== null) {
+//            return $id;
+//            //return ArrayHelper::map(RefRegion::findAll(['id' => $id]), 'id', 'name');
+//        }
+//        elseif ($ref_company_id !== null) {
+            //$ref_company_arr = [];
+//            foreach ($ref_company_id as $company_item){
+//                $ref_company_arr = $company_item;
+//            }
+//        $query = new Query();
+//        $query->select(['id', 'name', 'ref_company_id'])->from('ref_region');
+//        $query->where(['ref_company_id' => $ref_company_id]);
+//                  
+//        $command = $query->createCommand()->queryAll();
+        
+                //->where(['ref_company_id' => $ref_company_id])
+//                
+//        //return ArrayHelper::map($regions, 'id', 'name');
+//        $regions = RefRegion::find()
+//                ->where(['ref_company_id' => $ref_company_id])
+//                ->all();
+//        return ArrayHelper::map($regions, 'id', 'name');
+        //return $ref_company_id;
+//          }
     }
 }

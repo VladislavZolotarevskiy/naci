@@ -42,7 +42,7 @@ else if ($model->ref_company_id === 2) {
         <div class="box-body no-padding">
         <!--Cities-->
         <div class="col-md-3 col-sm-12 col-xs-12 no-padding">
-          <table class="table table-condensed">
+          <table class="table table-condensed no-margin">
             <thead>
               <th scope="col", class="col-md-3">Города</th>
             </thead>
@@ -57,7 +57,7 @@ else if ($model->ref_company_id === 2) {
         </div>
         <!--Regions-->
         <div class="col-md-3 col-sm-12 col-xs-12 no-padding">
-          <table class="table table-condensed">
+          <table class="table table-condensed no-margin">
             <thead>
               <th scope="col", class="col-md-3">Регионы</th>
             </thead>
@@ -72,7 +72,7 @@ else if ($model->ref_company_id === 2) {
         </div>
         <!--Places-->
         <div class="col-md-3 col-sm-12 col-xs-12 no-padding">
-          <table class="table table-condensed">
+          <table class="table table-condensed no-margin">
             <thead>
               <th scope="col", class="col-md-3">Площадки</th>
             </thead>
@@ -88,7 +88,7 @@ else if ($model->ref_company_id === 2) {
         </div>
         <!--Services-->
         <div class="col-md-3 col-sm-12 col-xs-12 no-padding">
-          <table class="table table-condensed">
+          <table class="table table-condensed no-margin">
             <thead>
               <th scope="col", class="col-md-3">Сервисы</th>
             </thead>

@@ -40,7 +40,8 @@ class RefCitySearch extends RefCity
      */
     public function search($params)
     {
-        $query = RefCity::find();
+        $query = RefCity::find()
+                ->with('refRegion');
 
         // add conditions that should always apply here
 
