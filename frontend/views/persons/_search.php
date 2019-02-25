@@ -7,9 +7,8 @@ use yii\widgets\ActiveForm;
 /* @var $model frontend\models\PersonsSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-
 <div class="col-md-6" style="text-align: right">
-<?php if (!($model->name == null)||!($model->midname == null)) :?>
+<?php if (!($model->full_name == null)) :?>
     <a class="btn btn-primary disabled" role="button" data-toggle="collapse" href="#persons-search" aria-expanded="false" aria-controls="persons-search">Фильтр</a>
             </div><!--close col-->
         </div><!--close row-->

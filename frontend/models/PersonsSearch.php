@@ -58,16 +58,33 @@ class PersonsSearch extends Persons
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
+
             return $dataProvider;
         }
         $full_name_explode = explode(' ', $this->full_name);
-        $query_data = '';
-        foreach ($full_name_explode as $item){
-            $query_data .= '->andFilterWhere([\'like\', \'name\',\''.$item.'\'])->orFilterWhere([\'like\', \'midname\',\''.$item.'\'])->orFilterWhere([\'like\', \'surname\',\''.$item.'\'])';
-        }
-        $query.$query_data;
+        foreach ($full_name_explode as $key => $item) {
+            if (isset($full_name_explode[0])){
+                if ($key == 0) {
+                    $query->filterWhere(['or',
+                        ['like','name',$item],
+                        ['like','surname',$item],
+                        ['like','midname',$item]]);
+                }
+                elseif ($key == 1) {
+                    $query->andFilterWhere(['or',
+                        ['like','name',$item],
+                        ['like','surname',$item],
+                        ['like','midname',$item]]);
+                }
+                elseif ($key == 2) {
+                    $query->andFilterWhere(['or',
+                        ['like','name',$item],
+                        ['like','surname',$item],
+                        ['like','midname',$item]]);
+                }
+            }    
+            
+        };
         return $dataProvider;
     }
 }

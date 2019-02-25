@@ -56,7 +56,8 @@ $this->registerCss(".select2-selection__rendered { margin-top: 0 !important;}");
         'options' => ['multiple' => true, 'placeholder' => 'Выберите площадку'],
     ]) ?>
      <?= $form->field($model_incident_ref_service, 'ref_service_id')->widget(Select2::classname(),[
-        'data' => RefService::serviceList(),
+        'data' => RefService::serviceList([
+                'ref_company_id' => $model_incident->ref_company_id]),
         'language' => 'Ru',
         'options' => ['multiple' => true, 'placeholder' => 'Выберите сервис'],
     ]) ?>

@@ -78,29 +78,5 @@ class RefRegion extends \yii\db\ActiveRecord
         else {
             return ArrayHelper::map(RefRegion::find()->all(), 'id', 'name');
         }
-//        if ($id !== null) {
-//            return $id;
-//            //return ArrayHelper::map(RefRegion::findAll(['id' => $id]), 'id', 'name');
-//        }
-//        elseif ($ref_company_id !== null) {
-            //$ref_company_arr = [];
-//            foreach ($ref_company_id as $company_item){
-//                $ref_company_arr = $company_item;
-//            }
-//        $query = new Query();
-//        $query->select(['id', 'name', 'ref_company_id'])->from('ref_region');
-//        $query->where(['ref_company_id' => $ref_company_id]);
-//                  
-//        $command = $query->createCommand()->queryAll();
-        
-                //->where(['ref_company_id' => $ref_company_id])
-//                
-//        //return ArrayHelper::map($regions, 'id', 'name');
-//        $regions = RefRegion::find()
-//                ->where(['ref_company_id' => $ref_company_id])
-//                ->all();
-//        return ArrayHelper::map($regions, 'id', 'name');
-        //return $ref_company_id;
-//          }
     }
 }

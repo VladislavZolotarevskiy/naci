@@ -89,7 +89,7 @@ $current_year = $datetime->format('Y');
 
     <div clas="row">
         <div class="col-md-6" style="padding-left:0">
-            <?= $form->field($model, 'start_date')->widget(kartik\datetime\DateTimePicker::classname(), [
+            <?php /** $form->field($model, 'start_date')->widget(kartik\datetime\DateTimePicker::classname(), [
             'name' => 'start_date',
             'language' => 'ru',
             'removeButton' => false,
@@ -99,10 +99,10 @@ $current_year = $datetime->format('Y');
             'options' => [
                 'value' => $current_year.'-01-01 00:00:00',
             ]
-            ]);?>
+            ]);**/?>
         </div>    
         <div class="col-md-6" style="padding-right:0">
-            <?= $form->field($model, 'end_date')->widget(kartik\datetime\DateTimePicker::classname(), [
+            <?php /**$form->field($model, 'end_date')->widget(kartik\datetime\DateTimePicker::classname(), [
             'name' => 'end_date',
             'language' => 'ru',
             'removeButton' => false,
@@ -112,7 +112,7 @@ $current_year = $datetime->format('Y');
             'options' => [
                 'value' => $current_datetime,
             ]
-            ]);?>
+            ]);**/ ?>
         </div>    
     </div>   
     <div class="form-group">

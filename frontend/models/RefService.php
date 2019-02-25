@@ -64,8 +64,18 @@ class RefService extends \yii\db\ActiveRecord
     /**
      * @return array
      */
-    public function serviceList()
+    public function serviceList($param=null)
     {
-        return ArrayHelper::map(RefService::find()->all(), 'id', 'name'); 
+        if ($param !== null) {
+            if (!empty($param['id'])) {
+                return ArrayHelper::map(RefService::findAll(['id' => $param['id']]), 'id', 'name');
+            }
+            elseif ($param['ref_company_id'] !== null) {
+                return ArrayHelper::map(RefService::findAll(['ref_company_id' => $param['ref_company_id']]), 'id', 'name');
+            }
+        }
+        else {
+            return ArrayHelper::map(RefService::find()->all(), 'id', 'name');  
+        }
     }
 }
