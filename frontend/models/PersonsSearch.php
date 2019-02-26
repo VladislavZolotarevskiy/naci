@@ -2,7 +2,6 @@
 
 namespace frontend\models;
 
-use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use frontend\models\Persons;
@@ -12,6 +11,7 @@ use frontend\models\Persons;
  */
 class PersonsSearch extends Persons
 {
+    public $full_name;
     /**
      * {@inheritdoc}
      */
@@ -19,7 +19,7 @@ class PersonsSearch extends Persons
     {
         return [
             [['id'], 'integer'],
-            [['name', 'midname', 'surname'], 'safe'],
+            [['name', 'midname', 'surname', 'full_name'], 'safe'],
         ];
     }
 
@@ -41,7 +41,13 @@ class PersonsSearch extends Persons
      */
     public function search($params)
     {
-        $query = Persons::find();
+        $query = Persons::find()
+                ->with('personsCompanies')
+                ->with('personsRegions')
+                ->with('personsCities')
+                ->with('personsPlaces')
+                ->with('personsServices')
+                ->with('contacts');
 
         // add conditions that should always apply here
 
@@ -52,20 +58,33 @@ class PersonsSearch extends Persons
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
+
             return $dataProvider;
         }
-
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-        ]);
-
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'midname', $this->midname])
-            ->andFilterWhere(['like', 'surname', $this->surname]);
-
+        $full_name_explode = explode(' ', $this->full_name);
+        foreach ($full_name_explode as $key => $item) {
+            if (isset($full_name_explode[0])){
+                if ($key == 0) {
+                    $query->filterWhere(['or',
+                        ['like','name',$item],
+                        ['like','surname',$item],
+                        ['like','midname',$item]]);
+                }
+                elseif ($key == 1) {
+                    $query->andFilterWhere(['or',
+                        ['like','name',$item],
+                        ['like','surname',$item],
+                        ['like','midname',$item]]);
+                }
+                elseif ($key == 2) {
+                    $query->andFilterWhere(['or',
+                        ['like','name',$item],
+                        ['like','surname',$item],
+                        ['like','midname',$item]]);
+                }
+            }    
+            
+        };
         return $dataProvider;
     }
 }

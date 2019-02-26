@@ -12,6 +12,7 @@ $this->title = 'Добавить компанию';
 
     <?= $this->render('_form', [
         'model' => $model,
+        'button' => 'Добавить'
     ]) ?>
 
 </div>

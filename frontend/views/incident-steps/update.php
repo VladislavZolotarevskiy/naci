@@ -3,21 +3,55 @@
 /* @var $model frontend\models\IncidentSteps */
 
 
-if ($model->ref_type_steps_id == 1){
-    $this->title = 'Открытие инцидента № '.$inc_number;
+if ($incident->ref_company_id === 1) {
+    switch ($ref_type_steps_id) {
+        case 1:
+            $this->title = 'Открытие инцидента на ВОЛС ООО "Единство" № '.$incident->inc_number;
+        break;
+        case 2:
+            $this->title = 'Дополнение по инциденту на ВОЛС ООО "Единство" № '.$incident->inc_number;
+        break;
+        case 3:
+            $this->title = 'Закрытие инцидента на ВОЛС ООО "Единство" № '.$incident->inc_number;
+        break;
+    }
 }
-elseif ($model->ref_type_steps_id == 2){
-    $this->title = 'Дополнение по инциденту № '.$inc_number;
-}
-elseif ($model->ref_type_steps_id == 3){
-    $this->title = 'Закрытие инцидента № '.$inc_number;
+elseif ($incident->ref_company_id === 2) {
+    if ($incident->type === 1) {
+        switch ($ref_type_steps_id) {
+        case 1:
+            $this->title = 'Открытие ИТ инцидента № '.$incident->inc_number;
+        break;
+        case 2:
+            $this->title = 'Дополнение по ИТ инциденту № '.$incident->inc_number;
+        break;
+        case 3:
+            $this->title = 'Закрытие ИТ инцидента № '.$incident->inc_number;
+        break;
+        }
+    }
+    elseif ($incident->type ===2) {
+        switch ($ref_type_steps_id) {
+        case 1:
+            $this->title = 'Открытие кризисного ИТ инцидента № '.$incident->inc_number;
+        break;
+        case 2:
+            $this->title = 'Дополнение по кризисному ИТ инциденту № '.$incident->inc_number;
+        break;
+        case 3:
+            $this->title = 'Закрытие кризисного ИТ инцидента № '.$incident->inc_number;
+        break;
+        }
+    }    
 }
 ?>
 <div class="incident-steps-create">
   
-    <?= $this->render('_form', [
+    <?= $this->render('_updateform', [
         'model' => $model,
-        'importance' => $importance
+        'importance' => $importance,
+        'ref_type_steps_id' => $model->ref_type_steps_id,
+        'incident_id' => $incident_id,
     ]) ?>
 
 </div>

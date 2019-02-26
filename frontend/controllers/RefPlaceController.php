@@ -4,7 +4,7 @@ namespace frontend\controllers;
 
 use Yii;
 use frontend\models\RefPlace;
-use common\models\RefPlaceSearch;
+use frontend\models\RefPlaceSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -36,23 +36,10 @@ class RefPlaceController extends SiteController
     {
         $searchModel = new RefPlaceSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+        $dataProvider->sort = false;
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single RefPlace model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
         ]);
     }
 
@@ -66,7 +53,7 @@ class RefPlaceController extends SiteController
         $model = new RefPlace();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect('index');
         }
 
         return $this->render('create', [
@@ -86,7 +73,7 @@ class RefPlaceController extends SiteController
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect('index');
         }
 
         return $this->render('update', [

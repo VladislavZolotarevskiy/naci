@@ -20,16 +20,18 @@ $this->title = 'Населённые пункты';
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        //'filterModel' => $searchModel,
+        'layout'=>"{items}\n{pager}",
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
             'name',
             ['attribute' => 'refCityType.name',
             'label' => 'Тип'],
-            ['class' => 'yii\grid\ActionColumn',
-		'template' => '{update} {delete}',
-	    ],
+            ['attribute' => 'refRegion.name',
+            'label' => 'Регион'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{update} {delete}',
+            ],
         ],
     ]); ?>
     <?php Pjax::end(); ?>

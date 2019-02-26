@@ -2,7 +2,6 @@
 
 namespace frontend\models;
 
-use Yii;
 use yii\db\Query;
 
 /**
@@ -55,6 +54,7 @@ class Persons extends \yii\db\ActiveRecord
             'name' => 'Имя',
             'midname' => 'Отчество',
             'surname' => 'Фамилия',
+            'full_name' => 'ФИО'
         ];
     }
     /**
@@ -187,4 +187,57 @@ class Persons extends \yii\db\ActiveRecord
     {
         return $this->hasMany(PersonsRefService::className(), ['persons_id' => 'id']);
     }
+    
+    public function getPersonsCompanies()
+    {
+        return $this->hasMany(
+                        RefCompany::className(),
+                        ['id' => 'ref_company_id'])
+                ->viaTable(
+                        'persons_ref_company', 
+                        ['persons_id' => 'id']
+                        );
+    }
+    public function getPersonsRegions()
+    {
+        return $this->hasMany(
+                        RefRegion::className(),
+                        ['id' => 'ref_region_id'])
+                ->viaTable(
+                        'persons_ref_region', 
+                        ['persons_id' => 'id']
+                        );
+    }
+    public function getPersonsCities()
+    {
+        return $this->hasMany(
+                        RefCity::className(),
+                        ['id' => 'ref_city_id'])
+                ->viaTable(
+                        'persons_ref_city', 
+                        ['persons_id' => 'id']
+                        )
+                ->with('refCityType');
+    }
+    public function getPersonsPlaces()
+    {
+        return $this->hasMany(
+                        RefPlace::className(),
+                        ['id' => 'ref_place_id'])
+                ->viaTable(
+                        'persons_ref_place', 
+                        ['persons_id' => 'id']
+                        );
+    }
+    public function getPersonsServices()
+    {
+        return $this->hasMany(
+                        RefService::className(),
+                        ['id' => 'ref_service_id'])
+                ->viaTable(
+                        'persons_ref_service', 
+                        ['persons_id' => 'id']
+                        );
+    }
+    
 }

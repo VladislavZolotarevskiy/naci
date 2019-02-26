@@ -2,38 +2,44 @@
 use frontend\models\Incident;
 use yii\helpers\Html;
 use yii\grid\GridView;
-use yii\widgets\Pjax;
+use frontend\assets\IncidentOpenOnClick;
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\IncidentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 $this->title = 'Инциденты';
 $this->registerCss(".grid-view { overflow-x: auto;}");
+$this->registerCss(".clickedRow { color: #f4f4f4 !important; background-color: #3c8dbc !important;}");
+$this->registerCss("h1 { color: #337ab7;}");
+$this->registerCss(".select2-selection__rendered { margin-top: 0 !important;}");
+$this->registerCss(".select2-search--inline { width: 100% !important;}");
+$this->registerCss(".select2-search__field { width: 100% !important;}");
+IncidentOpenOnClick::register($this);
 ?>
 <div class="incident-index">
-
-
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a('Создать', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-    <?php Pjax::begin([
-        'timeout' => 999999,
-    ]) ?>
+    <div class="management">
+        <div class="row">
+            <div class="col-md-6">
+                <?= Html::a('Создать', ['create'], ['class' => 'btn btn-success']) ?>
+            </div>
+            
+    <?= $this->render('_search', ['model' => $searchModel]); ?>
     <?= GridView::widget([
+        'id' => 'incident-table',
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+        //'filterModel' => $searchModel,
         'layout'=>"{items}\n{pager}",
+        'tableOptions' => [
+            'class' => 'table table-bordered'
+        ],
         'columns' => [
             [
-                'headerOptions' => ['width' => '140'],
                 'attribute' => 'type',
                 'label' => 'Тип',
                 'value' => function ($model){
                     if ($model->type == 1) {
                         return 'Обычный';
                     }
-                    return 'Критичный';
+                    return 'Кризисный';
                 },
                 'filter' =>  [
                         1 => 'Обычный',
@@ -41,7 +47,6 @@ $this->registerCss(".grid-view { overflow-x: auto;}");
                 ]
             ],
             [
-                'headerOptions' => ['width' => '130'],
                 'attribute' => 'status',
                 'label' => 'Статус',
                 'value' => function ($model){
@@ -60,7 +65,6 @@ $this->registerCss(".grid-view { overflow-x: auto;}");
                     ]
                 ],
             [
-                'headerOptions' => ['width' => '80'],
                 'attribute' => 'inc_number',
                 'label' => '№',
             ],
@@ -70,21 +74,21 @@ $this->registerCss(".grid-view { overflow-x: auto;}");
                 'filter' => Incident::companyList(),
                 'label' => 'Компания',
             ],
-            [   'label' => 'Регион',
+            ['label' => 'Сервис',
                 'format'=>'raw',
                 'value' => function ($model) {
-                    foreach ($model->incidentRegions as $item) {
-                        $data = '';
+                    $data = '';
+                    foreach ($model->incidentServices as $item) {
                         $data .= $item->name.Html::tag('br');
                     }
                     return $data;
                 }
-                ],
-            ['label' => 'Сервис',
+            ],
+            [   'label' => 'Регион',
                 'format'=>'raw',
                 'value' => function ($model) {
-                    foreach ($model->incidentServices as $item) {
-                        $data = '';
+                    $data = '';
+                    foreach ($model->incidentRegions as $item) {
                         $data .= $item->name.Html::tag('br');
                     }
                     return $data;
@@ -93,8 +97,8 @@ $this->registerCss(".grid-view { overflow-x: auto;}");
             [   'label' => 'Нас. пункт',
                 'format'=>'raw',
                 'value' => function ($model) {
+                    $data = '';
                     foreach ($model->incidentCities as $item) {
-                        $data = '';
                         $data .= $item->name.Html::tag('br');
                     }
                     return $data;
@@ -103,8 +107,8 @@ $this->registerCss(".grid-view { overflow-x: auto;}");
             [   'label' => 'Площадка',
                 'format'=>'raw',
                 'value' => function ($model) {
+                    $data = '';
                     foreach ($model->incidentPlaces as $item) {
-                        $data = '';
                         $data .= $item->name.Html::tag('br');
                     }
                     return $data;
@@ -112,7 +116,6 @@ $this->registerCss(".grid-view { overflow-x: auto;}");
                 ],
             [   'attribute' => 'start',
                 'label' => 'Начало',
-//                'filter' => Html::input('text','IncidentSearch[start]'),
                 'value' => function ($model){
                     $data ='';
                     foreach ($model->incidentSteps as $item) {
@@ -125,7 +128,6 @@ $this->registerCss(".grid-view { overflow-x: auto;}");
             ],
             [   'attribute' => 'end',
                 'label' => 'Завершение',
-                //'filter' => Html::input('text','IncidentSearch[end]'),
                 'value' => function ($model){
                     $data ='';
                     foreach ($model->incidentSteps as $item) {
@@ -172,32 +174,6 @@ $this->registerCss(".grid-view { overflow-x: auto;}");
                     return $data;
                 }
             ],
-            [
-                'format'=>'raw',
-                'label' => 'Провайдер',
-                'value' => function ($model){
-                    $data = '';
-                    if (isset($model->incidentTt)){
-                        foreach ($model->incidentTt as $item){
-                            $data .= $item->t_number.Html::tag('br');
-                        }
-                        return $data;
-                    }
-                }
-            ],
-            [
-                'format'=>'raw',
-                'label' => 'ServiceNow',
-                'value' => function ($model){
-                    $data = '';
-                    if (isset($model->incidentSn)){
-                        foreach ($model->incidentSn as $item){
-                            $data .= $item->t_number.Html::tag('br');
-                        }
-                        return $data;
-                    }
-                }
-            ],
             [        
                 'attribute' => 'duration',
                 'label' => 'Продолжительность (чч:мм:сс)'
@@ -206,17 +182,7 @@ $this->registerCss(".grid-view { overflow-x: auto;}");
                 'attribute' => 'stoppage',
                 'label' => 'Время простоя (чч:мм:сс)'
             ],    
-            [
-                'class' => 'yii\grid\ActionColumn',
-                'template' => '{update}',
-                'urlCreator' => function ($action, $model, $key, $index) {
-                    if ($action === 'update') {
-                        $url = ['view', 'id' => $model->id];
-                        return $url;
-                    }
-                }
-            ],
         ],
     ]); ?>
-    <?php Pjax::end()?>
-</div>
+            
+</div>    

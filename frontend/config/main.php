@@ -18,10 +18,10 @@ return [
         'user' => [
             'class' => 'frontend\modules\user\Module',
         ],
-//        'debug' => [
-//            'class' => 'yii\debug\Module',
-//            'allowedIPs' => ['172.23.139.*']
-//        ],
+        'debug' => [
+            'class' => 'yii\debug\Module',
+            'allowedIPs' => ['*.*.*.*']
+        ],
     ],
     'components' => [
         'request' => [
@@ -41,7 +41,7 @@ return [
             'targets' => [
                 [
                     'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
+                    'levels' => ['info', 'error', 'warning'],
                 ],
             ],
         ],
@@ -52,7 +52,8 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'persons/view/<id:\d+>' => 'persons/view'
+                'persons/view/<id:\d+>' => 'persons/view',
+                'incident/view/<id:\d+>' => 'incident/view'
             ],
         ],
         'formatter' => [

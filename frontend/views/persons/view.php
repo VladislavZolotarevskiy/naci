@@ -16,7 +16,7 @@ Url::remember(['view', 'id'=> $model->id],'persons-view');
 
     <p>
         <?= Html::a('Назад',
-            ['./persons'],
+            ['index'],
             ['class' => 'btn btn-danger'])?>
         <?= Html::a('Изменить ФИО',
             ['update', 'id' => $model->id],

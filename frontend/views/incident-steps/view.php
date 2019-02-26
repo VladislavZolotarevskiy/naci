@@ -45,6 +45,8 @@ else {
 
     <?= $form->field($model, 'no_send')->checkbox(['disabled' => 'disabled']) ?>
 
+    <?= $form->field($model, 'service_stop_marker')->checkbox(['disabled' => 'disabled']) ?>
+    
     <?= $form->field($model, 'message')->textarea(['disabled' => 'disabled']) ?>
 
     <?= Html::a('Назад', ['/incident/view', 'id' => $model->incident_id], ['class' => 'btn btn-danger']) ?>

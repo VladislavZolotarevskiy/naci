@@ -1,16 +1,11 @@
 <?php
-
-use yii\helpers\Html;
-
-/* @var $this yii\web\View */
-/* @var $model frontend\models\RefCityType */
-
-$this->title = 'Редактировать тип города: ' . $model->name;
+$this->title = 'Добавить тип населённого пункта';
 ?>
 <div class="ref-city-type-update">
 
     <?= $this->render('_form', [
         'model' => $model,
+        'button' => 'Применить'
     ]) ?>
 
 </div>

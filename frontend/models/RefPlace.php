@@ -3,6 +3,7 @@
 namespace frontend\models;
 
 use yii\helpers\ArrayHelper;
+use yii\db\Query;
 
 /**
  * This is the model class for table "ref_place".
@@ -28,7 +29,7 @@ class RefPlace extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            ['name', 'required'],
+            [['name', 'ref_city_id'], 'required'],
             ['name', 'unique',
                 'message' => 'Такая площадка уже существует'],
             [['name'], 'string', 'max' => 250],
@@ -42,6 +43,7 @@ class RefPlace extends \yii\db\ActiveRecord
     {
         return [
             'name' => 'Наименование',
+            'ref_city_id' => 'Город',
         ];
     }
 
@@ -53,10 +55,32 @@ class RefPlace extends \yii\db\ActiveRecord
         return $this->hasMany(PersonsRefPlace::className(), ['ref_place_id' => 'id']);
     }
     /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRefCity()
+    {
+        return $this->hasOne(RefCity::className(), ['id' => 'ref_city_id']);
+    }
+    /**
      * @return array
      */
-    public function placeList()
+    public function placeList($ref_city_id=null)
     {
-        return ArrayHelper::map(RefPlace::find()->all(), 'id', 'name'); 
+        $ref_city_arr = [];
+        if ($ref_city_id !== null){
+            foreach ($ref_city_id as $city_item){
+                $ref_city_arr = $city_item;
+            }
+        }
+        $query = new Query();
+        $query->select(['id', 'ref_city_id', 'name'])->from('ref_place');
+        //if $ref_city_id not empty
+        if (!empty($ref_city_arr[0])) {        
+            $query->where(['ref_city_id' => $ref_city_arr]);
+        }      
+        $command = $query->createCommand()->queryAll();
+        return ArrayHelper::map($command, 'id', 'name');
+        //return $ref_city_arr;
+        
     }
 }

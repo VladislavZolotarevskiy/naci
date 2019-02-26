@@ -13,6 +13,12 @@ class IncidentSearch extends Incident
 {
     public $start;
     public $end;
+    public $region;
+    public $service;
+    public $city;
+    public $place;
+    public $start_date;
+    public $end_date;
     /**
      * {@inheritdoc}
      */
@@ -21,8 +27,10 @@ class IncidentSearch extends Incident
         return [
             [['id', 'ref_company_id', 'inc_number'], 'integer'],
             //[['start', 'end'], 'date'],
-            [['period'], 'safe'],
-            [['type', 'status'], 'integer']
+            [['period', 'region', 'service','city','place'], 'safe'],
+            [['type', 'status'], 'integer'],
+            [['start_date','end_date'], 'date',
+                'format' => 'php:Y-m-d H:i:s'],
         ];
     }
 
@@ -92,6 +100,65 @@ class IncidentSearch extends Incident
         $query->joinWith(['company' => function ($q) {
             $q->where('ref_company.id LIKE "%' . $this->ref_company_id . '%"');
         }]);
+        $query->joinWith(['incidentRegions' => function($q) {
+            if (isset($this->region[0])){
+                foreach ($this->region as $key => $item){
+                    if ($key == 0) {
+                        $query_text = '"%'.$item.'%"';
+                    }
+                    else {
+                        $query_text .= ' OR ref_region.id LIKE '.$item;
+                    }
+                }
+            
+            $q->where('ref_region.id LIKE '.$query_text );    
+            }
+        }]);    
+        $query->joinWith(['incidentServices' => function($q) {
+            if (isset($this->service[0])){
+                foreach ($this->service as $key => $item){
+                    if ($key == 0) {
+                        $query_text = $item;
+                    }
+                    else {
+                        $query_text .= ' OR ref_service.id='.$item;
+                    }
+                }
+            
+            $q->where('ref_service.id='.$query_text );    
+            }
+        }]);
+        $query->joinWith(['incidentCities' => function($q) {
+            if (isset($this->city[0])){
+                foreach ($this->city as $key => $item){
+                    if ($key == 0) {
+                        $query_text = $item;
+                    }
+                    else {
+                        $query_text .= ' OR ref_city.id='.$item;
+                    }
+                }
+            
+            $q->where('ref_city.id='.$query_text );    
+            }
+        }]);
+        $query->joinWith(['incidentPlaces' => function($q) {
+            if (isset($this->place[0])){
+                foreach ($this->place as $key => $item){
+                    if ($key == 0) {
+                        $query_text = $item;
+                    }
+                    else {
+                        $query_text .= ' OR ref_city.id='.$item;
+                    }
+                }
+            
+            $q->where('ref_place.id='.$query_text );    
+            }
+        }]);
+//        $query->joinWith(['incidentSteps' => function($q) {
+//            $q->where('incident_steps.ref_type_steps_id=1 AND')
+//        }]);
 //        $query->joinWith(['incidentSteps' => function($q) {
 //            $q->where('incident_steps.clock LIKE "%' . $this->start . '%"');
 //            

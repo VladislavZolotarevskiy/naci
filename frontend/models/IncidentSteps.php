@@ -37,7 +37,7 @@ class IncidentSteps extends \yii\db\ActiveRecord
     {
         return [
             [['incident_id', 'ref_type_steps_id', 'clock', 'res_person',
-                'super_person', 'message', 'no_send'], 'required',
+                'super_person', 'message'], 'required',
                 'message' => 'Поле обязательно к заполнению.'],
             [['incident_id', 'ref_type_steps_id', 'no_send', 'service_stop_marker'], 'integer'],
             [['res_person', 'super_person'], 'string',
@@ -46,6 +46,7 @@ class IncidentSteps extends \yii\db\ActiveRecord
                 'max' => 1500],
             ['clock', 'date',
                 'format' => 'php:Y-m-d H:i:s'],
+            ['clock', 'compareDate'],
             ['ref_type_steps_id', 'unique', 'targetAttribute' => [
                     'ref_type_steps_id',
                     'incident_id',],
@@ -61,9 +62,26 @@ class IncidentSteps extends \yii\db\ActiveRecord
                 'skipOnError' => true,
                 'targetClass' => RefTypeSteps::className(),
                 'targetAttribute' => ['ref_type_steps_id' => 'id']],
-        ];
+            ['snapshot', 'string'],
+            ];
     }
-
+    
+    public function compareDate(){
+        $cur_date = $this->clock;
+        $prev_inc = IncidentSteps::oldIncidentStep($this->incident_id);
+        if (($this->id != $prev_inc['incident_steps_id'])&&isset($prev_inc['clock'])){
+            if (strtotime($cur_date) <= strtotime($prev_inc['clock'])) {
+                $this->addError('clock', 'Дата не может быть меньше '.$prev_inc['clock']);
+            }
+        }
+        elseif ($this->id == $prev_inc['incident_steps_id']) {
+            $prev_inc = IncidentSteps::oldIncidentStep($this->incident_id,1);
+            if (strtotime($cur_date) <= strtotime($prev_inc['clock'])) {
+                $this->addError('clock', 'Дата не может быть меньше '.$prev_inc['clock']);
+            }
+        }
+    }
+    
     /**
      * {@inheritdoc}
      */
@@ -78,6 +96,7 @@ class IncidentSteps extends \yii\db\ActiveRecord
             'super_person' => 'Оператор',
             'message' => 'Описание',
             'no_send' => 'Без рассылки',
+            'service_stop_marker' => 'Учет длительности'
         ];
     }
 
@@ -250,21 +269,23 @@ class IncidentSteps extends \yii\db\ActiveRecord
         ->select([
             'ref_contact_type.name AS type',
             'contacts.name AS contact',
+            'contacts.id AS contacts_id',
+            'persons.id AS persons_id',
             'CONCAT ('
             . 'persons.surname,'
             . '" ",persons.name,'
-            . '" ",persons.midname) AS full_name'
+            . '" ",persons.midname) AS persons_full_name'
         ])
-        ->from('contacts')
+        ->from('persons')
         ->join(
                 'INNER JOIN',
-                'ref_contact_type',
-                'contacts.ref_contact_type_id = ref_contact_type.id'
+                'contacts',
+                'contacts.id_person = persons.id'
         )
         ->join(
                 'INNER JOIN',
-                'persons',
-                'contacts.id_person = persons.id'
+                'ref_contact_type',
+                'ref_contact_type.id = contacts.ref_contact_type_id'
         )
         ->where(['ref_contact_type_id' => $contact_type])
         ->andWhere(['in', 'id_person', $persons_ref_company])
@@ -272,10 +293,12 @@ class IncidentSteps extends \yii\db\ActiveRecord
         ->all();
         return $contacts;
 }
-public function oldIncidentStep($incident_id)
+public function oldIncidentStep($incident_id,$prev=null)
 {
     $step = (new Query())
             ->select([
+                'incident_steps.id',
+                'incident_steps_id',
                 'ref_importance_id',
                 'incident_id',
                 'ref_type_steps_id',
@@ -283,7 +306,8 @@ public function oldIncidentStep($incident_id)
                 'res_person',
                 'super_person',
                 'message',
-                'no_send'
+                'no_send',
+                'snapshot'
             ])
             ->from('incident_steps_ref_importance')
             ->join(
@@ -296,8 +320,123 @@ public function oldIncidentStep($incident_id)
             ])
             ->orderBy(['clock' => SORT_DESC])
             ->one();
-    if (isset($step)){
+    if (isset($step)&&$prev == null){
         return $step;
     }
+    elseif (isset ($step)) {
+        $newstep = (new Query())
+                ->select([
+                'incident_steps.id',
+                'incident_steps_id',
+                'ref_importance_id',
+                'incident_id',
+                'ref_type_steps_id',
+                'clock',
+                'res_person',
+                'super_person',
+                'message',
+                'no_send',
+                'snapshot'
+            ])
+            ->from('incident_steps_ref_importance')
+            ->join(
+                    'INNER JOIN',
+                    'incident_steps',
+                    'incident_steps.id = incident_steps_ref_importance.incident_steps_id'
+            )
+            ->where([
+                'incident_id' => $incident_id
+            ])
+            ->andWhere([
+                '<',
+                'incident_steps.id',
+                $step['id']
+            ])    
+            ->orderBy(['clock' => SORT_DESC])
+            ->one();
+        return $newstep;
+    }
 }
+public function createText ($model){
+        $clock = IncidentSteps::needlessTime($model->incident_id,1)['clock'];
+        $dataTime = new \DateTime($clock);
+        $clock_format = $dataTime->format('d.m.y в H:i');
+        $incident = Incident::findOne($model->incident_id);
+        //Инцидент на инфраструктуре
+        if ($incident->ref_company_id === 2) {
+            switch ($model->ref_type_steps_id) {
+            //Открытие
+            case 1:
+                if ($model->refImportance->id === 4) {
+                    $title = 'Открытие кризисного ИТ инцидента № '.$incident->inc_number;
+                }
+                else {
+                    $title = 'Открытие инцидента № '.$incident->inc_number;
+                }
+                $text = $title . '. Начало: '.$model->clock
+                    .'. '.$model->message
+                    .'. Ответственный: '.$model->res_person.'. Контроль:'
+                    .$model->super_person.' +79873242404, +74957877667 доб. 7377.';
+                break;
+            //Дополнение
+            case 2:
+                if ($model->refImportance->id === 4) {
+                    $title = 'Дополнение по кризисному ИТ инциденту № '.$incident->inc_number;
+                }
+                else {
+                    $title = 'Дополнение по ИТ инциденту № '.$incident->inc_number;
+                }
+                $text = $title. '. Начало: '.$clock_format
+                    .'. '.$model->message.'. Ответственный: '.$model->res_person
+                    .'. Контроль:'.$model->super_person.' +79873242404, +74957877667 доб. 7377.'; 
+                break;
+            //Закрытие
+            case 3:
+                if ($model->refImportance->id === 4) {
+                    $title = 'Закрытие кризисного ИТ инцидента № '.$incident->inc_number;
+                }
+                else {
+                    $title = 'Закрытие ИТ инцидента № '.$incident->inc_number;
+                }
+                $text = $title. '. Завершение: '.$model->clock.'. Продолжительность: '.mb_substr($incident->duration, 0, 5)
+                    .'. '.$model->message.'. Ответственный: '.$model->res_person
+                    .'. Контроль:'.$model->super_person.' +79873242404, +74957877667 доб. 7377.';
+                break;
+            }
+        }    
+        //Инцидент на ВОЛС ООО Единство
+        elseif (($incident->ref_company_id === 1)||($incident->ref_company_id ===3)) {
+            switch ($model->ref_type_steps_id) {
+            //Открытие
+            case 1:
+                $title = 'Открытие инцидента на ВОЛС Единство № '.$incident->inc_number;
+                $text = $title . '. Начало: '.$model->clock
+                    .'. Приоритет: '.$model->refImportance->name. '. '.$model->message
+                    .'. Ответственный: '.$model->res_person.'. Контроль:'
+                    .$model->super_person.' +79873242404, +74957877667 доб. 7377.';
+                break;
+            //Дополнение
+            case 2:
+                $title = 'Дополнение по инциденту на ВОЛС Единство № '.$incident->inc_number;
+                $text = $title. '. Начало: '.$clock_format
+                    .'. Приоритет: ' .$model->refImportance->name.'. '.$model->message
+                    .'. Ответственный: '.$model->res_person.'. Контроль:'
+                    .$model->super_person.' +79873242404, +74957877667 доб. 7377.'; 
+                break;
+            //Закрытие
+            case 3:
+                $title = 'Закрытие инцидента на ВОЛС Единство № '.$incident->inc_number;
+                $text = $title. '. Завершение: '.$model->clock.'. Продолжительность: '. mb_substr($incident->duration, 0, 5)
+                    .'. Приоритет: ' . $model->refImportance->name . '. '.$model->message
+                    .'. Ответственный: '.$model->res_person.'. Контроль:'
+                    .$model->super_person.' +79873242404, +74957877667 доб. 7377.';
+                break;
+            }
+        }
+        return [
+            'text' => $text, 
+            'title' => $title,
+                ];
+    }
 }
+    

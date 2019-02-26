@@ -1,16 +1,11 @@
 <?php
-
-use yii\helpers\Html;
-
-/* @var $this yii\web\View */
-/* @var $model frontend\models\RefCompany */
-
 $this->title = 'Редактировать компанию: ' . $model->name;
 ?>
-<div class="ref-company-update">
+<div class="ref-city-update">
 
     <?= $this->render('_form', [
         'model' => $model,
+        'button' => 'Применить'
     ]) ?>
 
 </div>

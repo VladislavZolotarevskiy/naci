@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use Yii;
 use frontend\models\Incident;
+use frontend\models\IncidentSteps;
 use frontend\models\IncidentRefRegion;
 use frontend\models\IncidentRefCity;
 use frontend\models\IncidentRefService;
@@ -13,7 +14,6 @@ use yii\helpers\Url;
 use frontend\models\TTicketSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
 /**
  * IncidentController implements the CRUD actions for Incident model.
  */
@@ -60,8 +60,9 @@ class IncidentController extends SiteController
         $tticketSearchModel = new TTicketSearch(['incident_id' => $id]);
         $tticketDataProvider = $tticketSearchModel
                 ->search(Yii::$app->request->queryParams);
+        $model = $this->findModel($id);
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
             'tticketSearchModel' => $tticketSearchModel,
             'tticketDataProvider' => $tticketDataProvider,
         ]);
@@ -73,16 +74,20 @@ class IncidentController extends SiteController
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($ref_company_id=NULL)
     {
+        
         $session = Yii::$app->session;
         $session->open();
-        $model_incident = new Incident(); 
+        $model_incident = new Incident();
+        if ($ref_company_id !== NULL) {
+        $find = \frontend\models\RefCompany::findOne(['name' => $ref_company_id]);    
+        $model_incident->ref_company_id = $find->id;}
         $model_incident_ref_city = new IncidentRefCity();
         $model_incident_ref_region = new IncidentRefRegion();
         $model_incident_ref_place = new IncidentRefPlace();
         $model_incident_ref_service = new IncidentRefService();
-        if (Yii::$app->request->post()) {
+        if (Yii::$app->request->post() && !Yii::$app->request->isAjax) {
             $session->destroy();
             $session['open'] = true;
             $session['ref_company_id'] = Yii::$app->request->post()['Incident']['ref_company_id'];
@@ -92,6 +97,23 @@ class IncidentController extends SiteController
             $session['ref_service_id'] = Yii::$app->request->post()['IncidentRefService']['ref_service_id'];
             Url::remember();
             return $this->redirect('preview');
+        }
+        elseif (Yii::$app->request->isAjax) {
+            //Yii::$app->response->format = Response::FORMAT_JSON;
+            //$model_incident->ref_company_id = Yii::$app->request->post()['Incident']['ref_company_id'];
+            $model_incident->load(Yii::$app->request->post());
+            $model_incident_ref_city->load(Yii::$app->request->post());
+            $model_incident_ref_region->load(Yii::$app->request->post());
+            $model_incident_ref_place->load(Yii::$app->request->post());
+            $model_incident_ref_service->load(Yii::$app->request->post());
+            return 
+                $this->renderAjax('create', [
+                'model_incident' => $model_incident,
+                'model_incident_ref_city' => $model_incident_ref_city,
+                'model_incident_ref_region' => $model_incident_ref_region,
+                'model_incident_ref_place' => $model_incident_ref_place,
+                'model_incident_ref_service' => $model_incident_ref_service,
+            ]);
         }
         else {
             return $this->render('create', [

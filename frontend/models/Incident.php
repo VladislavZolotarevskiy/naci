@@ -31,8 +31,7 @@ class Incident extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['duration', 'stoppage'], 'time',
-                'format' => 'php:H:i:s'],
+            [['duration', 'stoppage'], 'string', 'max' => 10],
             [['ref_company_id', 'inc_number', 'period'], 'integer'],
             [['type','status'], 'integer']
         ];
@@ -44,8 +43,16 @@ class Incident extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'ref_company_id' => 'Затронутые компании',
+            'ref_company_id' => 'Затронутая компания',
             'inc_number' => 'Порядковый № инцидента',
+            'type' => 'Тип',
+            'status' => 'Статус',
+            'region' => 'Регион',
+            'service' => 'Сервис',
+            'city' => 'Нас. пункт',
+            'place' => 'Площадка',
+            'start_date' => 'С',
+            'end_date' => 'По'
         ];
     }
     /**

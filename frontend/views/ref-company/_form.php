@@ -15,9 +15,9 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
-        <?= Html::a('Назад', '../ref-company', [
+        <?= Html::a('Назад', 'index', [
                 'class' => 'btn btn-danger']) ?>
-        <?= Html::submitButton('Добавить', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton($button, ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

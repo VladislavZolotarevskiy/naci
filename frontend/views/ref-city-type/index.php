@@ -20,15 +20,15 @@ $this->title = 'Типы населённых пунктов';
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        //'filterModel' => $searchModel,
+        'layout'=>"{items}\n{pager}",
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
             'name',
-
-            ['class' => 'yii\grid\ActionColumn',
-		'template' => '{update} {delete}',
-	    ],
+            [
+            'class' => 'yii\grid\ActionColumn',
+            'template' => '{update} {delete}',
+            ],
         ],
     ]); ?>
     <?php Pjax::end(); ?>

@@ -13,6 +13,9 @@ use yii\helpers\Url;
         <?php Pjax::begin([
             'id' => 'tickets'])?>
         <?= GridView::widget([
+            'tableOptions' => [
+                'class' => 'table table-striped table-bordered no-margin no-border'
+            ],
             'layout'=>"{items}",
             'dataProvider' => $tticketDataProvider,
             'columns' => [
