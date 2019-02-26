@@ -12,7 +12,7 @@ $(document).ready(function(){
         } else {
             clearTimeout(timer);    //prevent single-click action
             var data = $(this).attr('data-key');
-            window.open('/naci-test/persons/view/'+data);
+            window.open('view/'+data);
             clicks = 0;             //after action performed, reset counter
         }
     });
