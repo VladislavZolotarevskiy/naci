@@ -166,7 +166,10 @@ class IncidentSteps extends \yii\db\ActiveRecord
      * get values ref_service_id for incident_id
      * next get persons_id for ref_service_id
     */
-    protected function refServiceId($incident_id,$ref_importance_id)
+    protected function refServiceId(
+            $incident_id,
+            $ref_importance_id,
+            $ref_company_id)
     {
         $ref_service_id = (new Query())
             ->select('ref_service_id')
@@ -181,20 +184,31 @@ class IncidentSteps extends \yii\db\ActiveRecord
                     'persons_ref_service',
                     'persons_ref_service_id=persons_ref_service.id'
                     )
-            ->where(['in', 'ref_service_id', $ref_service_id])
-            ->orWhere(['ref_service_id' => 1])
-            ->andWhere(['ref_importance_id'=>$ref_importance_id])
+            ->join(
+                    'INNER JOIN',
+                    'ref_service',
+                    'ref_service_id=ref_service.id'
+                    )
+            ->where([
+                'ref_service_id' => $ref_service_id,
+                'ref_importance_id'=>$ref_importance_id,
+                'ref_company_id'=>$ref_company_id])
+            ->orWhere([
+                'ref_service_id' => 1,
+                'ref_importance_id'=>$ref_importance_id,
+                'ref_company_id'=>$ref_company_id])
             ->all();
         return $persons_ref_service;
     }
     /**
      * get values persons_id for service_id
      */
-    protected function idPersons($incident_id,$ref_importance_id)
+    protected function idPersons($incident_id,$ref_importance_id,$ref_company_id)
     {
         $persons_ref_service = IncidentSteps::refServiceId(
                 $incident_id,
-                $ref_importance_id);
+                $ref_importance_id,
+                $ref_company_id);
         $ref_region_id = (new Query())
             ->select('ref_region_id')
             ->from('incident_ref_region')
@@ -250,21 +264,25 @@ class IncidentSteps extends \yii\db\ActiveRecord
  */
     public function contacts($incident_id,$ref_importance_id,$contact_type)
 {
-    $persons_ref_service = IncidentSteps::refServiceId(
-                $incident_id,
-                $ref_importance_id);
     $ref_company_id = (new Query())
         ->select('ref_company_id')
         ->from('incident')
         ->where(['id' => $incident_id])
         ->all();
+    $persons_ref_service = IncidentSteps::refServiceId(
+                $incident_id,
+                $ref_importance_id,
+                $ref_company_id);
     $persons_ref_company = (new Query())
         ->select(['persons_id AS id_person'])
         ->from('persons_ref_company')
         ->where(['in', 'ref_company_id', $ref_company_id])
         ->andWhere(['in', 'persons_id', $persons_ref_service])
         ->all();
-    $id_persons = IncidentSteps::idPersons($incident_id,$ref_importance_id);
+    $id_persons = IncidentSteps::idPersons(
+            $incident_id,
+            $ref_importance_id,
+            $ref_company_id);
     $contacts = (new Query())
         ->select([
             'ref_contact_type.name AS type',
