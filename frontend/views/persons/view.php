@@ -71,7 +71,7 @@ Url::remember(['view', 'id'=> $model->id],'persons-view');
                                 <td scope="row"><?=Html::a('', [
                                         '/persons-ref-region/delete',
                                         'id' => $one['id'],
-                                        'view_id' => $model->id],[
+                                        'person_id' => $model->id],[
                                         'class' => "fa fa-minus text-red",
                                         'title' => "Отвязать от региона",
                                         'data-confirm' => "Отвязать от "
@@ -118,7 +118,7 @@ Url::remember(['view', 'id'=> $model->id],'persons-view');
                                 <td scope="row"><?= Html::a('',[
                                     '/persons-ref-city/delete',
                                     'id' => $one['id'],
-                                    'view_id' => $model->id], [
+                                    'person_id' => $model->id], [
                                     'class' => "fa fa-minus text-red",
                                     'title' => "Отвязать от населённого "
                                         . "пункта.",
@@ -165,7 +165,7 @@ Url::remember(['view', 'id'=> $model->id],'persons-view');
                                 <td scope="row"><?=Html::a('', [
                                         '/persons-ref-place/delete',
                                         'id' => $one['id'],
-                                        'view_id' => $model->id],[
+                                        'person_id' => $model->id],[
                                         'class' => "fa fa-minus text-red",
                                         'title' => "Отвязать от площадки",
                                         'data-confirm' => "Отвязать от "
@@ -211,7 +211,7 @@ Url::remember(['view', 'id'=> $model->id],'persons-view');
                                 <td scope="row"><?= Html::a('',[
                                     '/persons-ref-service/delete',
                                     'id' => $one['id'],
-                                    'view_id' => $model->id], [
+                                    'person_id' => $model->id], [
                                     'class' => "fa fa-minus text-red",
                                     'title' => "Отвязать от сервиса",
                                     'data-confirm' =>"Отвязать от сервиса?",

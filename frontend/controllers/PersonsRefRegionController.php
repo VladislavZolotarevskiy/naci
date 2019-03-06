@@ -37,7 +37,7 @@ class PersonsRefRegionController extends SiteController
     {
         $model = new PersonsRefRegion();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(Url::previous('persons-view'));
+            return $this->redirect(Url::to('../persons/view/'.$person_id));
         }
         else {
             return $this->render('create', [
@@ -54,10 +54,10 @@ class PersonsRefRegionController extends SiteController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    public function actionDelete($id,$person_id)
     {
         $this->findModel($id)->delete();
-        return $this->redirect(Url::previous('persons-view'));
+        return $this->redirect(Url::to('../persons/view/'.$person_id));
     }
     /**
      * Finds the PersonsRefRegion model based on its primary key value.
