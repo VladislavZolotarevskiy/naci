@@ -7,7 +7,7 @@ use frontend\models\User;
 /**
  * Signup form
  */
-class CreateUser extends Model
+class ManageUser extends Model
 {
     public $username;
     public $email;
@@ -16,6 +16,7 @@ class CreateUser extends Model
     public $middle_name;
     public $last_name;
     public $admin;
+    public $id;
     
     /**
      * {@inheritdoc}
@@ -82,5 +83,50 @@ class CreateUser extends Model
         $user->generateAuthKey();
         
         return $user->save() ? $user : null;
+    }
+    
+    public function updateUser($model)
+    {
+        $user = ManageUser::findModel($model->id);
+        $user->first_name = $model->first_name;
+        $user->middle_name = $model->middle_name;
+        $user->last_name = $model->last_name;
+        $user->admin = $model->admin;
+        $user->username = $model->username;
+        $user->email = $model->email;
+        if ($user->save()){
+        return true;
+        }
+    }
+    protected function findModel($id)
+    {
+        if (($model = User::findOne($id)) !== null) {
+            return $model;
+        }
+    }
+    
+    public function deleteUser($id) 
+    {
+        ManageUser::findModel($id)->delete();
+
+        return true;
+    }
+
+    public function findUser($id)
+    {
+        if (($user = User::findOne($id)) !== null) {
+            $model = new ManageUser;
+            $model->first_name = $user->first_name;
+            $model->middle_name = $user->middle_name;
+            $model->last_name = $user->last_name;
+            $model->admin = $user->admin;
+            $model->id = $user->id;
+            $model->username = $user->username;
+            $model->email = $user->email;
+            
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

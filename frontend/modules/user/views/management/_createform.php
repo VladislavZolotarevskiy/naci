@@ -12,8 +12,8 @@ use yii\helpers\Url;
   
     
     <?php $form = ActiveForm::begin([
-        'id' => 'user_create',
-//        'options' => ['data-pjax' => true],
+        'id' => 'create-user',
+        'options' => ['data-pjax' => true],
         'enableAjaxValidation' => true,
         'enableClientValidation' => true,
         'validationUrl' => Url::toRoute([

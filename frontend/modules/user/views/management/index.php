@@ -25,10 +25,10 @@ $this->title = 'Пользователи';
     <p>
        <?= Html::a('Добавить',Url::toRoute('create'), [
             'class' => 'btn btn-success',
-//            'data-toggle' => 'modal',
-//            'data-target' => '#user_create',
-//            'onclick' => 
-//                "$('#user_create .modal-dialog .modal-content .modal-body').load($(this).attr('href'))",
+            'data-toggle' => 'modal',
+            'data-target' => '#user_create',
+            'onclick' => 
+                "$('#user_create .modal-dialog .modal-content .modal-body').load($(this).attr('href'))",
             ]
         );?>
 
