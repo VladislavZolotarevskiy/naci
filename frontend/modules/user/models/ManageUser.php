@@ -3,7 +3,7 @@ namespace frontend\modules\user\models;
 
 use yii\base\Model;
 use frontend\models\User;
-
+use Yii;
 /**
  * Signup form
  */
@@ -81,8 +81,15 @@ class ManageUser extends Model
         $user->admin = $this->admin;
         $user->setPassword($this->password);
         $user->generateAuthKey();
-        
-        return $user->save() ? $user : null;
+        if ($this->admin == 1) {
+            $userRole = Yii::$app->authManager->getRole('admin');
+        }
+        else {
+            $userRole = Yii::$app->authManager->getRole('user');
+        }
+        $user->save();
+        Yii::$app->authManager->assign($userRole, $user->id);
+        return $user;
     }
     
     public function updateUser($model)
@@ -92,6 +99,18 @@ class ManageUser extends Model
         $user->middle_name = $model->middle_name;
         $user->last_name = $model->last_name;
         $user->admin = $model->admin;
+        $user->username = $model->username;
+        $user->email = $model->email;
+        if ($user->save()){
+        return true;
+        }
+    }
+    public function selfUpdateUser($model)
+    {
+        $user = ManageUser::findModel($model->id);
+        $user->first_name = $model->first_name;
+        $user->middle_name = $model->middle_name;
+        $user->last_name = $model->last_name;
         $user->username = $model->username;
         $user->email = $model->email;
         if ($user->save()){
@@ -128,5 +147,11 @@ class ManageUser extends Model
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+    
+    public function changePassword($model){
+        $user = User::findOne($model->id);
+        $user->setPassword($model->password);
+        return $user->save();
     }
 }

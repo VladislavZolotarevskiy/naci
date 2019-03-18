@@ -19,6 +19,10 @@ $this->title = 'Пользователи';
     'id' => 'modal-user-update',
     'header' => Html::tag('h4', Html::encode('Редактировать пользователя'),['class' => 'username'])
 ])?>
+<?= Modal::widget([
+    'id' => 'modal-user-reset-password',
+    'header' => Html::tag('h4', Html::encode('Изменить пароль'),['class' => 'username'])
+])?>
 
 <div class="user-management">
        
@@ -68,7 +72,7 @@ $this->title = 'Пользователи';
                 'class' => 'yii\grid\ActionColumn',
                 'class' => 'yii\grid\ActionColumn',
                     'headerOptions' => ['width' => '50'],
-                    'template' => '{update} {delete}',
+                    'template' => '{update} {delete} {password}',
                     'buttons' => [
                         'update' => function ($action, $model, $key) {
                             return Html::a('<span class="glyphicon glyphicon-pencil"></span> ' . 
@@ -77,6 +81,16 @@ $this->title = 'Пользователи';
                                 'data-target' => '#modal-user-update',
                                 'onclick' => 
                                     "$('#modal-user-update .modal-dialog .modal-content .modal-body').load($(this).attr('href'))",
+                                ]
+                            );   
+                        },
+                        'password' => function ($action, $model, $key) {
+                            return Html::a('<span class="glyphicon glyphicon-lock"></span> ' . 
+                                '', Url::toRoute(['change-password', 'id' => $key]), [
+                                'data-toggle' => 'modal',
+                                'data-target' => '#modal-user-reset-password',
+                                'onclick' => 
+                                    "$('#modal-user-reset-password .modal-dialog .modal-content .modal-body').load($(this).attr('href'))",
                                 ]
                             );   
                         },

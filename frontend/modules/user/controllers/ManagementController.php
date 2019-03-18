@@ -13,6 +13,7 @@ use yii\filters\VerbFilter;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
+use yii\filters\AccessControl;
 
 /**
  * TTicketController implements the CRUD actions for TTicket model.
@@ -29,6 +30,29 @@ class ManagementController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => [
+                            'index',
+                            'create',
+                            'perform-ajax-validation',
+                            'delete',
+                            'update',
+                            'change-password'],
+                        'allow' => true,
+                        'roles' => ['admin'],
+                    ],
+                    [
+                        'actions' => [
+                            'self-update',
+                            'change-self-password'],
+                        'allow' => true,
+                        'roles' => ['user'],
+                    ]
                 ],
             ],
         ];
@@ -80,6 +104,18 @@ class ManagementController extends Controller
             'model' => $model,
         ]);
     }
+    public function actionSelfUpdate()
+    {
+        $model = ManageUser::findUser(Yii::$app->getUser()->id);
+        if ($model->load(Yii::$app->request->post())) {
+            ManageUser::selfUpdateUser($model);
+            return $this->redirect(['index']);
+        }
+        return $this->renderAjax('update-self', [
+            'model' => $model,
+        ]);
+    }
+    
     protected function findModel($id)
     {
         if (($model = User::findOne($id)) !== null) {
@@ -87,5 +123,25 @@ class ManagementController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+    public function actionChangePassword($id){
+        $model = ManageUser::findUser($id);
+        if ($model->load(Yii::$app->request->post())) {
+            ManageUser::changePassword($model);
+            return $this->redirect(['index']);
+        }
+        return $this->renderAjax('change-password', [
+            'model' => $model,
+        ]); 
+    }
+    public function actionChangeSelfPassword(){
+        $model = ManageUser::findUser(Yii::$app->getUser()->id);
+        if ($model->load(Yii::$app->request->post())) {
+            ManageUser::changePassword($model);
+            return $this->redirect(['index']);
+        }
+        return $this->renderAjax('change-password', [
+            'model' => $model,
+        ]); 
     }
 }

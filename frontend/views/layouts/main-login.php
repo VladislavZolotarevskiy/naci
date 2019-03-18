@@ -1,5 +1,6 @@
 <?php
 use yii\helpers\Html;
+use yii\bootstrap\Alert;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
@@ -20,9 +21,7 @@ dmstr\web\AdminLteAsset::register($this);
 <body class="login-page">
 
 <?php $this->beginBody() ?>
-
     <?= $content ?>
-
 <?php $this->endBody() ?>
 </body>
 </html>
