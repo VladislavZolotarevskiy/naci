@@ -54,7 +54,7 @@ class ManageUser extends Model
             'middle_name' => 'Отчество',
             'last_name' => 'Фамилия',
             'username' => 'Имя пользователя',
-            'email' => 'E-mail домена @nornik.ru',
+            'email' => 'E-mail',
             'password' => 'Пароль',
             'admin' => 'Администратор'
         ];
@@ -87,9 +87,12 @@ class ManageUser extends Model
         else {
             $userRole = Yii::$app->authManager->getRole('user');
         }
-        $user->save();
-        Yii::$app->authManager->assign($userRole, $user->id);
-        return $user;
+        if ($user->save() && Yii::$app->authManager->assign($userRole, $user->id)) {
+            return $user;
+        }
+        else {
+            return null;
+        }
     }
     
     public function updateUser($model)
@@ -101,7 +104,14 @@ class ManageUser extends Model
         $user->admin = $model->admin;
         $user->username = $model->username;
         $user->email = $model->email;
-        if ($user->save()){
+        Yii::$app->authManager->revokeAll($user->id);
+        if ($model->admin == 1) {
+            $userRole = Yii::$app->authManager->getRole('admin');
+        }
+        else {
+            $userRole = Yii::$app->authManager->getRole('user');
+        }
+        if ($user->save() && Yii::$app->authManager->assign($userRole, $user->id)){
         return true;
         }
     }

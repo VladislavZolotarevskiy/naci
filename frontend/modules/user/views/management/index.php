@@ -8,8 +8,6 @@ use yii\bootstrap\Modal;
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\RefCitySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-
-$this->title = 'Пользователи';
 ?>
 <?= Modal::widget([
     'id' => 'user_create',

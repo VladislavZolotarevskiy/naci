@@ -87,6 +87,14 @@ class ManagementController extends Controller
         return ActiveForm::validate($model);
         }
     }
+    public function actionPerformUpdateAjaxValidation($id)
+    {
+        $model = ManageUser::findUser($id);
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return ActiveForm::validate($model);
+        }
+    }
     
     public function actionDelete($id) {
         ManageUser::deleteUser($id);
