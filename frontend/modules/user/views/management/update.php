@@ -9,6 +9,7 @@ $this->title = 'Редактировать пользователя';
 
     <?= $this->render('_updateform', [
         'model' => $model,
+        'id' => $id
     ]) ?>
 
 </div>
