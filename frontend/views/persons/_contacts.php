@@ -31,7 +31,7 @@ use yii\helpers\Url;
                     'buttons' => [
                         'update' => function ($action, $model, $key) {
                             return Html::a('<span class="glyphicon glyphicon-pencil"></span> ' . 
-                                '', Url::toRoute(['./contacts/update', 'id' => $key]), [
+                                '', ['/contacts/update', 'id' => $key], [
                                 'data-toggle' => 'modal',
                                 'data-target' => '#modal-contact-update',
                                 'onclick' => 
@@ -41,7 +41,7 @@ use yii\helpers\Url;
                         },
                         'delete' => function ($action, $model, $key) {
                             return Html::a('<span class="glyphicon glyphicon-trash"></span> ' . 
-                                '', Url::toRoute(['./contacts/delete', 'id' => $key]), [
+                                '', ['/contacts/delete', 'id' => $key], [
                                     'data-method' => 'post',
                                     'data-confirm' => 'Удалить контакт?'
                                 ]);    
@@ -53,7 +53,7 @@ use yii\helpers\Url;
     </div>
     <div class="box-footer">
         <?= Html::a('<span class="fa fa-plus"></span> ' .
-            '', Url::toRoute(['./contacts/create','person_id' => $person_id]), [
+            '', ['/contacts/create','person_id' => $person_id], [
             'id' => 'contact-add',
             'data-toggle' => 'modal',
             'data-target' => '#modal-contact-create',

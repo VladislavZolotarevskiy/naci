@@ -17,7 +17,10 @@ class ManageUser extends Model
     public $last_name;
     public $admin;
     public $id;
-    
+    public $oldUsername;
+    public $oldEmail;
+
+
     /**
      * {@inheritdoc}
      */
@@ -26,15 +29,22 @@ class ManageUser extends Model
         return [
             ['username', 'trim'],
             ['username', 'required'],
-            ['username', 'unique', 'targetClass' => '\frontend\models\User', 'message' => 'Это имя пользователя уже используется.'],
+            ['username', 
+                'unique', 
+                'targetClass' => '\frontend\models\User', 
+                'message' => 'Это имя пользователя уже используется.',
+                'filter' => ['!=', 'username', $this->oldUsername]],
             ['username', 'string', 'min' => 2, 'max' => 255],
 
             ['email', 'trim'],
             ['email', 'required'],
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
-            ['email', 'unique', 'targetClass' => '\frontend\models\User', 'message' => 'Этот e-mail уже используется.'],
-
+            ['email', 
+                'unique', 
+                'targetClass' => '\frontend\models\User', 
+                'message' => 'Этот e-mail уже используется.',
+                'filter' => ['!=', 'email', $this->oldEmail]],
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
             
@@ -44,7 +54,8 @@ class ManageUser extends Model
             ['middle_name', 'string', 'min' => 2, 'max' => 50],
             ['last_name', 'required'],
             ['last_name', 'string', 'min' => 2, 'max' => 50],
-            ['admin', 'boolean']
+            ['admin', 'boolean'],
+            ['oldUsername', 'string']
         ];
     }
     public function attributeLabels()
@@ -152,7 +163,8 @@ class ManageUser extends Model
             $model->id = $user->id;
             $model->username = $user->username;
             $model->email = $user->email;
-            
+            $model->oldUsername = $user->username;
+            $model->oldEmail = $user->email;
             return $model;
         }
 

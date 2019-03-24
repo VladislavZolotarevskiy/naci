@@ -25,7 +25,7 @@ $this->registerCss(".select2-selection__rendered { margin-top: 0 !important;}");
         'options' => ['placeholder' => 'Выбрать'],
         'language' => 'ru',
         'pluginEvents' => [
-            "select2:select" => "function() { var type; type = $('#contacts-form').serialize(); $.get('/naci-test/contacts/create',type,function(data){ $('#contacts-form').replaceWith(data);});} ",
+            "select2:select" => "function() { var type; type = $('#contacts-form').serialize(); $.get('/naci/contacts/create',type,function(data){ $('#contacts-form').replaceWith(data);});} ",
             //"select2:select" => "function() { var type; type = $('#contacts-form').serialize(); alert(type);}"
             
         ]    

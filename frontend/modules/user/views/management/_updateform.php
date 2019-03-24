@@ -9,7 +9,7 @@ use yii\helpers\Url;
 
 <div class="tticket-form">
     <?php $form = ActiveForm::begin([
-        'id' => 'create-user',
+        'id' => 'update-user',
         'options' => ['data-pjax' => true],
         'enableAjaxValidation' => true,
         'enableClientValidation' => true,

@@ -79,9 +79,14 @@ class ManagementController extends Controller
         ]);
     }
     
-    public function actionPerformAjaxValidation()
+    public function actionPerformAjaxValidation($id=null)
     {
-        $model = new ManageUser();
+        if ($id == null){
+            $model = new ManageUser();
+        }
+        else {
+            $model = ManageUser::findUser($id);
+        }
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
         Yii::$app->response->format = Response::FORMAT_JSON;
         return ActiveForm::validate($model);

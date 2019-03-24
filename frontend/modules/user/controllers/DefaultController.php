@@ -11,7 +11,6 @@ use yii\filters\AccessControl;
 use frontend\modules\user\models\LoginForm;
 use frontend\modules\user\models\PasswordResetRequestForm;
 use frontend\modules\user\models\ResetPasswordForm;
-use frontend\modules\user\models\CreateUser;
 
 /**
  * Default controller for the `user` module
@@ -21,9 +20,9 @@ class DefaultController extends Controller {
      * Renders the index view for the module
      * @return string
      */
-    public function actionIndex() {
-        return $this->render('index');
-    }
+//    public function actionIndex() {
+//        return $this->render('index');
+//    }
 
     /**
      * {@inheritdoc}
@@ -108,20 +107,20 @@ class DefaultController extends Controller {
      *
      * @return mixed
      */
-    public function actionSignup() {
-        $model = new CreateUser();
-        if ($model->load(Yii::$app->request->post())) {
-            if ($user = $model->createUser()) {
-                if (Yii::$app->getUser()->login($user)) {
-                    return $this->goHome();
-                }
-            }
-        }
-        $this->layout = '/main-login';
-        return $this->render('signup', [
-                    'model' => $model,
-        ]);
-    }
+//    public function actionSignup() {
+//        $model = new CreateUser();
+//        if ($model->load(Yii::$app->request->post())) {
+//            if ($user = $model->createUser()) {
+//                if (Yii::$app->getUser()->login($user)) {
+//                    return $this->goHome();
+//                }
+//            }
+//        }
+//        $this->layout = '/main-login';
+//        return $this->render('signup', [
+//                    'model' => $model,
+//        ]);
+//    }
 
     /**
      * Requests password reset.

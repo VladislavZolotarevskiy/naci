@@ -5,7 +5,7 @@ use yii\helpers\Url;
 
     <section class="sidebar">
 
-        <!-- search form -->
+        <!-- search form -
         <form action="#" method="get" class="sidebar-form">
             <div class="input-group">
                 <input type="text" name="q" class="form-control" placeholder="Search..."/>
@@ -15,7 +15,7 @@ use yii\helpers\Url;
               </span>
             </div>
         </form>
-        <!-- /.search form -->
+         /.search form -->
 
         <?= dmstr\widgets\Menu::widget(
                         [
@@ -23,9 +23,9 @@ use yii\helpers\Url;
                     'class' => 'sidebar-menu tree',
                     'data-widget'=> 'tree'],
                 'items' => [
-                    ['label' => 'Главное меню', 
-                        'options' => [
-                            'class' => 'header']],
+//                    ['label' => 'Главное меню', 
+//                        'options' => [
+//                            'class' => 'header']],
                     [
                         'label' => 'Справочники',
                         'icon' => 'list',
@@ -34,10 +34,10 @@ use yii\helpers\Url;
                                 'url' => ['/ref-region'],],
                             ['label' => 'Сервисы', 'icon' => 'caret-right', 
                                 'url' => ['/ref-service'],],
-                            ['label' => 'Населённые пункты',
+                            ['label' => 'Нас. пункты',
                                 'icon' => 'caret-right',
                                 'url' => ['/ref-city'],],
-                            ['label' => 'Типы населённых пунктов',
+                            ['label' => 'Типы нас. пунктов',
                                 'icon' => 'caret-right',
                                 'url' => ['/ref-city-type'],],
                             ['label' => 'Типы контактов', 
@@ -60,7 +60,21 @@ use yii\helpers\Url;
                 ],
             ]
         ) ?>
-
+        <?php if (Yii::$app->user->can('admin')): ?>
+        <?= dmstr\widgets\Menu::widget(
+                        [
+                'options' => [
+                    'class' => 'sidebar-menu tree',
+                    'data-widget'=> 'tree'],
+                'items' => [
+                    ['label' => 'Пользователи', 
+                        'icon' => 'user',
+                        'url' => ['/user/management/index']],
+                    ['label' => 'Приоритеты', 
+                        'icon' => 'caret-right',
+                        'url' => ['/ref-importance']],
+                    ]]);?>
+        <?php endif ?>
     </section>
 
 </aside>

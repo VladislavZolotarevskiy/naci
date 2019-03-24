@@ -376,7 +376,7 @@ public function oldIncidentStep($incident_id,$prev=null)
     }
 }
 public function createText ($model){
-        $clock = IncidentSteps::needlessTime($model->incident_id,1)['clock'];
+        $clock_of_start = IncidentSteps::needlessTime($model->incident_id,1)['clock'];
         $dataTime = new \DateTime($clock);
         $clock_format = $dataTime->format('d.m.y в H:i');
         $incident = Incident::findOne($model->incident_id);
@@ -391,7 +391,7 @@ public function createText ($model){
                 else {
                     $title = 'Открытие инцидента № '.$incident->inc_number;
                 }
-                $text = $title . '. Начало: '.$model->clock
+                $text = $title . '. Начало: '.$this->timeFormat($model->clock)
                     .'. '.$model->message
                     .'. Ответственный: '.$model->res_person.'. Контроль:'
                     .$model->super_person.' +79873242404, +74957877667 доб. 7377.';
@@ -404,7 +404,7 @@ public function createText ($model){
                 else {
                     $title = 'Дополнение по ИТ инциденту № '.$incident->inc_number;
                 }
-                $text = $title. '. Начало: '.$clock_format
+                $text = $title. '. Начало: '.$this->timeFormat($clock_of_start)
                     .'. '.$model->message.'. Ответственный: '.$model->res_person
                     .'. Контроль:'.$model->super_person.' +79873242404, +74957877667 доб. 7377.'; 
                 break;
@@ -416,7 +416,7 @@ public function createText ($model){
                 else {
                     $title = 'Закрытие ИТ инцидента № '.$incident->inc_number;
                 }
-                $text = $title. '. Завершение: '.$model->clock.'. Продолжительность: '.mb_substr($incident->duration, 0, 5)
+                $text = $title. '. Завершение: '.$this->timeFormat($model->clock).'. Продолжительность: '.$this->substr($incident->duration)
                     .'. '.$model->message.'. Ответственный: '.$model->res_person
                     .'. Контроль:'.$model->super_person.' +79873242404, +74957877667 доб. 7377.';
                 break;
@@ -444,7 +444,7 @@ public function createText ($model){
             //Закрытие
             case 3:
                 $title = 'Закрытие инцидента на ВОЛС Единство № '.$incident->inc_number;
-                $text = $title. '. Завершение: '.$model->clock.'. Продолжительность: '. mb_substr($incident->duration, 0, 5)
+                $text = $title. '. Завершение: '.$model->clock.'. Продолжительность: '. $this->substr($incident->duration)
                     .'. Приоритет: ' . $model->refImportance->name . '. '.$model->message
                     .'. Ответственный: '.$model->res_person.'. Контроль:'
                     .$model->super_person.' +79873242404, +74957877667 доб. 7377.';
@@ -455,6 +455,15 @@ public function createText ($model){
             'text' => $text, 
             'title' => $title,
                 ];
+    }
+    
+    protected function timeFormat($clock) {
+        $dataTime = new \DateTime($clock);
+        return $dataTime->format('d.m.y в H:i');
+    }
+    protected function substr($string) {
+        $nubmer = strrpos($string, ':');
+        return mb_substr ($string, 0, $nubmer);
     }
 }
     

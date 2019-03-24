@@ -21,7 +21,7 @@ $this->context->layout = 'main-login';
             <p>
                 <?= nl2br(Html::encode($message)) ?>
             </p>
-            <a href="../site">На главную</a>
+                <?= Html::a('На главную', ['/']) ?>
         </div>
     </div>
     

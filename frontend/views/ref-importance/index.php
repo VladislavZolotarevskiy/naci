@@ -7,30 +7,25 @@ use yii\widgets\Pjax;
 /* @var $searchModel common\models\RefImportanceSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Ref Importances';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = 'Приоритеты';
 ?>
 <div class="ref-importance-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
     <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <p>
-        <?= Html::a('Create Ref Importance', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+        'layout'=>"{items}\n{pager}",
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
             'name',
             'description',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{update}'],
         ],
     ]); ?>
     <?php Pjax::end(); ?>

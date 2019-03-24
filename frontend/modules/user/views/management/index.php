@@ -8,6 +8,7 @@ use yii\bootstrap\Modal;
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\RefCitySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+$this->title = 'Управление пользователями';
 ?>
 <?= Modal::widget([
     'id' => 'user_create',
@@ -105,3 +106,38 @@ use yii\bootstrap\Modal;
     ]);?>
     <?php Pjax::end(); ?>
 </div>
+<?php
+$data1=1553446565;
+$data2=1554347739;
+$timestamp = $data2-$data1;
+$hour = intdiv($timestamp, 3600);
+        $min = intdiv(($timestamp%3600), 60);
+        $sec = $timestamp%60;
+        $arr = [
+            1 => $hour,
+            2 => $min,
+            3 => $sec];
+        $i = 1;
+        $result = '';
+        //add zero in begin
+        foreach ($arr as $item) {
+            if ($item < 10){
+                if ($item == 0){
+                    $item = '00';
+                }
+                else {
+                    $item = '0'.$item;
+                }    
+            }
+            if ($i == 1) {
+                $result .= $item;
+            }
+            else {
+                $result .= ':'.$item;
+            }
+            $i += $i;
+        }
+ 
+        ?>
+<?= strrpos($result, ':');?>       
+<?= $result;?>       
