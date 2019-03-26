@@ -48,26 +48,33 @@ class ContactsController extends SiteController
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($person_id)
+    public function actionCreate($person_id=NULL)
     { 
-        $model = new Contacts();
         $request = Yii::$app->request;
-        if ($request->isPost && $model->load($request->post())) {
-            $model->id_person = $person_id;
-            $model->save();
-            return $this->redirect(Url::previous('persons-view'));
+        $model = new Contacts();
+        if ($model->load($request->post()) && $model->save()) {
+            return $this->redirect(Url::to('../persons/view/'.$model->id_person));
         }
         else {
-            return $this->renderAjax('create',[
-            'model' => $model,
-            'person_id' => $person_id,
-            ]);
-        }  
+            if ($person_id == NULL) {
+                $model->load($request->get());
+                return $this->renderAjax('create',[
+                'model' => $model,
+                'person_id' => $model->id_person
+                ]);
+            }
+            else {
+                return $this->renderAjax('create',[
+                'model' => $model,
+                'person_id' => $person_id
+                ]);
+            }    
+        }
+        
     }
-    public function actionPerformAjaxValidation($person_id)
+    public function actionPerformAjaxValidation()
     {
         $model = new Contacts();
-        $model->id_person = $person_id;
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             return ActiveForm::validate($model);

@@ -11,7 +11,6 @@ use yii\filters\AccessControl;
 use frontend\modules\user\models\LoginForm;
 use frontend\modules\user\models\PasswordResetRequestForm;
 use frontend\modules\user\models\ResetPasswordForm;
-use frontend\modules\user\models\SignupForm;
 
 /**
  * Default controller for the `user` module
@@ -21,9 +20,9 @@ class DefaultController extends Controller {
      * Renders the index view for the module
      * @return string
      */
-    public function actionIndex() {
-        return $this->render('index');
-    }
+//    public function actionIndex() {
+//        return $this->render('index');
+//    }
 
     /**
      * {@inheritdoc}
@@ -109,9 +108,9 @@ class DefaultController extends Controller {
      * @return mixed
      */
 //    public function actionSignup() {
-//        $model = new SignupForm();
+//        $model = new CreateUser();
 //        if ($model->load(Yii::$app->request->post())) {
-//            if ($user = $model->signup()) {
+//            if ($user = $model->createUser()) {
 //                if (Yii::$app->getUser()->login($user)) {
 //                    return $this->goHome();
 //                }
@@ -132,14 +131,13 @@ class DefaultController extends Controller {
         $model = new PasswordResetRequestForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
-                Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
-
+                Yii::$app->session->setFlash('success', 'Проверьте электронную почту для дальнейших инструкций.');
                 return $this->goHome();
             } else {
                 Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset password for the provided email address.');
             }
         }
-
+        $this->layout = '/main-login';
         return $this->render('requestPasswordResetToken', [
                     'model' => $model,
         ]);
@@ -164,7 +162,7 @@ class DefaultController extends Controller {
 
             return $this->goHome();
         }
-
+        $this->layout = '/main-login';
         return $this->render('resetPassword', [
                     'model' => $model,
         ]);

@@ -31,9 +31,14 @@ class Contacts extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_person', 'ref_contact_type_id', 'name'], 'required'],
+            [['id_person', 'ref_contact_type_id','name'], 'required'],
             [['id_person', 'ref_contact_type_id'], 'integer'],
-            ['name', 'string', 'max' => 250],
+            ['name', 'trim'],
+//            ['name', 'match',
+//                'pattern' => '/^79[0-9]{9}$/', 
+//                'message' => 'Номер в формате 79ХХХХХХХХХ', 'when' => function($model){
+//                    return $model->ref_contact_type_id == 1;
+//                }],
             ['name', 'unique',
                 'message' => 'Контакт уже существует'],
             [['id_person'], 'exist',

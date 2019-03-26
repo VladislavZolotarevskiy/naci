@@ -166,7 +166,10 @@ class IncidentSteps extends \yii\db\ActiveRecord
      * get values ref_service_id for incident_id
      * next get persons_id for ref_service_id
     */
-    protected function refServiceId($incident_id,$ref_importance_id)
+    protected function refServiceId(
+            $incident_id,
+            $ref_importance_id,
+            $ref_company_id)
     {
         $ref_service_id = (new Query())
             ->select('ref_service_id')
@@ -181,20 +184,31 @@ class IncidentSteps extends \yii\db\ActiveRecord
                     'persons_ref_service',
                     'persons_ref_service_id=persons_ref_service.id'
                     )
-            ->where(['in', 'ref_service_id', $ref_service_id])
-            ->orWhere(['ref_service_id' => 1])
-            ->andWhere(['ref_importance_id'=>$ref_importance_id])
+            ->join(
+                    'INNER JOIN',
+                    'ref_service',
+                    'ref_service_id=ref_service.id'
+                    )
+            ->where([
+                'ref_service_id' => $ref_service_id,
+                'ref_importance_id'=>$ref_importance_id,
+                'ref_company_id'=>$ref_company_id])
+            ->orWhere([
+                'ref_service_id' => 1,
+                'ref_importance_id'=>$ref_importance_id,
+                'ref_company_id'=>$ref_company_id])
             ->all();
         return $persons_ref_service;
     }
     /**
      * get values persons_id for service_id
      */
-    protected function idPersons($incident_id,$ref_importance_id)
+    protected function idPersons($incident_id,$ref_importance_id,$ref_company_id)
     {
         $persons_ref_service = IncidentSteps::refServiceId(
                 $incident_id,
-                $ref_importance_id);
+                $ref_importance_id,
+                $ref_company_id);
         $ref_region_id = (new Query())
             ->select('ref_region_id')
             ->from('incident_ref_region')
@@ -250,21 +264,25 @@ class IncidentSteps extends \yii\db\ActiveRecord
  */
     public function contacts($incident_id,$ref_importance_id,$contact_type)
 {
-    $persons_ref_service = IncidentSteps::refServiceId(
-                $incident_id,
-                $ref_importance_id);
     $ref_company_id = (new Query())
         ->select('ref_company_id')
         ->from('incident')
         ->where(['id' => $incident_id])
         ->all();
+    $persons_ref_service = IncidentSteps::refServiceId(
+                $incident_id,
+                $ref_importance_id,
+                $ref_company_id);
     $persons_ref_company = (new Query())
         ->select(['persons_id AS id_person'])
         ->from('persons_ref_company')
         ->where(['in', 'ref_company_id', $ref_company_id])
         ->andWhere(['in', 'persons_id', $persons_ref_service])
         ->all();
-    $id_persons = IncidentSteps::idPersons($incident_id,$ref_importance_id);
+    $id_persons = IncidentSteps::idPersons(
+            $incident_id,
+            $ref_importance_id,
+            $ref_company_id);
     $contacts = (new Query())
         ->select([
             'ref_contact_type.name AS type',
@@ -358,7 +376,7 @@ public function oldIncidentStep($incident_id,$prev=null)
     }
 }
 public function createText ($model){
-        $clock = IncidentSteps::needlessTime($model->incident_id,1)['clock'];
+        $clock_of_start = IncidentSteps::needlessTime($model->incident_id,1)['clock'];
         $dataTime = new \DateTime($clock);
         $clock_format = $dataTime->format('d.m.y в H:i');
         $incident = Incident::findOne($model->incident_id);
@@ -373,7 +391,7 @@ public function createText ($model){
                 else {
                     $title = 'Открытие инцидента № '.$incident->inc_number;
                 }
-                $text = $title . '. Начало: '.$model->clock
+                $text = $title . '. Начало: '.$this->timeFormat($model->clock)
                     .'. '.$model->message
                     .'. Ответственный: '.$model->res_person.'. Контроль:'
                     .$model->super_person.' +79873242404, +74957877667 доб. 7377.';
@@ -386,7 +404,7 @@ public function createText ($model){
                 else {
                     $title = 'Дополнение по ИТ инциденту № '.$incident->inc_number;
                 }
-                $text = $title. '. Начало: '.$clock_format
+                $text = $title. '. Начало: '.$this->timeFormat($clock_of_start)
                     .'. '.$model->message.'. Ответственный: '.$model->res_person
                     .'. Контроль:'.$model->super_person.' +79873242404, +74957877667 доб. 7377.'; 
                 break;
@@ -398,7 +416,7 @@ public function createText ($model){
                 else {
                     $title = 'Закрытие ИТ инцидента № '.$incident->inc_number;
                 }
-                $text = $title. '. Завершение: '.$model->clock.'. Продолжительность: '.mb_substr($incident->duration, 0, 5)
+                $text = $title. '. Завершение: '.$this->timeFormat($model->clock).'. Продолжительность: '.$this->substr($incident->duration)
                     .'. '.$model->message.'. Ответственный: '.$model->res_person
                     .'. Контроль:'.$model->super_person.' +79873242404, +74957877667 доб. 7377.';
                 break;
@@ -426,7 +444,7 @@ public function createText ($model){
             //Закрытие
             case 3:
                 $title = 'Закрытие инцидента на ВОЛС Единство № '.$incident->inc_number;
-                $text = $title. '. Завершение: '.$model->clock.'. Продолжительность: '. mb_substr($incident->duration, 0, 5)
+                $text = $title. '. Завершение: '.$model->clock.'. Продолжительность: '. $this->substr($incident->duration)
                     .'. Приоритет: ' . $model->refImportance->name . '. '.$model->message
                     .'. Ответственный: '.$model->res_person.'. Контроль:'
                     .$model->super_person.' +79873242404, +74957877667 доб. 7377.';
@@ -437,6 +455,15 @@ public function createText ($model){
             'text' => $text, 
             'title' => $title,
                 ];
+    }
+    
+    protected function timeFormat($clock) {
+        $dataTime = new \DateTime($clock);
+        return $dataTime->format('d.m.y в H:i');
+    }
+    protected function substr($string) {
+        $nubmer = strrpos($string, ':');
+        return mb_substr ($string, 0, $nubmer);
     }
 }
     

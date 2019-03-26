@@ -164,26 +164,27 @@ class IncidentStepsController extends SiteController
             'incident_steps_id' => $model->id
             ]);
         $incident = Incident::findOne($model->incident_id);
-        if ($model->load(Yii::$app->request->post()) && $model->save() &&
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            if ($importance->ref_importance_id == 4  && 
                 $importance->load(Yii::$app->request->post()) 
                 && $importance->save()) {
-            if ($importance->ref_importance_id == 4) {
                 $incident->type = 2;
                 $incident->save();
             }
-            else {
+            elseif ($importance->load(Yii::$app->request->post()) && $importance->save()) {
                 $incident->type = 1;
                 $incident->save();
             }    
-            if ($model->no_send == 1) {
+            if ($model->no_send == 1  && $importance->load(Yii::$app->request->post()) 
+                && $importance->save()) {
                 return $this->redirect([
                 '/incident/view',
                     'id' => $model->incident_id]);
             }
             if ($model->ref_type_steps_id == 3) {
                 $incident->duration = $this->convertTimestamp(strtotime($model->clock) - strtotime($model->needlessTime($model->incident_id, 1)['clock']));
-                $incident->stoppage = $this->convertTimestamp($this->serviceStopped($model->incident_id));
                 $incident->save();
+                $incident->stoppage = $this->convertTimestamp($this->serviceStopped($model->incident_id));
             }
             $this->snapshotCreate($model->id,$importance->ref_importance_id,IncidentSteps::oldIncidentStep($model->incident_id));
             return $this->redirect(['send',

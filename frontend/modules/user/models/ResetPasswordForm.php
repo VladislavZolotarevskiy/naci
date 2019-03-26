@@ -3,7 +3,7 @@ namespace frontend\modules\user\models;
 
 use yii\base\Model;
 use yii\base\InvalidParamException;
-use common\models\User;
+use frontend\models\User;
 
 /**
  * Password reset form
@@ -47,7 +47,13 @@ class ResetPasswordForm extends Model
             ['password', 'string', 'min' => 6],
         ];
     }
-
+    public function attributeLabels()
+    {
+        return [
+            'password' => 'Пароль'];
+    }
+    
+    
     /**
      * Resets password.
      *

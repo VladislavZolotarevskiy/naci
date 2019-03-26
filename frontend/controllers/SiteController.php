@@ -19,7 +19,7 @@ class SiteController extends Controller
     public function beforeAction($action)
 	{
 		if (Yii::$app->user->isGuest) {
-			return $this->redirect('user/default/login');
+			return $this->redirect(['/user/default/login']);
 		}
 		if (!parent::beforeAction($action)) {
 			return false;

@@ -12,9 +12,9 @@ use frontend\models\RefService;
 <div class="contacts-form">
 
     <?php $form = ActiveForm::begin(); ?>
-
+    
     <?= $form->field($model, 'persons_id')->hiddenInput(['value' => $person_id])->label(false) ?>
-
+    
     <?= $form->field($model, 'ref_service_id')->dropDownList(RefService::serviceList()) ?>
 
     <div class="form-group">

@@ -7,28 +7,28 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$this->title = 'Забыл пароль';
+$this->title = 'Сброс пароля';
 
 ?>
 <div class="login-box">
     <div class="login-logo">
-        <a href="#"><b>Monitoring</b> NACI</a>
+        NACI <b>Monitoring</b>
     </div>
-    <h1><?= Html::encode($this->title) ?></h1>
+    
+    <div class="login-box-body">
+        <p class="login-box-msg">Введите ваш адрес электронной почты. Ссылка для сброса пароля будет отправлена на этот адрес.</p>
 
-    <p>Please fill out your email. A link to reset password will be sent there.</p>
-
-    <div class="row">
-        <div class="col-lg-5">
+   
             <?php $form = ActiveForm::begin(['id' => 'request-password-reset-form']); ?>
 
                 <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
 
                 <div class="form-group">
-                    <?= Html::submitButton('Send', ['class' => 'btn btn-primary']) ?>
+                    <?= Html::submitButton('Восстановить', ['class' => 'btn btn-primary']) ?>
                 </div>
 
             <?php ActiveForm::end(); ?>
-        </div>
-    </div>
+       
+    
+    </div>    
 </div>
