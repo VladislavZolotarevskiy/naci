@@ -19,7 +19,7 @@ use frontend\models\RefImportance;
 
     <div class="form-group">
         <?= Html::a('Назад', [
-            'persons-ref-service-ref-importance/index',
+            'persons-ref-service-ref-importance/importance',
             'person_ref_service_id' => $person_ref_service_id], [
                 'class' => 'btn btn-danger']) ?>
         <?= Html::submitButton('Добавить', ['class' => 'btn btn-success']) ?>
