@@ -34,7 +34,8 @@ $this->registerCss(".select2-selection__rendered { margin-top: 0 !important;}");
     <?php if ($model->ref_contact_type_id == 1):?>
     
     <?= $form->field($model, 'name')->widget(\yii\widgets\MaskedInput::className(), [
-        'mask' => '79999999999',
+        'options' => ['placeholder' => '7XXXXXXXXXX'],
+		'mask' => '99999999999',
         'clientOptions'=>[
         'clearIncomplete'=>true
             ]])
