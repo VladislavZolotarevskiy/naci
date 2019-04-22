@@ -24,7 +24,6 @@ $this->title = 'Компании';
             ['class' => 'yii\grid\SerialColumn'],
 
             'name',
-
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{update} {delete}',

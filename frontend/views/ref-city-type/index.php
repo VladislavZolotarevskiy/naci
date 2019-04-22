@@ -25,7 +25,6 @@ $this->title = 'Типы населённых пунктов';
             ['class' => 'yii\grid\SerialColumn'],
 
             'name',
-
             [
             'class' => 'yii\grid\ActionColumn',
             'template' => '{update} {delete}',
