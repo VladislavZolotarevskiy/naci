@@ -24,7 +24,6 @@ $this->title = 'Типы контактов';
             ['class' => 'yii\grid\SerialColumn'],
 
             'name',
-
             [
             'class' => 'yii\grid\ActionColumn',
             'template' => '{update} {delete}',

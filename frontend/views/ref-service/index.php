@@ -30,7 +30,6 @@ $this->title = 'Сервисы';
             [
                 'attribute' => 'companyRefServices.name',
                 'label' => 'Компания',],
-
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{update} {delete}',
