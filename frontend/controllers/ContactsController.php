@@ -53,7 +53,7 @@ class ContactsController extends SiteController
         $request = Yii::$app->request;
         $model = new Contacts();
         if ($model->load($request->post()) && $model->save()) {
-            return $this->redirect(Url::to('../persons/view/'.$model->id_person));
+            return $this->redirect(Url::to(['/persons/view/', 'id' => $model->id_person]));
         }
         else {
             if ($person_id == NULL) {

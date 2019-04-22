@@ -244,7 +244,7 @@ class IncidentStepsController extends SiteController
             $snapshot = json_decode($model->snapshot, true);
             $snapshot['message'][0]['text'] = $text['text'];
             $model->snapshot = json_encode($snapshot, JSON_FORCE_OBJECT);
-            //shell_exec('/opt/shitov/jshon/naci_sms_send.sh '.'\''.$model->snapshot.'\'');
+            shell_exec('/opt/shitov/jshon/naci_sms_send.sh '.'\''.$model->snapshot.'\'');
             if (($incident->ref_company_id == 1)||($ref_importance_id == 4)) {
                 $this->sendEmail($model,$incident->ref_company_id,$text['title']);
             }

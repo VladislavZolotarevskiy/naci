@@ -49,7 +49,9 @@ class ManagementController extends Controller
                     [
                         'actions' => [
                             'self-update',
-                            'change-self-password'],
+                            'change-self-password',
+                            'perform-ajax-validation',
+                            ],
                         'allow' => true,
                         'roles' => ['user'],
                     ]
@@ -115,7 +117,7 @@ class ManagementController extends Controller
         $model = ManageUser::findUser(Yii::$app->getUser()->id);
         if ($model->load(Yii::$app->request->post())) {
             ManageUser::selfUpdateUser($model);
-            return $this->redirect(['index']);
+            return $this->redirect(['/']);
         }
         return $this->renderAjax('update-self', [
             'model' => $model,

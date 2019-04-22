@@ -53,7 +53,36 @@ if ($incident->status == 3) {
                         mso-element-anchor-horizontal:column;mso-height-rule:exactly">
                         <i>
                             <span style="font-family:&quot;Tahoma&quot;,sans-serif">
-                            '.substr($incident->duration, 0,-3).'<o:p></o:p>
+                            '.IncidentSteps::substr($incident->duration).'<o:p></o:p>
+                            </span>
+                        </i>
+                    </p>
+                </td>
+            </tr>
+            <tr style="mso-yfti-irow:2;height:21.95pt">
+                <td width="316" valign="top" style="width:237.05pt;border:solid #BFBFBF 1.0pt;
+                    border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:21.95pt">
+                    <p class="MsoNormal" style="mso-element:frame;
+                        mso-element-frame-hspace:9.0pt;
+                        mso-element-wrap:around;
+                        mso-element-anchor-vertical:paragraph;
+                        mso-element-anchor-horizontal:column;
+                        mso-height-rule:exactly">
+                        <span style="font-family:&quot;Tahoma&quot;,sans-serif">Время простоя(ЧЧ:ММ):<o:p></o:p></span>
+                    </p>
+                </td>
+                <td width="255" valign="top" style="width:191.6pt;border-top:none;
+                    border-left:none;border-bottom:solid #BFBFBF 1.0pt;
+                    border-right:solid #BFBFBF 1.0pt;
+                    padding:0cm 5.4pt 0cm 5.4pt;height:21.95pt">
+                    <p class="MsoNormal" style="mso-element:frame;
+                        mso-element-frame-hspace:9.0pt;
+                        mso-element-wrap:around;
+                        mso-element-anchor-vertical:paragraph;
+                        mso-element-anchor-horizontal:column;mso-height-rule:exactly">
+                        <i>
+                            <span style="font-family:&quot;Tahoma&quot;,sans-serif">
+                            '.IncidentSteps::substr($incident->stoppage).'<o:p></o:p>
                             </span>
                         </i>
                     </p>
@@ -62,6 +91,38 @@ if ($incident->status == 3) {
 }
 else {
     $duration = null;
+}
+if ($incident->ref_company_id == 1) {
+    $model->refImportance->id;
+    $importance = '<tr style="mso-yfti-irow:2;height:21.95pt">
+                <td width="316" valign="top" style="width:237.05pt;border:solid #BFBFBF 1.0pt;
+                    border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:21.95pt">
+                    <p class="MsoNormal" style="mso-element:frame;
+                        mso-element-frame-hspace:9.0pt;
+                        mso-element-wrap:around;
+                        mso-element-anchor-vertical:paragraph;
+                        mso-element-anchor-horizontal:column;
+                        mso-height-rule:exactly">
+                        <span style="font-family:&quot;Tahoma&quot;,sans-serif">Приоритет:<o:p></o:p></span>
+                    </p>
+                </td>
+                <td width="255" valign="top" style="width:191.6pt;border-top:none;
+                    border-left:none;border-bottom:solid #BFBFBF 1.0pt;
+                    border-right:solid #BFBFBF 1.0pt;
+                    padding:0cm 5.4pt 0cm 5.4pt;height:21.95pt">
+                    <p class="MsoNormal" style="mso-element:frame;
+                        mso-element-frame-hspace:9.0pt;
+                        mso-element-wrap:around;
+                        mso-element-anchor-vertical:paragraph;
+                        mso-element-anchor-horizontal:column;mso-height-rule:exactly">
+                        <i>
+                            <span style="font-family:&quot;Tahoma&quot;,sans-serif">
+                            '.$model->refImportance->name.'<o:p></o:p>
+                            </span>
+                        </i>
+                    </p>
+                </td>
+            </tr>';
 }
 ?>
 <style>
@@ -301,6 +362,7 @@ div.WordSection1
                                                                 </p>
                                                             </td>
                                                         </tr>
+                                                        <?= $importance?>
                                                         <tr style="mso-yfti-irow:1;height:22.15pt">
                                                             <td width="316" valign="top" style="width:237.05pt;
                                                                 border:solid #BFBFBF 1.0pt;
