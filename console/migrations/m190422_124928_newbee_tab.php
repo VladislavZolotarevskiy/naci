@@ -51,7 +51,7 @@ class m190422_124928_newbee_tab extends Migration
         $this->createIndex(
                 'fk_persons_ref_service_ref_region_persons_id', 
                 'persons_ref_service_ref_region',
-                'persons_id'
+                'persons_ref_service_id'
         );
         $this->createIndex(
                 'fk_persons_ref_service_ref_region_ref_region_id', 
@@ -70,7 +70,7 @@ class m190422_124928_newbee_tab extends Migration
         $this->createIndex(
                 'fk_persons_ref_service_ref_city_persons_id', 
                 'persons_ref_service_ref_city',
-                'persons_id'
+                'persons_ref_service_id'
         );
         $this->createIndex(
                 'fk_persons_ref_service_ref_city_ref_city_id', 
@@ -89,7 +89,7 @@ class m190422_124928_newbee_tab extends Migration
         $this->createIndex(
                 'fk_persons_ref_service_ref_place_persons_id', 
                 'persons_ref_service_ref_place',
-                'persons_id'
+                'persons_ref_service_id'
         );
         $this->createIndex(
                 'fk_persons_ref_service_ref_place_ref_place_id', 
@@ -103,8 +103,8 @@ class m190422_124928_newbee_tab extends Migration
         $this->addForeignKey(
                 'fk_persons_ref_service_ref_region_persons_id', 
                 'persons_ref_service_ref_region',
-                'persons_id',
-                'persons',
+                'persons_ref_service_id',
+                'persons_ref_service',
                 'id'
         );
         $this->addForeignKey(
@@ -120,25 +120,32 @@ class m190422_124928_newbee_tab extends Migration
         $this->addForeignKey(
                 'fk_persons_ref_service_ref_city_persons_id', 
                 'persons_ref_service_ref_city',
-                'persons_id',
-                'persons',
+                'persons_ref_service_id',
+                'persons_ref_service',
                 'id'
         );
         $this->addForeignKey(
-                'fk_persons_ref_service_ref_region_ref_region_id', 
-                'persons_ref_service_ref_region',
-                'ref_region_id',
-                'ref_region',
+                'fk_persons_ref_service_ref_city_ref_region_id', 
+                'persons_ref_service_ref_city',
+                'ref_city_id',
+                'ref_city',
                 'id'
         );
         /**
-         * create foreign key
+         * create foreign key for persons_ref_service_ref_place
          */
         $this->addForeignKey(
-                'fk_persons_ref_service_ref_region_persons_id', 
-                'persons_ref_service_ref_region',
-                'persons_id',
-                'persons',
+                'fk_persons_ref_service_ref_place_persons_id', 
+                'persons_ref_service_ref_place',
+                'persons_ref_service_id',
+                'persons_ref_service',
+                'id'
+        );
+        $this->addForeignKey(
+                'fk_persons_ref_service_ref_place_ref_place_id', 
+                'persons_ref_service_ref_place',
+                'ref_place_id',
+                'ref_place',
                 'id'
         );
 }
