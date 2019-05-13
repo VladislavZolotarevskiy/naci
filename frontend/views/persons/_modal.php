@@ -18,3 +18,11 @@ use yii\bootstrap\Modal?>
     'id' => 'modal-company-update',
     'header' => Html::tag('h4', Html::encode('Редактировать'),['class' => 'username']),
 ]);?>
+<?= Modal::widget([
+    'id' => 'modal-service-create',
+    'header' => Html::tag('h4', Html::encode('Привязать к сервису'),['class' => 'username']),
+]);?>
+<?= Modal::widget([
+    'id' => 'modal-service-update',
+    'header' => Html::tag('h4', Html::encode('Редактировать'),['class' => 'username']),
+]);?>

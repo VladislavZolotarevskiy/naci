@@ -60,13 +60,14 @@ class PersonsController extends SiteController
         $companiesSearchModel = new PersonsRefCompanySearch(['persons_id' => $id]);
         $companiesDataProvider = $companiesSearchModel->search(Yii::$app->request->queryParams);
         $companiesDataProvider->sort = false;
-//        $serviceSearchModel = new \frontend\models\PersonsRefServiceSearch([['persons_id' => $id]]);
-//        $serviceDataProvider = $serviceSearchModel->search(Yii::$app->request->queryParams);
+        $serviceSearchModel = new \frontend\models\PersonsRefServiceSearch();
+        $serviceDataProvider = $serviceSearchModel->search(Yii::$app->request->queryParams);
+        $serviceDataProvider->sort = false;
         return $this->render('view', [
             'model' => $this->findModel($id),
             'contactsDataProvider' => $contactsDataProvider,
             'companiesDataProvider' => $companiesDataProvider,
-//            'serviceDataProvider' => $serviceDataProvider
+            'serviceDataProvider' => $serviceDataProvider
         ]);
     }
 

@@ -12,18 +12,18 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-	<?= $form->field($model, 'surname')->textInput(['maxlength' => true]) ?>
-	
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'midname')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'surname')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
         <?php if (isset($id)): ?>
         <?= Html::a('Назад', ['persons/view', 'id' => $model->id], [
                 'class' => 'btn btn-danger'])?>
         <?php else :?>
-        <?= Html::a('Назад', ['persons/index'], [
+        <?= Html::a('Назад', ['persons'], [
                 'class' => 'btn btn-danger'])?>
         <?php endif ?>
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>

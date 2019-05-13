@@ -52,6 +52,7 @@ Url::remember(['view', 'id'=> $model->id],'persons-view');
 <div>
     <!--Service-ref-importance-->
     <?= $this->render('_services', [
-        'model' => $model
+            'serviceDataProvider' => $serviceDataProvider,
+            'person_id' => $model->id
     ])?>
 </div>

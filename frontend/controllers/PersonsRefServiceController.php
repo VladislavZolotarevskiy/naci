@@ -43,7 +43,18 @@ class PersonsRefServiceController extends SiteController
             ]);    
         }
     }
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
 
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(Url::previous('persons-view'));
+        }
+
+        return $this->renderAjax('update', [
+            'model' => $model,
+        ]);
+    }
     /**
      * Deletes an existing PersonsRefService model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
@@ -51,12 +62,12 @@ class PersonsRefServiceController extends SiteController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id,$person_id)
+    public function actionDelete($id)
     {
         PersonsRefServiceRefImportance::deleteAll(['persons_ref_service_id' => $id]);
         $this->findModel($id)->delete();
-        return $this->redirect(Url::to('../persons/view/'.$person_id));
-    }
+        return $this->redirect(Url::previous('persons-view'));
+    }   
         
     /**
      * Finds the PersonsRefService model based on its primary key value.

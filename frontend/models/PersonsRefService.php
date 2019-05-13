@@ -68,7 +68,31 @@ class PersonsRefService extends \yii\db\ActiveRecord
     {
         return $this->hasOne(RefService::className(), ['id' => 'ref_service_id']);
     }
-
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRefRegion()
+    {
+        return $this->hasMany(RefRegion::className(), ['id' => 'ref_region_id'])
+                ->viaTable('persons_ref_service_ref_region', ['persons_ref_service_id' => 'id']);
+    }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRefPlace()
+    {
+        return $this->hasMany(RefPlace::className(), ['id' => 'ref_place_id'])
+                ->viaTable('persons_ref_service_ref_place', ['persons_ref_service_id' => 'id']);
+    }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRefCity()
+    {
+        return $this->hasMany(RefCity::className(), ['id' => 'ref_city_id'])
+                ->viaTable('persons_ref_service_ref_city', ['persons_ref_service_id' => 'id']);
+    }
+    
     /**
      * @return \yii\db\ActiveQuery
      */

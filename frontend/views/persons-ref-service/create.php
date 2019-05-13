@@ -7,7 +7,7 @@ $this->title = 'Привязать к сервису';
 ?>
 <div class="persons-ref-region-create">
 <?=      
-    $this->render('_form', [
+    $this->renderAjax('_form', [
         'model' => $model,
         'person_id' => $person_id
     ]);  
