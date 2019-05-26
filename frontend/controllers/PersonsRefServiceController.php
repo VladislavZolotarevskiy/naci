@@ -32,24 +32,30 @@ class PersonsRefServiceController extends SiteController
         ];
     }
 
-   public function actionCreate($person_id)
+   public function actionCreate($person_id=null)
     {
         $person_ref_service_model = new PersonsRefService();
         $person_ref_service_ref_importance = new PersonsRefServiceRefImportance();
         $person_ref_service_ref_region = new PersonsRefServiceRefRegion();
         $person_ref_service_ref_city = new PersonsRefServiceRefCity();
         $person_ref_service_ref_place = new PersonsRefServiceRefPlace();
+        $fake_company_model = new \frontend\models\FakeCompany;
                 
-        if ($person_ref_service_model->load(Yii::$app->request->post()) && $person_ref_service_model->save()) {
+        if (Yii::$app->request->isAjax && Yii::$app->request->post()) {
+            
+        }
+        elseif ($person_ref_service_model->load(Yii::$app->request->post()) && $person_ref_service_model->save()) {
             return $this->redirect(Url::to('../persons/view/'.$person_id));
         }
-        else {
+        elseif (Yii::$app->request->isAjax && Yii::$app->request->get()) {
             return $this->renderAjax('create', [
                 'person_ref_service_model' => $person_ref_service_model,
                 'person_ref_service_ref_importance' => $person_ref_service_ref_importance,
                 'person_ref_service_ref_region' => $person_ref_service_ref_region,
                 'person_ref_service_ref_city' => $person_ref_service_ref_city,
-                'person_ref_service_ref_place' => $person_ref_service_ref_place
+                'person_ref_service_ref_place' => $person_ref_service_ref_place,
+                'fake_company_model' => $fake_company_model,
+                'person_id' => $person_id
             ]);    
         }
     }

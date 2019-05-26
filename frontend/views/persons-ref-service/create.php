@@ -13,7 +13,8 @@ $this->title = 'Привязать к сервису';
         'person_ref_service_ref_region' => $person_ref_service_ref_region,
         'person_ref_service_ref_city' => $person_ref_service_ref_city,
         'person_ref_service_ref_place' => $person_ref_service_ref_place,
-        
+        'fake_company_model' => $fake_company_model,
+        'person_id' => $person_id
     ]);  
 ?>
 </div>
