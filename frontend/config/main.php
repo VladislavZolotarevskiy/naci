@@ -18,10 +18,10 @@ return [
         'user' => [
             'class' => 'frontend\modules\user\Module',
         ],
-        //'debug' => [
-        //    'class' => 'yii\debug\Module',
-        //    'allowedIPs' => ['*.*.*.*']
-        //],
+        'debug' => [
+            'class' => 'yii\debug\Module',
+            'allowedIPs' => ['*.*.*.*']
+        ],
     ],
     'components' => [
         'request' => [
