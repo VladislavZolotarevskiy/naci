@@ -11,7 +11,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property PersonsRefCompany[] $personsRefCompanies
  */
-class FakeCompany extends RefCompany
+class FakeCompany extends \yii\db\ActiveRecord
 {
     public $fake_company_id;
     public function rules()
@@ -31,7 +31,7 @@ class FakeCompany extends RefCompany
     public function fakeCompanyList($person_id) {
         return array_unique (ArrayHelper::map(
                 PersonsRefCompany::find(['person_id' => $person_id])->with('refCompany')->all(),
-                'id',
+                'refCompany.id',
                 'refCompany.name'));
     }
 }

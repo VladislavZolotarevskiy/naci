@@ -17,6 +17,7 @@ use Yii;
  */
 class PersonsRefServiceRefRegion extends \yii\db\ActiveRecord
 {
+    public $count;
     /**
      * {@inheritdoc}
      */

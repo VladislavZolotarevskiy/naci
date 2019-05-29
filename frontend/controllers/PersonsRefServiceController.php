@@ -8,6 +8,7 @@ use frontend\models\PersonsRefServiceRefRegion;
 use frontend\models\PersonsRefService;
 use frontend\models\PersonsRefServiceRefCity;
 use frontend\models\PersonsRefServiceRefPlace;
+use frontend\models\FakeImportance;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
@@ -37,26 +38,43 @@ class PersonsRefServiceController extends SiteController
         $person_ref_service_model = new PersonsRefService();
         $person_ref_service_ref_importance = new PersonsRefServiceRefImportance();
         $person_ref_service_ref_region = new PersonsRefServiceRefRegion();
+        $person_ref_service_ref_region->count = 0;
         $person_ref_service_ref_city = new PersonsRefServiceRefCity();
         $person_ref_service_ref_place = new PersonsRefServiceRefPlace();
         $fake_company_model = new \frontend\models\FakeCompany;
-                
-        if (Yii::$app->request->isAjax && Yii::$app->request->post()) {
-            
-        }
-        elseif ($person_ref_service_model->load(Yii::$app->request->post()) && $person_ref_service_model->save()) {
-            return $this->redirect(Url::to('../persons/view/'.$person_id));
-        }
-        elseif (Yii::$app->request->isAjax && Yii::$app->request->get()) {
+        $fake_importance = new FakeImportance();
+        $fake_importance->low = 0;
+        $fake_importance->middle = 0;
+        $fake_importance->high = 1;
+        $fake_importance->critical = 1;
+        if (Yii::$app->request->isAjax) {
+            if (Yii::$app->request->post()) {
+            $fake_company_model->load(Yii::$app->request->post());
+            $fake_importance->load(Yii::$app->request->post());
             return $this->renderAjax('create', [
                 'person_ref_service_model' => $person_ref_service_model,
-                'person_ref_service_ref_importance' => $person_ref_service_ref_importance,
                 'person_ref_service_ref_region' => $person_ref_service_ref_region,
                 'person_ref_service_ref_city' => $person_ref_service_ref_city,
                 'person_ref_service_ref_place' => $person_ref_service_ref_place,
                 'fake_company_model' => $fake_company_model,
+                'fake_importance' => $fake_importance,
                 'person_id' => $person_id
             ]);    
+            }
+            elseif (Yii::$app->request->get()) {
+            return $this->renderAjax('create', [
+                'person_ref_service_model' => $person_ref_service_model,
+                'person_ref_service_ref_region' => $person_ref_service_ref_region,
+                'person_ref_service_ref_city' => $person_ref_service_ref_city,
+                'person_ref_service_ref_place' => $person_ref_service_ref_place,
+                'fake_company_model' => $fake_company_model,
+                'fake_importance' => $fake_importance,
+                'person_id' => $person_id
+            ]);    
+            }
+        }
+        elseif ($person_ref_service_model->load(Yii::$app->request->post()) && $person_ref_service_model->save()) {
+            return $this->redirect(Url::to('../persons/view/'.$person_id));
         }
     }
     public function actionUpdate($id)

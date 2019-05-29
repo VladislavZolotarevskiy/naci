@@ -9,12 +9,12 @@ $this->title = 'Привязать к сервису';
 <?=      
     $this->renderAjax('_form', [
         'person_ref_service_model' => $person_ref_service_model,
-        'person_ref_service_ref_importance' => $person_ref_service_ref_importance,
         'person_ref_service_ref_region' => $person_ref_service_ref_region,
         'person_ref_service_ref_city' => $person_ref_service_ref_city,
         'person_ref_service_ref_place' => $person_ref_service_ref_place,
         'fake_company_model' => $fake_company_model,
-        'person_id' => $person_id
+        'fake_importance' => $fake_importance,
+        'person_id' => $person_id,
     ]);  
 ?>
 </div>
