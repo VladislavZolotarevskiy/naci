@@ -51,6 +51,9 @@ class PersonsRefServiceController extends SiteController
             if (Yii::$app->request->post()) {
             $fake_company_model->load(Yii::$app->request->post());
             $fake_importance->load(Yii::$app->request->post());
+            if ($count !== null) {
+                $person_ref_service_model->load(Yii::$app->request->post());
+            }
             return $this->renderAjax('create', [
                 'person_ref_service_model' => $person_ref_service_model,
                 'person_ref_service_ref_region' => $person_ref_service_ref_region,

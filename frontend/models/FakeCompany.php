@@ -1,7 +1,7 @@
 <?php
 
 namespace frontend\models;
-
+use \yii\base\Model;
 use yii\helpers\ArrayHelper;
 /**
  * This is the model class for table "ref_company".
@@ -11,9 +11,9 @@ use yii\helpers\ArrayHelper;
  *
  * @property PersonsRefCompany[] $personsRefCompanies
  */
-class FakeCompany extends \yii\db\ActiveRecord
+class FakeCompany extends Model
 {
-    public $fake_company_id;
+    public $fake_company_id = null;
     public function rules()
     {
         return [

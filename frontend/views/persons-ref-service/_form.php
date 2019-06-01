@@ -25,7 +25,7 @@ $this->registerCss(".select2-selection__rendered { margin-top: 0 !important;}");
                 "function() {"
                 . "var url = '/' + window.location.pathname.split('/')[1] + '/' + 'persons-ref-service' + '/' + 'create';"
                 . "var serial = $('#fakecompany-fake_company_id').serialize(); "
-                . "$.post('/naci-test/persons-ref-service/create',serial,function(data){ $('#person-ref-service-form').replaceWith(data);});} ",
+                . "$.post(url,serial,function(data){ $('#person-ref-service-form').replaceWith(data);});} ",
         ]    
     ])?>    
     <?= $form->field($person_ref_service_model, 'ref_service_id')->widget(Select2::classname(),[
@@ -100,8 +100,29 @@ $this->registerCss(".select2-selection__rendered { margin-top: 0 !important;}");
             'style' => [
                 'margin-bottom' => '1em',
                 'margin-top' => '1em'],
-            'onclick' => "function() { alert('sss'); }"
+            'onclick' => "(function() { "
+            . "var url = '/' + window.location.pathname.split('/')[1] + '/' + 'persons-ref-service' + '/' + 'create'; "
+            . "var count = 1+".$person_ref_service_ref_region->count.";"
+            . "var fakecompany_serial = $('#fakecompany-fake_company_id').serialize(); "
+            . "var service_serial = $('#personsrefservice-ref_service_id').serialize(); "
+            . "$.post(url,fakecompany_serial+'&'+service_serial+'&count='+count,function(data){ $('#person-ref-service-form').replaceWith(data);}); "
+            . "})()"
         ]) ?>
+        <?php if ($person_ref_service_ref_region->count > 0):?>
+        <?= 
+            $form->field($person_ref_service_ref_region, '[0]ref_region_id')->widget(Select2::classname(),[
+                'data' => RefRegion::regionList([
+                    'ref_company_id' => 
+                        $fake_company_model->fake_company_id
+                ]),
+                'language' => 'ru',
+                'options' => ['placeholder' => 'Выберите регион'],
+                'pluginEvents' => [
+                    "select2:select" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').replaceWith(data);});} ",
+                    "select2:unselect" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').replaceWith(data);});} ",
+                ],
+        ]) ?>
+        <?php endif ?>
         <?= Html::button('+ Город',[
             'class' => 'btn btn-default btn-block',
             'style' => [
