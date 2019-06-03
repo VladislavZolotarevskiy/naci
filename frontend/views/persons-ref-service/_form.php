@@ -105,23 +105,52 @@ $this->registerCss(".select2-selection__rendered { margin-top: 0 !important;}");
             . "var count = 1+".$person_ref_service_ref_region->count.";"
             . "var fakecompany_serial = $('#fakecompany-fake_company_id').serialize(); "
             . "var service_serial = $('#personsrefservice-ref_service_id').serialize(); "
-            . "$.post(url,fakecompany_serial+'&'+service_serial+'&count='+count,function(data){ $('#person-ref-service-form').replaceWith(data);}); "
+            . "var importance_serial_low = $('#fakeimportance-low').serialize(); "
+            . "var importance_serial_middle = $('#fakeimportance-middle').serialize(); "
+            . "var importance_serial_high = $('#fakeimportance-critical').serialize(); "
+            . "var importance_serial_critical = $('#fakeimportance-high').serialize(); "
+            . "$.post("
+            . "url,"
+            . "importance_serial_low+'&'"
+            . "+importance_serial_middle+'&'"
+            . "+importance_serial_high+'&'"
+            . "+importance_serial_critical+'&'"
+            . "+fakecompany_serial+'&'"
+            . "+service_serial+'&count='"
+            . "+count,"
+            . "function(data){ $('#person-ref-service-form').replaceWith(data);}); "
             . "})()"
         ]) ?>
         <?php if ($person_ref_service_ref_region->count > 0):?>
-        <?= 
-            $form->field($person_ref_service_ref_region, '[0]ref_region_id')->widget(Select2::classname(),[
-                'data' => RefRegion::regionList([
-                    'ref_company_id' => 
-                        $fake_company_model->fake_company_id
-                ]),
-                'language' => 'ru',
-                'options' => ['placeholder' => 'Выберите регион'],
-                'pluginEvents' => [
-                    "select2:select" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').replaceWith(data);});} ",
-                    "select2:unselect" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').replaceWith(data);});} ",
-                ],
-        ]) ?>
+        <div clas="row">
+            <div class="col-md-8">
+                <?= $form->field($person_ref_service_ref_region, '[0]ref_region_id')->widget(Select2::classname(),[
+                        'data' => RefRegion::regionList([
+                            'ref_company_id' => 
+                                $fake_company_model->fake_company_id
+                        ]),
+                        'language' => 'ru',
+                        'options' => ['placeholder' => 'Выберите регион'],
+                        'pluginEvents' => [
+                            "select2:select" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').replaceWith(data);});} ",
+                            "select2:unselect" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').replaceWith(data);});} ",],
+                    ])?>
+            </div>
+            <div class="col-md-4">
+                <?= CheckboxX::widget([
+                    'name' => 'ref_region-responsible',
+                    'initInputType' => CheckboxX::INPUT_CHECKBOX,
+                    'model' => $person_ref_service_ref_region,
+                    'attribute' => '[0]responsible',
+                    'autoLabel' =>true,
+                    'pluginOptions' => [
+                        'threeState' => false,
+                        'size' => 'sm',
+                        'enclosedLabel' => true,],
+                    //'style' => ['vertical-align' => 'bottom']
+                ]);?>
+            </div>
+        </div>
         <?php endif ?>
         <?= Html::button('+ Город',[
             'class' => 'btn btn-default btn-block',

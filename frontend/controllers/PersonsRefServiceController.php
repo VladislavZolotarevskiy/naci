@@ -47,12 +47,16 @@ class PersonsRefServiceController extends SiteController
         $fake_importance->middle = 0;
         $fake_importance->high = 1;
         $fake_importance->critical = 1;
+        $count = null;
         if (Yii::$app->request->isAjax) {
             if (Yii::$app->request->post()) {
             $fake_company_model->load(Yii::$app->request->post());
             $fake_importance->load(Yii::$app->request->post());
+            isset(Yii::$app->request->post()['count']) ? $count=Yii::$app->request->post()['count'] : false;
             if ($count !== null) {
                 $person_ref_service_model->load(Yii::$app->request->post());
+                $fake_importance->load(Yii::$app->request->post());
+                $person_ref_service_ref_region->count=$count;
             }
             return $this->renderAjax('create', [
                 'person_ref_service_model' => $person_ref_service_model,
