@@ -121,10 +121,11 @@ $this->registerCss(".select2-selection__rendered { margin-top: 0 !important;}");
             . "function(data){ $('#person-ref-service-form').replaceWith(data);}); "
             . "})()"
         ]) ?>
-        <?php if ($person_ref_service_ref_region->count > 0):?>
-        <div clas="row">
-            <div class="col-md-8">
-                <?= $form->field($person_ref_service_ref_region, '[0]ref_region_id')->widget(Select2::classname(),[
+        <?php for ($i=1/**$person_ref_service_ref_region->count*/;$i++;):?>
+            <?php if ($person_ref_service_ref_region->count < 1){break;}?>
+            <?= $i ?>
+        <?php endfor ?>
+            <?= $form->field($person_ref_service_ref_region, '[0]ref_region_id')->widget(Select2::classname(),[
                         'data' => RefRegion::regionList([
                             'ref_company_id' => 
                                 $fake_company_model->fake_company_id
@@ -135,9 +136,7 @@ $this->registerCss(".select2-selection__rendered { margin-top: 0 !important;}");
                             "select2:select" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').replaceWith(data);});} ",
                             "select2:unselect" => "function() { var alerts; alerts = $('#incident-create-form').serialize(); $.post('create',alerts,function(data){ $('#incident-create-form').replaceWith(data);});} ",],
                     ])?>
-            </div>
-            <div class="col-md-4">
-                <?= CheckboxX::widget([
+            <?= CheckboxX::widget([
                     'name' => 'ref_region-responsible',
                     'initInputType' => CheckboxX::INPUT_CHECKBOX,
                     'model' => $person_ref_service_ref_region,
@@ -149,9 +148,6 @@ $this->registerCss(".select2-selection__rendered { margin-top: 0 !important;}");
                         'enclosedLabel' => true,],
                     //'style' => ['vertical-align' => 'bottom']
                 ]);?>
-            </div>
-        </div>
-        <?php endif ?>
         <?= Html::button('+ Город',[
             'class' => 'btn btn-default btn-block',
             'style' => [
