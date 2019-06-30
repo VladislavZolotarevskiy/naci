@@ -17,7 +17,6 @@ use Yii;
  */
 class PersonsRefServiceRefRegion extends \yii\db\ActiveRecord
 {
-    public $count;
     /**
      * {@inheritdoc}
      */
@@ -32,7 +31,7 @@ class PersonsRefServiceRefRegion extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['persons_ref_service_id', 'ref_region_id', 'count'], 'integer'],
+            [['persons_ref_service_id', 'ref_region_id'], 'integer'],
             [['persons_ref_service_id'], 'exist', 'skipOnError' => true, 'targetClass' => PersonsRefService::className(), 'targetAttribute' => ['persons_ref_service_id' => 'id']],
             [['ref_region_id'], 'exist', 'skipOnError' => true, 'targetClass' => RefRegion::className(), 'targetAttribute' => ['ref_region_id' => 'id']],
             ['responsible', 'boolean']

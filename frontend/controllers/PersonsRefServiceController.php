@@ -12,6 +12,8 @@ use frontend\models\FakeImportance;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * PersonsRefServiceController implements the CRUD actions for PersonsRefService model.
@@ -33,55 +35,48 @@ class PersonsRefServiceController extends SiteController
         ];
     }
 
-   public function actionCreate($person_id=null)
-    {
-        $person_ref_service_model = new PersonsRefService();
-        $person_ref_service_ref_importance = new PersonsRefServiceRefImportance();
-        $person_ref_service_ref_region = new PersonsRefServiceRefRegion();
-        $person_ref_service_ref_region->count = 0;
-        $person_ref_service_ref_city = new PersonsRefServiceRefCity();
-        $person_ref_service_ref_place = new PersonsRefServiceRefPlace();
-        $fake_company_model = new \frontend\models\FakeCompany;
+   public function actionCreate($person_id)
+    {   
+        $person_ref_service = new PersonsRefService();
+        $person_ref_service->persons_id = (int)$person_id;
+        $fake_company = new \frontend\models\FakeCompany;
         $fake_importance = new FakeImportance();
         $fake_importance->low = 0;
         $fake_importance->middle = 0;
         $fake_importance->high = 1;
         $fake_importance->critical = 1;
-        $count = null;
-        if (Yii::$app->request->isAjax) {
-            if (Yii::$app->request->post()) {
-            $fake_company_model->load(Yii::$app->request->post());
-            $fake_importance->load(Yii::$app->request->post());
-            isset(Yii::$app->request->post()['count']) ? $count=Yii::$app->request->post()['count'] : false;
-            if ($count !== null) {
-                $person_ref_service_model->load(Yii::$app->request->post());
-                $fake_importance->load(Yii::$app->request->post());
-                $person_ref_service_ref_region->count=(int)$count;
-            }
+        if (Yii::$app->request->isGet === true) {
+            //if (Yii::$app->request->post()) {
+                $fake_company->load(Yii::$app->request->get());
+                //$person_id = Yii::$app->request->post()['person_id'];
+                //$fake_importance->load(Yii::$app->request->post());
+            //}
             return $this->renderAjax('create', [
-                'person_ref_service_model' => $person_ref_service_model,
-                'person_ref_service_ref_region' => $person_ref_service_ref_region,
-                'person_ref_service_ref_city' => $person_ref_service_ref_city,
-                'person_ref_service_ref_place' => $person_ref_service_ref_place,
-                'fake_company_model' => $fake_company_model,
+                'person_ref_service' => $person_ref_service,
+                'fake_company' => $fake_company,
                 'fake_importance' => $fake_importance,
                 'person_id' => $person_id
-            ]);    
-            }
-            elseif (Yii::$app->request->get()) {
-            return $this->renderAjax('create', [
-                'person_ref_service_model' => $person_ref_service_model,
-                'person_ref_service_ref_region' => $person_ref_service_ref_region,
-                'person_ref_service_ref_city' => $person_ref_service_ref_city,
-                'person_ref_service_ref_place' => $person_ref_service_ref_place,
-                'fake_company_model' => $fake_company_model,
-                'fake_importance' => $fake_importance,
-                'person_id' => $person_id
-            ]);    
-            }
+            ]); 
         }
-        elseif ($person_ref_service_model->load(Yii::$app->request->post()) && $person_ref_service_model->save()) {
-            return $this->redirect(Url::to('../persons/view/'.$person_id));
+        elseif ($person_ref_service->load(Yii::$app->request->post()) &&
+                $fake_importance->load(Yii::$app->request->post()) &&
+                $person_ref_service->save()) {
+            if ($fake_importance->low === 1) { 
+                $person_ref_service_ref_importance = new PersonsRefServiceRefImportance();
+                $person_ref_service_ref_importance->ref_importance_id = 1;
+                $person_ref_service_ref_importance->person_ref_service_id = $person_ref_service->id;
+                //die;var_dump($person_ref_service_ref_importance);
+                $person_ref_service_ref_importance->save();
+            }
+            return var_dump($fake_importance);//$this->redirect(Url::to('../persons/view/'.$person_id));
+        }
+    }
+    public function actionPerformAjaxValidation()
+    {
+        $model = new PersonsRefService();
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
         }
     }
     public function actionUpdate($id)
