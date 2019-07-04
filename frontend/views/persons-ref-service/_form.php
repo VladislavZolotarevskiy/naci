@@ -19,6 +19,7 @@ $this->registerCss(".select2-selection__rendered { margin-top: 0 !important;}");
         'validationUrl' => Url::toRoute([
             'perform-ajax-validation']),
     ]); ?>
+    <?= $form->field($person_ref_service, 'persons_id')->hiddenInput(['value' => $person_id])->label(false) ?>
     <?= $form->field($fake_company, 'fake_company_id')->widget(Select2::classname(),[
         'data' => FakeCompany::fakeCompanyList($person_id),
         'options' => ['placeholder' => 'Выберите компанию'],
@@ -28,7 +29,7 @@ $this->registerCss(".select2-selection__rendered { margin-top: 0 !important;}");
                 "function() {"
                 . "var url = '/' + window.location.pathname.split('/')[1] + '/' + 'persons-ref-service' + '/' + 'create';"
                 . "var serial = $('#fakecompany-fake_company_id').serialize(); "
-                . "$.get(url,serial+'&person_id=".$person_id."',function(data){ $('#person-ref-service-form').replaceWith(data);});} ",
+                . "$.post(url,serial+'&person_id=".$person_id."',function(data){ $('#person-ref-service-form').replaceWith(data);});} ",
         ]    
     ])?>    
     <?= $form->field($person_ref_service, 'ref_service_id')->widget(Select2::classname(),[

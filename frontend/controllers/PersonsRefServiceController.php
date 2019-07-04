@@ -35,41 +35,72 @@ class PersonsRefServiceController extends SiteController
         ];
     }
 
-   public function actionCreate($person_id)
+   public function actionCreate($person_id=null)
     {   
         $person_ref_service = new PersonsRefService();
-        $person_ref_service->persons_id = (int)$person_id;
-        $fake_company = new \frontend\models\FakeCompany;
         $fake_importance = new FakeImportance();
-        $fake_importance->low = 0;
-        $fake_importance->middle = 0;
-        $fake_importance->high = 1;
-        $fake_importance->critical = 1;
-        if (Yii::$app->request->isGet === true) {
-            //if (Yii::$app->request->post()) {
-                $fake_company->load(Yii::$app->request->get());
-                //$person_id = Yii::$app->request->post()['person_id'];
-                //$fake_importance->load(Yii::$app->request->post());
-            //}
+        $fake_company = new \frontend\models\FakeCompany;
+        $request = Yii::$app->request;
+        if ($person_id == null && $fake_company->load($request->post())) {
+            $person_id=$request->post()['person_id'];
             return $this->renderAjax('create', [
-                'person_ref_service' => $person_ref_service,
-                'fake_company' => $fake_company,
-                'fake_importance' => $fake_importance,
-                'person_id' => $person_id
-            ]); 
+                 'person_ref_service' => $person_ref_service,
+                 'fake_company' => $fake_company,
+                 'fake_importance' => $fake_importance,
+                 'person_id' => $person_id
+                ]);
         }
-        elseif ($person_ref_service->load(Yii::$app->request->post()) &&
-                $fake_importance->load(Yii::$app->request->post()) &&
-                $person_ref_service->save()) {
-            if ($fake_importance->low === 1) { 
-                $person_ref_service_ref_importance = new PersonsRefServiceRefImportance();
-                $person_ref_service_ref_importance->ref_importance_id = 1;
-                $person_ref_service_ref_importance->person_ref_service_id = $person_ref_service->id;
-                //die;var_dump($person_ref_service_ref_importance);
-                $person_ref_service_ref_importance->save();
-            }
-            return var_dump($fake_importance);//$this->redirect(Url::to('../persons/view/'.$person_id));
+        if ($person_ref_service->load($request->post()) && $person_ref_service->save()) {
+            return $this->redirect('/naci-test/persons/view/171');
         }
+        if ($person_id == null && $fake_company->load($request->post())) {
+            return $this->renderAjax('create', [
+                 'person_ref_service' => $person_ref_service,
+                 'fake_company' => $fake_company,
+                 'fake_importance' => $fake_importance,
+                ]);
+        }
+        return $this->renderAjax('create', [
+                 'person_ref_service' => $person_ref_service,
+                 'fake_company' => $fake_company,
+                 'fake_importance' => $fake_importance,
+                 'person_id' => $person_id
+        ]);
+//        $person_ref_service = new PersonsRefService();
+//        $person_ref_service->persons_id = (int)$person_id;
+//        $fake_company = new \frontend\models\FakeCompany;
+//        $fake_importance = new FakeImportance();
+//        $fake_importance->low = 0;
+//        $fake_importance->middle = 0;
+//        $fake_importance->high = 1;
+//        $fake_importance->critical = 1;
+//        if (Yii::$app->request->isGet === true) {
+//            //if (Yii::$app->request->post()) {
+//                $fake_company->load(Yii::$app->request->get());
+//                //$person_id = Yii::$app->request->post()['person_id'];
+//                //$fake_importance->load(Yii::$app->request->post());
+//            //}
+//            return $this->renderAjax('create', [
+//                'person_ref_service' => $person_ref_service,
+//                'fake_company' => $fake_company,
+//                'fake_importance' => $fake_importance,
+//                'person_id' => $person_id
+//            ]); 
+//        }
+//        elseif ($person_ref_service->load(Yii::$app->request->post()) &&
+//                $fake_importance->load(Yii::$app->request->post()) &&
+//                $person_ref_service->save()) {
+//            if ($fake_importance->low === 1) { 
+//                $person_ref_service_ref_importance = new PersonsRefServiceRefImportance();
+//                $person_ref_service_ref_importance->ref_importance_id = 1;
+//                $person_ref_service_ref_importance->person_ref_service_id = $person_ref_service->id;
+//                die;var_dump($person_ref_service_ref_importance);
+//                $person_ref_service_ref_importance->save();
+//            }
+//            return var_dump($fake_importance);//$this->redirect(Url::to('../persons/view/'.$person_id));
+//        }
+       
+       
     }
     public function actionPerformAjaxValidation()
     {
