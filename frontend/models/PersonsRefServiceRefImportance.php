@@ -2,8 +2,6 @@
 
 namespace frontend\models;
 
-use Yii;
-
 /**
  * This is the model class for table "persons_ref_service_ref_importance".
  *
@@ -77,5 +75,34 @@ class PersonsRefServiceRefImportance extends \yii\db\ActiveRecord
                 ->with('refImportance')
                 ->where(['persons_ref_service_id' => $person_ref_service_id])
                 ->all();
+    }
+    
+    /* Create PersonRefService from FakeModel*/
+    
+    public function createImportance($param) {
+        if ($param['fake_importance_low'] == 1) {
+            $model = new PersonsRefServiceRefImportance();
+            $model->persons_ref_service_id = $param['person_ref_service_id'];
+            $model->ref_importance_id=1;
+            $model->save();    
+        }
+        if ($param['fake_importance_middle'] == 1) {
+            $model = new PersonsRefServiceRefImportance();
+            $model->persons_ref_service_id = $param['person_ref_service_id'];
+            $model->ref_importance_id=2;
+            $model->save();    
+        }
+        if ($param['fake_importance_high'] == 1) {
+            $model = new PersonsRefServiceRefImportance();
+            $model->persons_ref_service_id = $param['person_ref_service_id'];
+            $model->ref_importance_id=3;
+            $model->save();    
+        }
+        if ($param['fake_importance_critical'] == 1) {
+            $model = new PersonsRefServiceRefImportance();
+            $model->persons_ref_service_id = $param['person_ref_service_id'];
+            $model->ref_importance_id=4;
+            $model->save();    
+        }      
     }
 }
